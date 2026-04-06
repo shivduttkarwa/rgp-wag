@@ -1,0 +1,319 @@
+/* ═══════════════════════════════════════════════════
+   REAL GOLD PROPERTIES — Hero Section
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  --rgp-max: 90rem; /* 1440px */
+  --rgp-pad: clamp(1.125rem, 2vw, 1.75rem); /* 18–28px */
+  --rgp-radius: 1.125rem; /* 18px */
+
+  --font-title: "Bona Nova SC", serif;
+  --font-body: "Bricolage Grotesque", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  background: var(--rg-beige-light);
+  color: var(--rg-text-dark);
+  overflow-x: hidden;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── HERO WRAPPER ─── */
+.rgp-hero-wrap {
+  position: relative;
+}
+
+/* ─── HERO SECTION ─── */
+.rgp-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 40rem; /* 640px */
+  overflow: hidden;
+  isolation: isolate;
+  background: #00032e;
+}
+
+/* ─── BACKGROUND ─── */
+.rgp-hero__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform;
+  z-index: 0;
+}
+
+.rgp-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 3, 46, 0.72) 0%,
+    rgba(0, 3, 46, 0.18) 40%,
+    rgba(0, 3, 46, 0.0) 100%
+  );
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.rgp-hero__bg-poster,
+.rgp-hero__bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.rgp-hero__bg-poster {
+  opacity: 1;
+  transition: opacity 2200ms cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.rgp-hero__bg-video {
+  opacity: 0;
+  transition: opacity 2200ms cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.rgp-hero__bg--ready .rgp-hero__bg-video {
+  opacity: 1;
+}
+.rgp-hero__bg--ready .rgp-hero__bg-poster {
+  opacity: 0;
+}
+
+/* ─── VIGNETTE ─── */
+.rgp-hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 3, 46, 0.1) 0%,
+    rgba(0, 3, 46, 0.3) 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── CONTENT ─────────────────────────────────────────
+   Vertical position   → adjust justify-content
+                          or padding-top / padding-bottom
+   Horizontal position → adjust align-items
+                          or padding-left / padding-right
+   ───────────────────────────────────────────────────── */
+.rgp-hero__content {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* ← move up/down by changing this or padding */
+  align-items: center; /* ← move left/right by changing this or padding */
+  text-align: center;
+  padding: 5rem var(--rgp-pad);
+  pointer-events: none;
+  gap: 0;
+}
+
+/* ─── TITLE ─── */
+.rgp-hero__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rgp-hero__title-line {
+  line-height: 1;
+}
+
+.rgp-hero__title-text {
+  font-family: var(--font-title);
+  font-size: clamp(1.683rem, 4.896vw, 3.978rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: none;
+  filter:
+    drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.48))
+    drop-shadow(0 0.5rem 1.5rem rgba(0, 0, 0, 0.22));
+  mix-blend-mode: screen;
+  will-change: transform, opacity, filter;
+}
+
+.rgp-hero__title-text .rg-gold {
+  color: #f9c307;
+}
+.rgp-hero__title-text .rg-amber {
+  color: #f9c307;
+}
+
+/* ─── SUBTITLE ─── */
+.rgp-hero__subtitle {
+  margin-top: 4rem;
+  font-family: var(--font-body);
+  font-size: clamp(0.772rem, 1.425vw, 1.069rem);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  line-height: 1.65;
+  max-width: 46ch;
+  text-shadow: none;
+  filter:
+    drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.44))
+    drop-shadow(0 0.375rem 1rem rgba(0, 0, 0, 0.18));
+  mix-blend-mode: screen;
+  will-change: transform, opacity, filter;
+}
+
+/* ─── CTA ─── */
+.rgp-hero__cta {
+  margin-top: 1.5rem;
+  pointer-events: auto;
+}
+
+.rgp-hero__cta .btn-secondary {
+  background: var(--rg-gold);
+  color: #00032e;
+  border-color: var(--rg-gold);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 1rem 2.5rem;
+  letter-spacing: 0.07em;
+  box-shadow: 0 4px 28px rgba(249, 195, 7, 0.38);
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.35s ease;
+}
+
+/* Disable the fill-sweep from BtnSecondary */
+.rgp-hero__cta .btn-secondary::before {
+  display: none;
+}
+
+/* Left-to-right shine sweep */
+.rgp-hero__cta .btn-secondary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  transition: left 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rgp-hero__cta .btn-secondary:hover {
+  color: #00032e;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 36px rgba(249, 195, 7, 0.5);
+}
+
+.rgp-hero__cta .btn-secondary:hover::after {
+  left: 130%;
+}
+
+.rgp-hero__cta .btn-secondary .bs-text::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 0.55rem;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rgp-hero__cta .btn-secondary:hover .bs-text::after {
+  transform: translateX(6px);
+}
+
+/* ─── CTA panel (search bar replaces button) ─── */
+.rgp-hero__cta--panel {
+  pointer-events: auto;
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── FOOTER ─── */
+.rgp-hero__footer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(0.75rem, 2.5vw, 1.5rem);
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+  width: min(80%, 70rem);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 520px) {
+  .rgp-hero {
+    min-height: 43.75rem; /* 700px */
+  }
+
+  /*
+    Mobile layout — title/subtitle stay near top, CTA pins to bottom.
+    ↑ title/subtitle: adjust padding-top
+    ↓ CTA from bottom: adjust padding-bottom
+  */
+  .rgp-hero__content {
+    justify-content: flex-start;
+    padding-top: 10rem; /* ← moves title/subtitle up or down */
+    padding-bottom: 10rem; /* ← gap between CTA and bottom edge */
+  }
+
+  .rgp-hero__cta {
+    margin-top: auto; /* ← pins CTA to bottom, independent of title/subtitle */
+  }
+
+  .rgp-hero__footer {
+    bottom: 0.5rem;
+  }
+
+  .rgp-hero__title-text {
+    font-size: clamp(2.244rem, 6.528vw, 5.304rem);
+  }
+
+  .rgp-hero__subtitle {
+    font-size: clamp(0.975rem, 1.8vw, 1.35rem);
+  }
+}

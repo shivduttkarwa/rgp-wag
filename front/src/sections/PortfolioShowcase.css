@@ -1,0 +1,525 @@
+/* Reset for portfolio component only.
+   NOTE: specificity is (0,0,1,1) — card inner rules must use .info-wrapper prefix
+   to reach (0,0,2,0) and win. Do NOT remove this reset — it is required for
+   sticky / absolute positioning math to work (no stray browser margins). */
+section.project-feature * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.portfolio-active {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+section.project-feature,
+section.project-feature * {
+  contain: none !important;
+  isolation: auto !important;
+}
+
+section.project-feature {
+  z-index: 0;
+  padding-top: clamp(3.25rem, 6vw, 5.25rem);
+  padding-bottom: 0;
+  position: relative;
+  font-family: var(--font-body);
+  background: #ffffff;
+  --grid-column-count: 12;
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* ─── Section Header ─── */
+section.project-feature .pf-header {
+  max-width: var(--rg-max, 80rem);
+  margin: 0 auto;
+  padding: 0 var(--rg-pad, 2rem);
+  text-align: center;
+  padding-bottom: clamp(3.5rem, 6vw, 5.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+
+/* ─── Block text (title) ─── */
+section.project-feature .block-text {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+section.project-feature .block-text .block-text-col {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+section.project-feature .tilt-text-heading {
+  word-spacing: 0.12em !important;
+  color: var(--rg-navy) !important;
+  font-family: var(--font-title) !important;
+  font-weight: 400 !important;
+  font-size: clamp(2.25rem, 5vw, 3.5rem) !important;
+  text-align: center !important;
+  line-height: 1.15 !important;
+}
+
+section.project-feature .tilt-text-heading em {
+  font-style: normal;
+  color: var(--rg-gold) !important;
+}
+
+section.project-feature .tilt-text-word {
+  margin-right: 0.12em !important;
+}
+
+section.project-feature .tilt-text-word:last-child {
+  margin-right: 0 !important;
+}
+
+section.project-feature .block-text h3 .mask {
+  overflow: hidden;
+  display: block;
+}
+
+section.project-feature .block-text h3 .line {
+  display: block;
+  will-change: transform;
+}
+
+/* ─── Each property row ─── */
+section.project-feature .projects-wrapper .project {
+  height: 100vh;
+  display: block;
+  position: relative;
+  overflow: clip;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ─── Parallax background figure ─── */
+section.project-feature .projects-wrapper .project .project-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+section.project-feature .projects-wrapper .project .project-bg img {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+}
+
+/* Dark overlay on top of bg image */
+section.project-feature .projects-wrapper .project .project-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 20, 37, 0.62);
+  pointer-events: none;
+}
+
+/* Content column (sticky) */
+section.project-feature .projects-wrapper .project .content {
+  z-index: 2;
+  height: 300vh;
+  position: absolute;
+  top: -100vh;
+  left: 0;
+  right: 0;
+}
+
+section.project-feature .projects-wrapper .project .content .sticky {
+  height: 100vh;
+  padding: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  display: flex;
+  position: sticky;
+  top: 0;
+}
+
+
+/* ─── Property Card (.pc-card) ─── */
+.pc-card {
+  width: calc(
+    (
+        100vw -
+          (
+            clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem) * 2 +
+              clamp(1rem, 0.751174vw + 0.823944rem, 1.5rem) *
+              (var(--grid-column-count) - 1)
+          )
+      ) / var(--grid-column-count) * 5 +
+      clamp(1rem, 0.751174vw + 0.823944rem, 1.5rem) * 4
+  );
+  height: clamp(26.25rem, 68vh, 43.75rem);
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.125rem;
+  overflow: clip;
+  background: #ffffff;
+  border: 0.0625rem solid rgba(15, 24, 112, 0.1);
+  box-shadow: 0 1rem 3rem rgba(15, 24, 112, 0.1);
+}
+
+/* ── Top bar: index + status ── */
+.pc-card .pc-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: rgba(15, 24, 112, 0.04);
+}
+
+.pc-card .pc-index {
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  color: var(--rg-text-light);
+  letter-spacing: 0.14em;
+}
+
+.pc-card .pc-status {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rg-gold, #D4A056);
+  background: rgba(249, 195, 7, 0.15);
+  border: 0.0625rem solid rgba(249, 195, 7, 0.4);
+  border-radius: 3.125rem;
+  padding: 0.25rem 0.75rem;
+}
+
+/* ── Thumbnail strip ── */
+.pc-card .pc-thumb {
+  position: relative;
+  width: 100%;
+  height: clamp(8.125rem, 18vh, 12.5rem);
+  overflow: clip;
+}
+
+.pc-card .pc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pc-card .pc-price-tag {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.85rem;
+  font-family: var(--font-title);
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-weight: 400;
+  color: #fff;
+  background: rgba(15, 24, 112, 0.78);
+  backdrop-filter: blur(0.375rem);
+  padding: 0.3rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 0.0625rem solid rgba(249, 195, 7, 0.4);
+  letter-spacing: 0.02em;
+}
+
+/* ── Text content ── */
+.pc-card .pc-content {
+  padding: 1.1rem 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  flex: 1;
+}
+
+.pc-card .pc-location {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--rg-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pc-card .pc-location svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  color: var(--rg-gold, #D4A056);
+}
+
+.pc-card .pc-title {
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--rg-navy);
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.pc-card .pc-divider {
+  height: 0.0625rem;
+  background: rgba(249, 195, 7, 0.2);
+}
+
+/* ── Feature row (icons) ── */
+.pc-card .pc-features {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.pc-card .pc-feat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 1;
+  padding: 0.6rem 0.5rem;
+  background: rgba(15, 24, 112, 0.05);
+  border-radius: 0.625rem;
+  border: 0.0625rem solid rgba(15, 24, 112, 0.1);
+}
+
+.pc-card .pc-feat svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--rg-gold, #D4A056);
+}
+
+.pc-card .pc-feat-val {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--rg-navy);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.pc-card .pc-feat-label {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  color: var(--rg-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── CTA button — higher specificity beats the * reset ── */
+section.project-feature .pc-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1rem 1.875rem;
+  border: none;
+  border-radius: 0.625rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: var(--rg-gold);
+  color: #00032e;
+  align-self: flex-start;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  margin-top: 0.25rem;
+}
+
+section.project-feature .pc-view-btn:hover {
+  background-color: #fad840;
+  color: #00032e;
+}
+
+section.project-feature .pc-view-btn svg {
+  flex-shrink: 0;
+}
+
+/* ── Decorative gold corner ── */
+.pc-card .pc-corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    #f9c307 50%
+  );
+  pointer-events: none;
+}
+
+/* ─── Thumbnail image ─── */
+section.project-feature
+  .projects-wrapper
+  .project
+  .content
+  .sticky
+  .image-wrapper {
+  width: calc(
+    (
+        100vw -
+          (
+            clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem) * 2 +
+              clamp(1rem, 0.751174vw + 0.823944rem, 1.5rem) *
+              (var(--grid-column-count) - 1)
+          )
+      ) / var(--grid-column-count) * 5 +
+      clamp(1rem, 0.751174vw + 0.823944rem, 1.5rem) * 4 +
+      clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem) * 0
+  );
+  height: clamp(26.25rem, 68vh, 43.75rem);
+  border-radius: 0.875rem;
+  flex-shrink: 0;
+  overflow: clip;
+  box-shadow: 0 1rem 2.5rem rgba(7, 20, 37, 0.4);
+  border: 0.0625rem solid rgba(249, 195, 7, 0.2);
+}
+
+section.project-feature
+  .projects-wrapper
+  .project
+  .content
+  .sticky
+  .image-wrapper
+  figure {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+section.project-feature
+  .projects-wrapper
+  .project
+  .content
+  .sticky
+  .image-wrapper
+  figure
+  img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* First / last child overrides */
+section.project-feature .projects-wrapper .project:first-child .content {
+  top: 0 !important;
+}
+
+section.project-feature .projects-wrapper .project:first-child .content,
+section.project-feature .projects-wrapper .project:last-child .content {
+  height: 200vh !important;
+}
+
+/* ─── CTA ─── */
+section.project-feature .cta-wrapper {
+  padding-left: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+  padding-right: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+  justify-content: center;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+/* ─── Mobile Swiper — hidden on desktop ─── */
+.pf-mobile-swiper {
+  display: none;
+  padding: 0 clamp(1rem, 4vw, 1.5rem);
+  padding-bottom: 0;
+}
+
+.pf-mobile-swiper .swiper-slide {
+  height: auto;
+}
+
+/* Slide card — full width, auto height */
+.pf-slide-card {
+  width: 100% !important;
+  height: auto !important;
+}
+
+.pf-mobile-swiper .swiper-pagination {
+  bottom: 0;
+}
+
+.pf-mobile-swiper .swiper-pagination-bullet {
+  background: var(--rg-gold, #D4A056);
+  opacity: 0.4;
+}
+
+.pf-mobile-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 768px) {
+  section.project-feature .block-text {
+    width: 100%;
+    padding: 0 1rem;
+    overflow: visible;
+  }
+}
+
+@media not (min-width: 940px) {
+  section.project-feature {
+    display: none;
+  }
+
+  section.project-feature .block-text {
+    width: 100%;
+    padding-left: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+    padding-right: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+  }
+
+  section.project-feature .projects-wrapper .project .content {
+    top: 0;
+  }
+
+  section.project-feature .projects-wrapper .project .content .sticky {
+    padding-left: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+    padding-right: clamp(1.5rem, 3.75587vw + 0.619718rem, 4rem);
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 7rem;
+    padding-bottom: 3.5rem;
+    position: static;
+    gap: 2rem;
+  }
+
+  section.project-feature .projects-wrapper .project .content .sticky .pc-card {
+    width: 100%;
+  }
+
+  section.project-feature
+    .projects-wrapper
+    .project
+    .content
+    .sticky
+    .image-wrapper {
+    width: 100%;
+    max-height: 33vh;
+  }
+
+  .project__gradient {
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 20, 37, 0.6) 0%,
+      rgba(7, 20, 37, 0.35) 50%,
+      rgba(7, 20, 37, 0.15) 100%
+    );
+  }
+}

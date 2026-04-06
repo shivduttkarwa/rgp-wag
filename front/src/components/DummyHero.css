@@ -1,0 +1,29 @@
+.dummy-hero {
+  min-height: clamp(18rem, 40vh, 28rem);
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(212, 160, 86, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(245, 200, 66, 0.12),
+      transparent 60%
+    ),
+    #0f0b08;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(2rem, 6vw, 4rem);
+  border-bottom: 1px solid rgba(212, 160, 86, 0.2);
+}
+
+.dummy-hero__label {
+  font-family: var(--font-title);
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}

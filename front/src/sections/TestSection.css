@@ -1,0 +1,36 @@
+/* ════════════════════════════════════════════════════════
+   TEST SECTION - Minimal content section
+   ════════════════════════════════════════════════════════ */
+
+.rg-test {
+  min-height: 100vh;
+  background: var(--rg-beige-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem var(--rg-pad);
+}
+
+.rg-test__content {
+  max-width: 60ch;
+  text-align: center;
+}
+
+.rg-test__title {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--rg-text-dark);
+  margin: 0 0 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rg-test__text {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.8;
+  color: var(--rg-text-medium);
+  margin: 0;
+}

@@ -1,0 +1,122 @@
+/* ═══════════════════════════════════════════════════
+   HERO GLASS NAV PANEL
+   ═══════════════════════════════════════════════════ */
+
+
+.hsp {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.4rem;
+  background: rgba(0, 2, 18, 0.62);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.07) inset;
+}
+
+/* ─── Tab pill ─── */
+.hsp__tab {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9rem 2rem;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: var(--font-body, "Bricolage Grotesque", sans-serif);
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ── yellow fill sweeps bottom → top ── */
+.hsp__tab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffd84d 0%, #f9c307 100%);
+  transform: translateY(102%);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+  border-radius: inherit;
+}
+
+
+/* hover state */
+.hsp__tab:hover {
+  border-color: rgba(249, 195, 7, 0.55);
+  box-shadow: 0 0 0 0 transparent, 0 6px 24px rgba(249, 195, 7, 0.3);
+  transform: translateY(-2px);
+}
+
+.hsp__tab:hover::before {
+  transform: translateY(0);
+}
+
+.hsp__tab:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* keep content above fill */
+.hsp__tab-badge,
+.hsp__tab-label {
+  position: relative;
+  z-index: 2;
+  transition: color 0.25s ease;
+}
+
+/* ─── Icon ─── */
+.hsp__tab-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* ─── Label ─── */
+.hsp__tab-label {
+  font-size: 1.275rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+}
+
+/* on hover: flip to dark so text is readable on gold */
+.hsp__tab:hover .hsp__tab-badge,
+.hsp__tab:hover .hsp__tab-label {
+  color: #00032e;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 540px) {
+  .hsp {
+    flex-wrap: wrap;
+    border-radius: 12px;
+    gap: 0.25rem;
+  }
+
+  .hsp__tab {
+    flex: 0 0 calc(50% - 0.125rem);
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    box-shadow: none;
+  }
+
+  .hsp__tab-label {
+    font-size: 1.05rem;
+  }
+}

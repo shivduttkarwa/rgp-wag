@@ -1,0 +1,181 @@
+/* Preloader.css */
+
+/* =================================
+   CONTROL KNOBS - ADJUST HERE
+   ================================= */
+.preloader {
+  /* COLORS */
+  --gold: var(--rg-gold);
+  --bg-dark: #0a1234;
+  --bg-gradient-center: #0a1234;
+  --text-muted: #666;
+
+  /* LOGO SIZE */
+  --logo-width: 250px;
+  --logo-height: 175px;
+
+  /* BORDER ANIMATION */
+  --border-duration: 1.8s;
+  --border-width: 3px;
+  --border-glow: 6px;
+  --path-length: 1500;
+
+  /* FILL ANIMATION */
+  --fill-delay: 2.1s;
+  --fill-duration: 1.6s;
+
+  /* GLOW */
+  --glow-delay: 3s;
+  --glow-duration: 0.6s;
+  --glow-blur: 15px;
+  --glow-opacity: 0.3;
+
+  /* SHINE */
+  --shine-delay: -0.6s;
+  --shine-duration: 1.1s;
+
+  /* TEXT */
+  --title-delay: 2.4s;
+  --subtitle-delay: 2.6s;
+  --text-duration: 0.5s;
+
+  /* LOADER */
+  --loader-hide-delay: 4000;
+  --loader-fade-duration: 1s;
+  --loader-exit-duration: 1s;
+
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-dark);
+  transform: translateY(0);
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3.125rem;
+  z-index: 99999;
+  transition:
+    transform var(--loader-exit-duration) ease,
+    opacity var(--loader-fade-duration) ease,
+    visibility var(--loader-fade-duration) ease;
+}
+
+.preloader.is-exiting {
+  transform: translateY(-100%);
+}
+
+.preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.logo-container {
+  position: relative;
+  width: var(--logo-width);
+  height: var(--logo-height);
+}
+
+.logo-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.logo-stroke {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: var(--border-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: var(--path-length);
+  stroke-dashoffset: var(--path-length);
+  animation: preloaderDrawBorder var(--border-duration) ease-out forwards;
+  filter: drop-shadow(0 0 var(--border-glow) rgba(249, 194, 6, 0.5));
+}
+
+.logo-fill {
+  fill: var(--gold);
+  clip-path: inset(100% 0 0 0);
+  animation: preloaderFillBottomToTop var(--fill-duration) ease-out forwards;
+  animation-delay: var(--fill-delay);
+}
+
+.logo-glow {
+  fill: var(--gold);
+  opacity: 0;
+  filter: blur(var(--glow-blur));
+  animation: preloaderGlowIn var(--glow-duration) ease-out forwards;
+  animation-delay: var(--glow-delay);
+}
+
+.logo-shine {
+  opacity: 0;
+  transform: translateX(0) skewX(-12deg);
+  transform-box: view-box;
+  transform-origin: center;
+  mix-blend-mode: screen;
+  filter: blur(2px);
+  animation: preloaderShineSweep var(--shine-duration) ease-out forwards;
+  animation-delay: calc(
+    var(--fill-delay) + var(--fill-duration) + var(--shine-delay)
+  );
+  pointer-events: none;
+}
+
+@keyframes preloaderDrawBorder {
+  0% {
+    stroke-dashoffset: var(--path-length);
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes preloaderFillBottomToTop {
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes preloaderGlowIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes preloaderShineSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-280px) skewX(-12deg);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(620px) skewX(-12deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .preloader {
+    gap: 2.5rem;
+  }
+
+  .logo-container {
+    width: 205px;
+    height: 143px;
+  }
+}

@@ -1,0 +1,200 @@
+/* ════════════════════════════════════════════════════════
+   GLOBAL STYLES
+   ════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Light Theme ── */
+  --rg-beige-light: #fffdf6; /* main page background */
+  --rg-beige: #fef9ec; /* secondary background / form fields */
+  --rg-beige-dark: #faefc8; /* cards / panels */
+  --rg-beige-darker: #e8d48a; /* borders / subtle lines */
+
+  /* ── Blue scale (brand deep navy → vivid) ── */
+  --rg-blue-50: #f0f3ff;
+  --rg-blue-100: #e0e7ff;
+  --rg-blue-200: #c7d2fe;
+  --rg-blue-300: #a5b4fc;
+  --rg-blue-400: #162496; /* vivid brand blue */
+  --rg-blue-500: #0f1870; /* deep brand navy */
+
+  /* ── Gold-warm tones ── */
+  --rg-warm-100: #fffbea;
+  --rg-warm-200: #fef3c7;
+  --rg-warm-300: #fde68a;
+  --rg-warm-400: #f9c307;
+  --rg-warm-500: #d4a200;
+
+  /* Text Colors — dark on light backgrounds */
+  --rg-text-dark: #0f1870;
+  --rg-text-medium: rgba(15, 24, 112, 0.68);
+  --rg-text-light: rgba(15, 24, 112, 0.45);
+
+  /* Accent Colors — gold & blue kept */
+  --rg-gold: #f9c206;
+  --rg-amber: #f9c307;
+  --rg-crimson: #f9c307;
+
+  /* Legacy aliases (re-mapped for light theme) */
+  --rg-navy: #0f1870; /* deep brand navy — used for dark text, outlines */
+  --rg-dark: #0f1870;
+  --rg-darker: #fffdf6; /* maps to page bg (used as section bg in Philosophy) */
+  --rg-ink: #0f1870;
+  --rg-ink-2: rgba(15, 24, 112, 0.68);
+
+  /* Layout */
+  --rg-max: 90rem;
+  --rg-pad: clamp(1.5rem, 4vw, 3rem);
+  --rg-radius: 1.125rem;
+
+  /* Fonts */
+  --font-title: "Bona Nova SC", serif;
+  --font-body: "Bricolage Grotesque", sans-serif;
+
+  /* Extended theme (About page) */
+  --bg: #f7f8fc;
+  --ink: #0f1870;
+  --green: #f9c307; /* primary accent → gold */
+  --green-2: #d4a200; /* darker gold */
+  --line: rgba(15, 24, 112, 0.12);
+  --accent: #f9c307;
+  --max: 1180px;
+  --pad: clamp(18px, 2.2vw, 30px);
+  --radius: 14px;
+}
+
+/* ════════════════════════════════════════════════════════
+   UNIVERSAL TYPOGRAPHY UTILITIES
+   Use these across all sections to keep text consistent.
+   ════════════════════════════════════════════════════════ */
+
+/* Small gold kicker above a title */
+.rg-eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--rg-gold);
+  margin-bottom: 0.9rem;
+}
+
+/* Large serif section heading */
+.rg-section-title {
+  font-family: var(--font-title);
+  font-weight: 400;
+  color: var(--rg-text-dark);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.15;
+  text-align: center;
+  margin: 0;
+}
+
+.rg-section-title em {
+  font-style: normal;
+  color: var(--rg-gold);
+}
+
+/* Prose below a section title */
+.rg-section-subtitle {
+  font-family: var(--font-body);
+  color: var(--rg-text-medium);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 56ch;
+  margin: 0 auto;
+  text-align: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--rg-beige-light);
+  color: var(--rg-text-dark);
+  min-height: 100vh;
+}
+
+/* ─── Responsive root font-size ───────────────────────────
+   Baseline: 16px at 1536px (design).
+   Mobile stays at 16px (current looks right).
+   Tablet / small laptop sizes step down to avoid oversized UI.
+   Large screens step up so UI doesn't feel small.
+   ────────────────────────────────────────────────────────── */
+html {
+  font-size: 16px; /* <= 479px (mobile baseline) */
+}
+@media (min-width: 480px) {
+  html {
+    font-size: 16px;
+  }
+}
+@media (min-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+}
+/* iPad portrait */
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+/* iPad Air / Pro 11 portrait */
+@media (min-width: 834px) {
+  html {
+    font-size: 14.8px;
+  }
+}
+/* iPad landscape */
+@media (min-width: 1024px) {
+  html {
+    font-size: 12.5px;
+  }
+}
+@media (min-width: 1280px) {
+  html {
+    font-size: 13px;
+  }
+}
+@media (min-width: 1440px) {
+  html {
+    font-size: 15.5px;
+  }
+}
+@media (min-width: 1536px) {
+  html {
+    font-size: 16px;
+  }
+}
+@media (min-width: 1728px) {
+  html {
+    font-size: 16.5px;
+  }
+}
+@media (min-width: 1920px) {
+  html {
+    font-size: 19.5px;
+  }
+}
+@media (min-width: 2240px) {
+  html {
+    font-size: 18.5px;
+  }
+}
+@media (min-width: 2560px) {
+  html {
+    font-size: 19.5px;
+  }
+}
+
+html.scroll-locked,
+html.scroll-locked body {
+  overflow: hidden !important;
+  touch-action: none !important;
+}

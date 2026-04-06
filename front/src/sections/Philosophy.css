@@ -1,0 +1,346 @@
+/* Philosophy.css — Testimonials (same card design, video swap) */
+
+.rg-philo {
+  background: #ffffff;
+  color: var(--rg-text-dark);
+  font-family: var(--font-body);
+}
+
+.rg-philo__wrap {
+  max-width: var(--rg-max);
+  margin: 0 auto;
+  padding: clamp(2.6rem, 5vw, 4.25rem) var(--rg-pad);
+}
+
+.rg-philo__head {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 62ch;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.rg-philo__label {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--rg-gold);
+}
+
+.rg-philo__title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  color: var(--rg-text-dark);
+  text-align: center;
+}
+
+.rg-philo__title em {
+  font-style: normal;
+  color: var(--rg-gold);
+}
+
+.rg-philo__subtitle {
+  margin: 0 auto;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--rg-text-medium);
+  font-weight: 400;
+  text-align: center;
+}
+
+.rg-philo__divider {
+  height: 0.0625rem;
+  width: 100%;
+  background: rgba(15, 24, 112, 0.12);
+  margin: clamp(1.4rem, 2.8vw, 2.2rem) 0 clamp(1.6rem, 3vw, 2.6rem);
+}
+
+/* Grid */
+.rg-philo__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.1rem, 2.2vw, 2rem);
+}
+
+/* Card */
+.rg-philo__card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--rg-beige);
+  box-shadow: 0 1.125rem 2.5rem rgba(44, 24, 16, 0.08);
+  isolation: isolate;
+}
+
+/* Video (same sizing as img was) */
+.rg-philo__media {
+  width: 100%;
+  aspect-ratio: 4 / 4.2;
+  overflow: hidden;
+}
+
+.rg-philo__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.001);
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.rg-philo__card:hover .rg-philo__img {
+  transform: scale(1.04);
+}
+
+/* Tint per card */
+.rg-philo__card[data-tint="gold"]    { --tint: var(--rg-gold); }
+.rg-philo__card[data-tint="amber"]   { --tint: var(--rg-amber); }
+.rg-philo__card[data-tint="crimson"] { --tint: var(--rg-crimson); }
+
+/* Play button — appears on hover */
+.rg-philo__play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  z-index: 4;
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 0;
+  padding: 0;
+  border-radius: 62.4375rem;
+  background: rgba(12, 12, 12, 0.35);
+  color: rgba(255, 255, 255, 0.92);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 240ms ease, transform 240ms ease, background 240ms ease;
+  backdrop-filter: blur(0.25rem);
+}
+
+.rg-philo__play-btn svg {
+  width: 100%;
+  height: 100%;
+}
+
+.rg-philo__card:hover .rg-philo__play-btn,
+.rg-philo__card:focus-within .rg-philo__play-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.rg-philo__play-btn:hover {
+  background: rgba(12, 12, 12, 0.5);
+}
+
+/* Dark overlay — fades in on hover to cover whole card */
+.rg-philo__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(44, 24, 16, 0.96) 0%,
+    rgba(44, 24, 16, 0.55) 40%,
+    rgba(44, 24, 16, 0.15) 70%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 480ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.rg-philo__card:hover .rg-philo__overlay {
+  opacity: 1;
+}
+
+/* Bottom pill strip */
+.rg-philo__pill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.2rem 1.1rem 1.1rem;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Small rest-state gradient behind pill */
+.rg-philo__pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(44, 24, 16, 0.55),
+    rgba(44, 24, 16, 0.12),
+    rgba(44, 24, 16, 0)
+  );
+  z-index: -1;
+  transition: opacity 300ms ease;
+}
+
+.rg-philo__card:hover .rg-philo__pill::before {
+  opacity: 0;
+}
+
+.rg-philo__pillKicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(255, 248, 240, 0.92);
+}
+
+.rg-philo__pillTitle {
+  margin-top: 0.25rem;
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--tint);
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  text-shadow: 0 0.625rem 1.875rem rgba(44, 24, 16, 0.35);
+}
+/* Desc — hidden at rest, fades in on hover */
+.rg-philo__pillDesc {
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(255, 248, 240, 0.92);
+  font-weight: 600;
+  max-width: 44ch;
+  transition:
+    max-height 480ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 380ms ease 80ms;
+}
+
+.rg-philo__card:hover .rg-philo__pillDesc {
+  max-height: 10rem;
+  opacity: 1;
+}
+
+.rg-philo__card:focus-within {
+  outline: 0.125rem solid rgba(212, 160, 86, 0.55);
+  outline-offset: 0.25rem;
+}
+
+/* CTA row */
+.rg-philo__cta-row {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  display: flex;
+  justify-content: center;
+}
+
+.rg-philo__cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.625rem;
+  border-radius: 0.5rem;
+  background: var(--rg-blue-500, #0f1870);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.rg-philo__cta-btn:hover {
+  background: #162496;
+  transform: translateY(-0.125rem);
+}
+
+.rg-philo__cta-btn svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.rg-philo__cta-btn:hover svg {
+  transform: translateX(0.25rem);
+}
+
+/* Mobile swiper — hidden on desktop */
+.rg-philo__swiper-wrap {
+  display: none;
+  padding-bottom: 2.5rem;
+}
+
+.rg-philo__swiper-wrap .swiper-slide {
+  height: auto;
+}
+
+.rg-philo__swiper-wrap .swiper-pagination-bullet {
+  background: var(--rg-gold);
+  opacity: 0.4;
+}
+
+.rg-philo__swiper-wrap .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .rg-philo__grid {
+    display: none;
+  }
+
+  .rg-philo__swiper-wrap {
+    display: block;
+  }
+}
+
+/* Touch: always show overlay + desc */
+@media (hover: none) and (pointer: coarse) {
+  .rg-philo__card,
+  .rg-philo__media,
+  .rg-philo__img,
+  .rg-philo__overlay,
+  .rg-philo__pill,
+  .rg-philo__play-btn {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .rg-philo__card {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .rg-philo__img,
+  .rg-philo__overlay,
+  .rg-philo__pill::before,
+  .rg-philo__play-btn {
+    transition: none;
+  }
+
+  .rg-philo__overlay {
+    opacity: 1;
+  }
+
+  .rg-philo__pillDesc {
+    max-height: 10rem;
+    opacity: 1;
+  }
+
+  .rg-philo__pill::before {
+    opacity: 0;
+  }
+
+  .rg-philo__play-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

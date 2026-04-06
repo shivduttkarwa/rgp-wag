@@ -1,0 +1,439 @@
+/* ════════════════════════════════════════════════════════
+   ALL PROPERTIES PAGE
+   ════════════════════════════════════════════════════════ */
+
+.ap-page {
+  min-height: 100vh;
+  background: var(--rg-beige-light);
+}
+
+/* ─── Filter Slab (matches PropertyListingSection) ───────────────────────── */
+.ap-filter-slab {
+  background: #fff;
+  border-bottom: 2px solid var(--rg-beige-darker);
+  box-shadow: 0 4px 24px rgba(15, 24, 112, 0.08);
+}
+
+.ap-filter-slab__inner {
+  max-width: var(--rg-max);
+  margin: 0 auto;
+  padding: 1.35rem var(--rg-pad);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.ap-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.ap-filter-wrapper {
+  display: flex;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.ap-filter-tabs {
+  position: relative;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #fdf4e3;
+  padding: 0.5rem;
+  border-radius: var(--rg-radius);
+  border: 1px solid var(--rg-beige-dark);
+}
+
+.ap-filter-pill {
+  position: absolute;
+  top: 0.5rem;
+  height: calc(100% - 1rem);
+  background-color: var(--rg-gold);
+  border-radius: calc(var(--rg-radius) - 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ap-filter-tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: calc(var(--rg-radius) - 4px);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: color 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: transparent;
+  color: var(--rg-text-medium);
+}
+
+.ap-filter-tab:hover {
+  color: var(--rg-text-dark);
+  background-color: var(--rg-beige-dark);
+}
+
+.ap-filter-tab.active {
+  background-color: transparent;
+  color: var(--rg-navy);
+}
+
+.ap-filter-tab svg {
+  flex-shrink: 0;
+}
+
+/* ── Dropdown Filters (restored) ───────────────────────────────────────── */
+.ap-filter-group--dropdowns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-left: 1rem;
+}
+
+.ap-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ap-select {
+  appearance: none;
+  background: var(--rg-beige-light);
+  border: 1.5px solid var(--rg-beige-darker);
+  border-radius: 0.65rem;
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--rg-text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 145px;
+}
+
+.ap-select:focus {
+  outline: none;
+  border-color: var(--rg-gold);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(249, 195, 7, 0.15);
+}
+
+.ap-select:hover {
+  border-color: var(--rg-gold);
+  background: #fff;
+}
+
+.ap-select-icon {
+  position: absolute;
+  right: 0.75rem;
+  pointer-events: none;
+  color: var(--rg-text-light);
+}
+
+/* ── Result Count ───────────────────────────────────────────────────────── */
+.ap-result-count {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--rg-text-light);
+  white-space: nowrap;
+  padding: 0.4rem 0.9rem;
+  background: var(--rg-beige-light);
+  border: 1.5px solid var(--rg-beige-darker);
+  border-radius: 2rem;
+  margin-left: auto;
+}
+
+/* ── Clear Button (empty state) ─────────────────────────────────────────── */
+.ap-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.65rem;
+  border: 1.5px solid rgba(249, 195, 7, 0.6);
+  background: var(--rg-warm-100);
+  color: var(--rg-navy);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ap-clear-btn:hover {
+  background: var(--rg-gold);
+  border-color: var(--rg-gold);
+  color: var(--rg-navy);
+}
+
+/* ─── Grid Section ────────────────────────────────────────────────────────── */
+.ap-grid-section {
+  padding: clamp(2.5rem, 5vw, 4rem) var(--rg-pad);
+  overflow-anchor: none;
+}
+
+.ap-grid-container {
+  max-width: var(--rg-max);
+  margin: 0 auto;
+}
+
+/* Isotope requires position:relative — it positions items absolutely */
+.ap-grid {
+  position: relative;
+  margin: 0 -0.75rem; /* compensates for item padding to keep edge alignment */
+}
+
+/* Each card slot — padding creates gutters; Isotope reads the outerWidth */
+.ap-card-wrap {
+  width: 33.333%;
+  padding: 0 0.75rem 1.5rem;
+}
+
+/* Exit: all cards leave at once */
+@keyframes cardExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.93);
+  }
+}
+
+/* Entry: cards slide up with stagger (delay set inline on PropertyCard) */
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ap-grid.grid-exiting .property-card {
+  animation: cardExit 0.25s ease forwards;
+}
+
+.ap-grid.grid-entering .property-card {
+  animation: cardReveal 0.4s ease both;
+}
+
+/* ─── Empty State ─────────────────────────────────────────────────────────── */
+.ap-empty {
+  text-align: center;
+  padding: 5rem 1rem;
+  color: var(--rg-text-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ap-empty p {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+}
+
+/* ─── View All ────────────────────────────────────────────────────────────── */
+.ap-view-all {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  overflow-anchor: none;
+}
+
+.ap-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2.25rem;
+  background: var(--rg-navy);
+  color: #fff;
+  border: 2px solid var(--rg-navy);
+  border-radius: 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ap-view-btn:hover {
+  background: transparent;
+  color: var(--rg-navy);
+}
+
+.ap-view-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.ap-view-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.ap-view-btn--ghost {
+  background: transparent;
+  color: var(--rg-text-medium);
+  border-color: var(--rg-beige-darker);
+}
+
+.ap-view-btn--ghost:hover {
+  border-color: var(--rg-navy);
+  color: var(--rg-navy);
+  background: transparent;
+}
+
+/* Card styles live in PropertyCard.css — imported via the component */
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ap-card-wrap {
+    width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .ap-filter-slab {
+    box-shadow: none;
+  }
+
+  .ap-filter-slab__inner {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem var(--rg-pad);
+    gap: 0.75rem;
+  }
+
+  .ap-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ap-filter-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding-bottom: 0.25rem;
+  }
+
+  .ap-filter-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ap-filter-tabs {
+    width: max-content;
+    flex-wrap: nowrap;
+  }
+
+  .ap-filter-tab {
+    flex-shrink: 0;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .ap-filter-group--dropdowns {
+    margin-left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .ap-select-wrap {
+    width: 100%;
+  }
+
+  .ap-select {
+    min-width: 0;
+    width: 100%;
+    font-size: 0.8rem;
+  }
+
+  .ap-clear-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ap-result-count {
+    text-align: center;
+    align-self: center;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .ap-filter-slab__inner {
+    padding: 1rem 1.25rem;
+  }
+
+  .ap-filter-wrapper {
+    overflow-x: visible;
+    justify-content: center;
+  }
+
+  .ap-filter-tabs {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ap-filter-pill {
+    display: none;
+  }
+
+  .ap-filter-tab {
+    flex: 1 1 calc(50% - 0.25rem);
+    justify-content: center;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .ap-filter-tab.active {
+    background-color: var(--rg-gold);
+    color: var(--rg-navy);
+  }
+}
+
+@media (max-width: 640px) {
+  .ap-grid {
+    margin: 0;
+  }
+
+  .ap-card-wrap {
+    width: 100%;
+    padding: 0 0.75rem 1.25rem;
+  }
+
+  .ap-grid-section {
+    padding: 2rem 1rem;
+  }
+
+  .ap-card__price-val {
+    font-size: 1.1rem;
+  }
+
+  .ap-view-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+  }
+}

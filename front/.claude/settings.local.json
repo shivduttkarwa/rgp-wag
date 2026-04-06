@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(echo No workflows found:*)",
+      "Bash(\"d:\\\\Kailash\\\\rgp-v4\\\\src\\\\sections\\\\TeamV3.tsx\")"
+    ]
+  }
+}

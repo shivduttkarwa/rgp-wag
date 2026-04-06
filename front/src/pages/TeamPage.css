@@ -1,0 +1,427 @@
+/* ═══════════════════════════════════════════════════════════
+   TEAM PAGE SHELL
+   ═══════════════════════════════════════════════════════════ */
+
+.team-page {
+  background: var(--rg-beige-light);
+  color: var(--rg-navy);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+.tp-container {
+  max-width: var(--rg-max);
+  margin: 0 auto;
+  padding: 0 var(--rg-pad);
+}
+
+/* ── Shared typography ── */
+.tp-eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--rg-gold);
+  margin-bottom: 1rem;
+}
+
+.tp-heading {
+  font-family: var(--font-title);
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--rg-navy);
+  line-height: 1.12;
+  margin: 0 0 0;
+}
+
+.tp-heading em {
+  font-style: italic;
+  color: var(--rg-gold);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VALUES SECTION — bento grid
+   ═══════════════════════════════════════════════════════════ */
+
+.tp-values {
+  padding: clamp(5rem, 9vw, 8rem) 0;
+  background: var(--rg-beige-light);
+}
+
+/* ── Split header ── */
+.tp-values__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3rem;
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+
+.tp-values__header-left {
+  flex-shrink: 0;
+}
+
+.tp-values__desc {
+  font-family: var(--font-body);
+  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  color: var(--rg-text-medium);
+  line-height: 1.75;
+  max-width: 28rem;
+  margin: 0;
+  padding-bottom: 0.3rem;
+}
+
+/* ── 2×2 grid ── */
+.tp-values__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+/* ── Value card ── */
+.tp-vc {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(15, 24, 112, 0.07);
+  border-radius: 20px;
+  padding: clamp(2rem, 3.5vw, 3rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  cursor: default;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+}
+
+.tp-vc:hover {
+  border-color: var(--rg-gold);
+  box-shadow:
+    0 0 0 1px var(--rg-gold),
+    0 20px 60px rgba(15, 24, 112, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Ghost watermark number */
+.tp-vc__ghost {
+  position: absolute;
+  top: -0.6rem;
+  right: 1.25rem;
+  font-family: var(--font-title);
+  font-size: clamp(5.5rem, 9vw, 9rem);
+  font-weight: 400;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(15, 24, 112, 0.05);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  transition: -webkit-text-stroke-color 0.35s ease;
+}
+
+.tp-vc:hover .tp-vc__ghost {
+  -webkit-text-stroke-color: rgba(249, 195, 7, 0.18);
+}
+
+/* Icon */
+.tp-vc__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(249, 195, 7, 0.1);
+  border: 1px solid rgba(249, 195, 7, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rg-gold);
+  flex-shrink: 0;
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease;
+  z-index: 1;
+}
+
+.tp-vc__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tp-vc:hover .tp-vc__icon {
+  background: rgba(249, 195, 7, 0.18);
+  border-color: var(--rg-gold);
+}
+
+/* Content */
+.tp-vc__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+  z-index: 1;
+}
+
+.tp-vc__title {
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 2vw, 1.65rem);
+  font-weight: 400;
+  color: var(--rg-navy);
+  line-height: 1.2;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.tp-vc:hover .tp-vc__title {
+  color: var(--rg-gold);
+}
+
+.tp-vc__body {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  color: var(--rg-text-medium);
+  line-height: 1.72;
+  margin: 0;
+}
+
+/* Footer */
+.tp-vc__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(15, 24, 112, 0.07);
+  z-index: 1;
+}
+
+.tp-vc__kw {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--rg-gold);
+  background: rgba(249, 195, 7, 0.1);
+  border: 1px solid rgba(249, 195, 7, 0.25);
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+
+.tp-vc__num {
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  color: rgba(15, 24, 112, 0.2);
+  letter-spacing: 0.1em;
+  transition: color 0.3s ease;
+}
+
+.tp-vc:hover .tp-vc__num {
+  color: var(--rg-gold);
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .tp-values__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .tp-values__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   JOIN US SECTION
+   ═══════════════════════════════════════════════════════════ */
+
+.tp-join {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  background: var(--rg-beige-light);
+}
+
+.tp-join__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.tp-join__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tp-join__body {
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  color: var(--rg-text-medium);
+  line-height: 1.7;
+  max-width: 38rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.tp-join__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Primary button */
+.tp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--rg-gold);
+  color: var(--rg-dark);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.tp-btn-primary:hover {
+  background: #ffd33a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(249, 195, 7, 0.3);
+}
+
+.tp-btn-primary svg {
+  transition: transform 0.25s ease;
+}
+
+.tp-btn-primary:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* Ghost button */
+.tp-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: transparent;
+  color: var(--rg-navy);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgba(15, 24, 112, 0.18);
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.tp-btn-ghost:hover {
+  background: rgba(15, 24, 112, 0.04);
+  border-color: rgba(15, 24, 112, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Image side */
+.tp-join__image {
+  position: relative;
+}
+
+.tp-join__img-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+}
+
+.tp-join__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.tp-join__img-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 55%,
+    rgba(12, 9, 3, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+.tp-join__img-badge {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 1.75rem;
+  z-index: 2;
+  background: var(--rg-gold);
+  color: var(--rg-dark);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tp-join__badge-num {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.tp-join__badge-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 860px) {
+  .tp-join__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .tp-join__image {
+    order: -1;
+  }
+
+  .tp-join__img-wrap {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 480px) {
+  .tp-join__img-wrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  .tp-join__img-badge {
+    bottom: 1.25rem;
+    left: 1.25rem;
+    padding: 0.75rem 1.1rem;
+  }
+
+  .tp-join__badge-num {
+    font-size: 1.6rem;
+  }
+}
