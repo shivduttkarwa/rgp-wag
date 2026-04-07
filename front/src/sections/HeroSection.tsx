@@ -47,21 +47,6 @@ export default function HeroSection({
   panel,
 }: HeroSectionProps) {
   const publicUrl = import.meta.env.BASE_URL || "/";
-  const resolveAssetUrl = (asset?: string | null) => {
-    if (!asset) return undefined;
-    if (
-      /^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(asset) ||
-      asset.startsWith("/") ||
-      asset.startsWith("data:") ||
-      asset.startsWith("blob:")
-    ) {
-      return asset;
-    }
-    return `${publicUrl}${asset}`;
-  };
-
-  const resolvedBgPoster = resolveAssetUrl(bgPoster || bgImage);
-  const resolvedBgVideo = resolveAssetUrl(bgVideo);
   const bgRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
   const titleOneRef = useRef<HTMLDivElement>(null);
@@ -127,7 +112,7 @@ export default function HeroSection({
         gsap.set(revealCta, { x: -60, opacity: 0, scale: 0.9 });
       }
     }
-  }, [panel]);
+  }, []);
 
   // Animate titles + subtitle + CTA after ready
   useLayoutEffect(() => {
@@ -239,7 +224,7 @@ export default function HeroSection({
     return () => {
       tl.kill();
     };
-  }, [panel, ready]);
+  }, [ready]);
 
   /* ═══════════════════════════════════════════════════
      JSX
@@ -255,16 +240,16 @@ export default function HeroSection({
         >
           <img
             className="rgp-hero__bg-poster"
-            src={resolvedBgPoster}
+            src={`${publicUrl}${bgPoster || bgImage}`}
             alt=""
             loading="eager"
             fetchPriority="high"
           />
-          {showVideo && resolvedBgVideo && (
+          {showVideo && (
             <video
               className="rgp-hero__bg-video"
               ref={videoRef}
-              src={resolvedBgVideo}
+              src={`${publicUrl}${bgVideo}`}
               autoPlay
               loop
               muted
@@ -272,7 +257,7 @@ export default function HeroSection({
               controls={false}
               disablePictureInPicture
               preload="auto"
-              poster={resolvedBgPoster}
+              poster={`${publicUrl}${bgPoster || bgImage}`}
               onLoadedMetadata={() => {
                 requestAnimationFrame(() => {
                   requestAnimationFrame(() => setVideoReady(true));

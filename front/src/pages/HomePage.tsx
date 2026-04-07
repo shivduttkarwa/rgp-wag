@@ -10,12 +10,9 @@ import ServiceSelection from "@/sections/ServiceSelection";
 import PhilosophyPillars from "@/sections/Philosophy";
 
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
-import { renderHeroAccentTokens } from "@/lib/heroTokens";
-import { useHomeHeroContent } from "@/hooks/useHomeHeroContent";
 export default function HomePage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { data: heroContent } = useHomeHeroContent();
 
   useEffect(() => {
     // Clear one-time init guards so StrictMode's double-invoke doesn't skip animations
@@ -47,23 +44,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
     <div ref={pageRef}>
       <HeroSection
         ready={ready}
-        titleLine1={renderHeroAccentTokens(heroContent.titleLine1)}
-        titleLine2={renderHeroAccentTokens(heroContent.titleLine2)}
-        subtitle={heroContent.subtitle}
-        ctaLabel={heroContent.cta.label}
-        ctaOnClick={() => {
-          if (/^[a-z][a-z0-9+.-]*:/i.test(heroContent.cta.href)) {
-            window.location.assign(heroContent.cta.href);
-            return;
-          }
-
-          navigate(heroContent.cta.href || "/properties");
-        }}
-        showCta={Boolean(heroContent.cta.label)}
-        showVideo={heroContent.background.showVideo}
-        bgImage={heroContent.background.imageUrl}
-        bgPoster={heroContent.background.posterUrl ?? heroContent.background.imageUrl}
-        bgVideo={heroContent.background.videoUrl ?? undefined}
+        ctaOnClick={() => navigate("/properties")}
         panel={<HeroSearchPanel />}
       />
 

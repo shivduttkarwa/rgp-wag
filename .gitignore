@@ -1,3 +1,4 @@
+# Backend
 backend/.env
 backend/db.sqlite3
 backend/media/
@@ -5,3 +6,11 @@ backend/staticfiles/
 backend/venv/
 backend/**/__pycache__/
 backend/**/*.py[cod]
+
+# Frontend
+front/node_modules/
+front/dist/
+front/.env
+front/.env.local
+front/.env.*.local
+front/.claude/settings.local.json
