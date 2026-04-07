@@ -77,6 +77,14 @@ class Property(ClusterableModel):
     days_on_market = models.PositiveIntegerField(null=True, blank=True)
     deposit = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
     min_lease = models.CharField(max_length=80, blank=True)
+    card_image = models.ForeignKey(
+        settings.WAGTAILIMAGES_IMAGE_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Single image used on listing cards.",
+    )
 
     # Stats
     bedrooms = models.PositiveSmallIntegerField(default=0)
@@ -120,7 +128,7 @@ class Property(ClusterableModel):
                 FieldRowPanel([FieldPanel("area_sqft"), FieldPanel("badge"), FieldPanel("is_new")]),
                 FieldRowPanel([FieldPanel("views"), FieldPanel("sold_date_label"), FieldPanel("days_on_market")]),
                 FieldRowPanel([FieldPanel("deposit"), FieldPanel("min_lease"), FieldPanel("category")]),
-                InlinePanel("images", label="Card Images"),
+                FieldPanel("card_image"),
             ],
             heading="Card Fields",
             help_text="Top section for fields used in the home listing cards and filters.",
@@ -130,6 +138,7 @@ class Property(ClusterableModel):
                 FieldRowPanel([FieldPanel("year_built"), FieldPanel("lot_size"), FieldPanel("order")]),
                 FieldPanel("overview"),
                 FieldPanel("description"),
+                InlinePanel("images", label="Gallery Images"),
                 InlinePanel("features", label="Features"),
                 InlinePanel("detail_rows", label="Details Grid"),
                 InlinePanel("nearby_locations", label="Nearby Locations"),
@@ -165,19 +174,15 @@ class PropertyImage(Orderable):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    url = models.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Optional fallback URL. Used only if no image is selected above.",
-    )
+    url = models.CharField(max_length=500, blank=True)
     alt = models.CharField(max_length=200, blank=True)
 
-    panels = [FieldPanel("image"), FieldRowPanel([FieldPanel("url"), FieldPanel("alt")])]
+    panels = [FieldRowPanel([FieldPanel("image"), FieldPanel("alt")])]
 
     def get_resolved_url(self):
         if self.image and getattr(self.image, "file", None):
             return self.image.file.url
-        return self.url
+        return ""
 
     class Meta(Orderable.Meta):
         verbose_name = "Image"

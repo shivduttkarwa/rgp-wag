@@ -24,6 +24,15 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
+const resolveUrl = (url: string): string => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  if (url.startsWith("/media/") || url.startsWith("/static/")) return `${API_BASE}${url}`;
+  return url;
+};
+
 const propertiesData = [
   {
     id: 1,
@@ -390,7 +399,7 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
       location: card.location,
       price: Number(card.price || 0),
       soldPrice: card.soldPrice == null ? undefined : Number(card.soldPrice),
-      image: card.image,
+      image: resolveUrl(card.image),
       beds: Number(card.beds || 0),
       baths: Number(card.baths || 0),
       sqft: Number(card.sqft || 0),

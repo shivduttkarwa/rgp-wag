@@ -97,12 +97,14 @@ class PropertyListSerializer(serializers.ModelSerializer):
         ]
 
     def get_thumbnail(self, obj: Property) -> str | None:
-        first = obj.images.first()
-        return first.get_resolved_url() if first else None
+        if obj.card_image and getattr(obj.card_image, "file", None):
+            return obj.card_image.file.url
+        return None
 
     def get_image(self, obj: Property) -> str:
-        first = obj.images.first()
-        return first.get_resolved_url() if first else ""
+        if obj.card_image and getattr(obj.card_image, "file", None):
+            return obj.card_image.file.url
+        return ""
 
     def get_features(self, obj: Property) -> list[str]:
         return [feature.title for feature in obj.features.all()]

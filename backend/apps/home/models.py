@@ -66,7 +66,7 @@ def _serialise_block_value(value):
         }
 
     if isinstance(value, Property):
-        first_image = value.images.first()
+        card_image_url = value.card_image.file.url if value.card_image and getattr(value.card_image, "file", None) else ""
         return {
             "id": value.pk,
             "slug": value.slug,
@@ -75,7 +75,7 @@ def _serialise_block_value(value):
             "location": f"{value.city}, {value.state}",
             "price": float(value.price or 0),
             "soldPrice": float(value.sold_price) if value.sold_price is not None else None,
-            "image": first_image.get_resolved_url() if first_image else "",
+            "image": card_image_url,
             "beds": value.bedrooms,
             "baths": value.bathrooms,
             "sqft": value.area_sqft,
