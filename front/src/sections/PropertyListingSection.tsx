@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import {
   PropertyCard,
+  type Property as ListingCardProperty,
   type Category,
 } from "../components/reusable/PropertyCard";
 import "./PropertyListingsection.css";
@@ -317,12 +318,6 @@ const propertiesData = [
   },
 ];
 
-const filterTabs = [
-  { id: "for-sale", label: "For Sale", icon: Tag, count: 3 },
-  { id: "sold", label: "Sold", icon: CheckCircle, count: 10 },
-  { id: "for-rent", label: "For Rent", icon: Key, count: 3 },
-];
-
 const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) => {
   const [activeFilter, setActiveFilter] = useState<Category | "*">("for-sale");
   const [displayedFilter, setDisplayedFilter] = useState<Category | "*">(
@@ -384,16 +379,53 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
     });
   }, []);
 
+  const sourceProperties: ListingCardProperty[] = useMemo(() => {
+    const validCards = data.cards?.filter((card): card is NonNullable<typeof card> => Boolean(card)) ?? [];
+    if (!validCards.length) return propertiesData as ListingCardProperty[];
+    return validCards.map((card) => ({
+      id: card.id,
+      slug: card.slug,
+      category: card.category as Category,
+      title: card.title,
+      location: card.location,
+      price: Number(card.price || 0),
+      soldPrice: card.soldPrice == null ? undefined : Number(card.soldPrice),
+      image: card.image,
+      beds: Number(card.beds || 0),
+      baths: Number(card.baths || 0),
+      sqft: Number(card.sqft || 0),
+      garage: Number(card.garage || 0),
+      features: card.features || [],
+      badge: card.badge || undefined,
+      isNew: Boolean(card.isNew),
+      views: card.views == null ? undefined : Number(card.views),
+      soldDate: card.soldDate || undefined,
+      daysOnMarket: card.daysOnMarket == null ? undefined : Number(card.daysOnMarket),
+      deposit: card.deposit == null ? undefined : Number(card.deposit),
+      minLease: card.minLease || undefined,
+    })) as ListingCardProperty[];
+  }, [data.cards]);
+
+  const filterTabs = useMemo(() => {
+    const countBy = (category: Category) =>
+      sourceProperties.filter((item) => item.category === category).length;
+    return [
+      { id: "for-sale", label: "For Sale", icon: Tag, count: countBy("for-sale") },
+      { id: "sold", label: "Sold", icon: CheckCircle, count: countBy("sold") },
+      { id: "for-rent", label: "For Rent", icon: Key, count: countBy("for-rent") },
+    ];
+  }, [sourceProperties]);
+
   const displayed =
     displayedFilter === "*"
-      ? propertiesData.reduce<typeof propertiesData>((acc, p) => {
+      ? sourceProperties.reduce<ListingCardProperty[]>((acc, p) => {
           const count = acc.filter(
             (item) => item.category === p.category,
           ).length;
           if (count < 3) acc.push(p);
           return acc;
         }, [])
-      : propertiesData
+      : sourceProperties
           .filter((p) => p.category === displayedFilter)
           .slice(0, 3);
 
@@ -458,6 +490,7 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
               >
                 <tab.icon size={16} />
                 <span>{tab.label}</span>
+                <span className="filter-tab__count">{tab.count}</span>
               </button>
             ))}
           </div>

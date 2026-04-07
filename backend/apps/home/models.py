@@ -55,6 +55,7 @@ def _serialise_block_value(value):
     """
     from wagtail.blocks import StructValue
     from wagtail.images.models import AbstractImage
+    from apps.properties.models import Property
 
     if isinstance(value, AbstractImage):
         return {
@@ -62,6 +63,31 @@ def _serialise_block_value(value):
             "width":  value.width,
             "height": value.height,
             "alt":    value.title,
+        }
+
+    if isinstance(value, Property):
+        first_image = value.images.first()
+        return {
+            "id": value.pk,
+            "slug": value.slug,
+            "category": value.listing_category,
+            "title": value.title,
+            "location": f"{value.city}, {value.state}",
+            "price": float(value.price or 0),
+            "soldPrice": float(value.sold_price) if value.sold_price is not None else None,
+            "image": first_image.get_resolved_url() if first_image else "",
+            "beds": value.bedrooms,
+            "baths": value.bathrooms,
+            "sqft": value.area_sqft,
+            "garage": value.garages,
+            "features": [feature.title for feature in value.features.all()],
+            "badge": value.badge or "",
+            "isNew": value.is_new,
+            "views": value.views,
+            "soldDate": value.sold_date_label or "",
+            "daysOnMarket": value.days_on_market,
+            "deposit": float(value.deposit) if value.deposit is not None else None,
+            "minLease": value.min_lease or "",
         }
 
     if isinstance(value, StructValue):

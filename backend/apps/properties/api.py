@@ -18,7 +18,7 @@ class PropertyListAPIView(ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        qs = Property.objects.prefetch_related("images", "agent").all()
+        qs = Property.objects.prefetch_related("images", "features", "agent").all()
 
         status = self.request.query_params.get("status")
         if status:
@@ -30,7 +30,7 @@ class PropertyListAPIView(ListAPIView):
 
         category = self.request.query_params.get("category")
         if category:
-            qs = qs.filter(category__iexact=category)
+            qs = qs.filter(listing_category=category)
 
         return qs
 
@@ -42,5 +42,11 @@ class PropertyDetailAPIView(RetrieveAPIView):
 
     serializer_class = PropertyDetailSerializer
     permission_classes = [AllowAny]
-    queryset = Property.objects.prefetch_related("images", "features", "agent").all()
+    queryset = Property.objects.prefetch_related(
+        "images",
+        "features",
+        "detail_rows",
+        "nearby_locations",
+        "agent",
+    ).all()
     lookup_field = "slug"

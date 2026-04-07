@@ -13,6 +13,7 @@ from wagtail.blocks import (
     URLBlock,
 )
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.snippets.blocks import SnippetChooserBlock
 
 
 # ─── Reusable primitives ─────────────────────────────────────────────────────
@@ -112,6 +113,11 @@ class PropertyListingSectionBlock(StructBlock):
     eyebrow  = CharBlock(default="Our Listings")
     heading  = CharBlock(default="Available Properties")
     subtitle = TextBlock(required=False, default="Explore our current listings across South-East Queensland.")
+    cards    = ListBlock(
+        SnippetChooserBlock("properties.Property"),
+        required=False,
+        help_text="Select listing cards shown in this section. Filters use each card's listing category.",
+    )
 
     class Meta:
         icon  = "home"

@@ -46,6 +46,30 @@ export type PropertyListingSection = {
   eyebrow: string;
   heading: string;
   subtitle: string;
+  cards?: (HomeListingCard | null)[];
+};
+
+export type HomeListingCard = {
+  id: number;
+  slug: string;
+  category: "for-sale" | "sold" | "for-rent";
+  title: string;
+  location: string;
+  price: number;
+  soldPrice?: number | null;
+  image: string;
+  beds: number;
+  baths: number;
+  sqft: number;
+  garage: number;
+  features: string[];
+  badge?: string;
+  isNew?: boolean;
+  views?: number | null;
+  soldDate?: string;
+  daysOnMarket?: number | null;
+  deposit?: number | null;
+  minLease?: string;
 };
 
 export type ServiceCard = {

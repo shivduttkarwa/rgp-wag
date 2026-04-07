@@ -37,6 +37,7 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
     eyebrow: "Our Listings",
     heading: "Available Properties",
     subtitle: "Explore our current listings across South-East Queensland.",
+    cards: [],
   },
   services: {
     header_eyebrow: "How Can We Help You?",
