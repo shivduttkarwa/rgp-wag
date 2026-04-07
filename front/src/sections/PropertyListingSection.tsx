@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import type { PropertyListingSection as PropertyListingSectionData } from "@/types/homePage";
 import {
   ArrowRight,
   ArrowLeft,
@@ -322,7 +323,7 @@ const filterTabs = [
   { id: "for-rent", label: "For Rent", icon: Key, count: 3 },
 ];
 
-const PropertyListingSection = () => {
+const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) => {
   const [activeFilter, setActiveFilter] = useState<Category | "*">("for-sale");
   const [displayedFilter, setDisplayedFilter] = useState<Category | "*">(
     "for-sale",
@@ -412,22 +413,21 @@ const PropertyListingSection = () => {
         <header className="section-header">
           <div className="section-badge" data-gsap="fade-up">
             <Building2 size={16} />
-            <span>Prime Listings</span>
+            <span>{data.eyebrow}</span>
           </div>
           <h2
             className="section-title"
             data-gsap="char-reveal"
             data-gsap-start="top 85%"
           >
-            Discover Your <em>Dream Home</em>
+            {data.heading}
           </h2>
           <p
             className="section-subtitle"
             data-gsap="fade-up"
             data-gsap-delay="0.15"
           >
-            Explore our handpicked collection of premium properties designed for
-            modern living
+            {data.subtitle}
           </p>
         </header>
 

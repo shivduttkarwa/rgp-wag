@@ -44,6 +44,7 @@ class GSAPAnimations {
       const mobileAnimation = el.getAttribute('data-gsap-mobile');
       const desktopAnimation = el.getAttribute('data-gsap');
       const animationType = (isMobile && mobileAnimation) ? mobileAnimation : desktopAnimation;
+      if (!animationType) return;
 
       // Get values from attributes or use defaults
       const staggerAttr = el.getAttribute('data-gsap-stagger');
@@ -3945,7 +3946,7 @@ class GSAPAnimations {
   }
 
   // ── Char Reveal: each character slides up from behind a word-level clip mask ──
-  // Preserves child elements (colored spans, em, etc.) and real whitespace between words
+  // React-safe implementation: animate the whole element without rewriting innerHTML.
   charReveal(el, config) {
     if (!el) return;
     if (el.dataset.charRevealInit === 'true') return;
@@ -3953,63 +3954,15 @@ class GSAPAnimations {
 
     if (!el.textContent?.trim()) return;
 
-    const allChars = [];
-
-    // Process a text string into word-wrapped char spans, appended to a container
-    const processText = (text, container) => {
-      // Split on whitespace boundaries, keeping the whitespace tokens
-      const parts = text.split(/(\s+)/);
-      parts.forEach(part => {
-        if (/^\s+$/.test(part)) {
-          // Real whitespace — preserve it as a text node so line-wrapping works naturally
-          container.appendChild(document.createTextNode(part));
-        } else if (part) {
-          const wordWrap = document.createElement('span');
-          wordWrap.className = 'gsap-cr-word';
-          wordWrap.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top';
-          part.split('').forEach(ch => {
-            const charSpan = document.createElement('span');
-            charSpan.className = 'gsap-cr-char';
-            charSpan.style.display = 'inline-block';
-            charSpan.textContent = ch;
-            wordWrap.appendChild(charSpan);
-            allChars.push(charSpan);
-          });
-          container.appendChild(wordWrap);
-        }
-      });
-    };
-
-    // Walk top-level child nodes so styled wrappers (span.rg-gold, em, etc.) are preserved
-    const originalNodes = Array.from(el.childNodes);
-    el.innerHTML = '';
-
-    originalNodes.forEach(node => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        processText(node.textContent || '', el);
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        // Recreate the wrapper element preserving tag + attributes
-        const wrapper = document.createElement(node.nodeName.toLowerCase());
-        Array.from(node.attributes).forEach(attr => wrapper.setAttribute(attr.name, attr.value));
-        processText(node.textContent || '', wrapper);
-        el.appendChild(wrapper);
-      }
-    });
-
-    if (!allChars.length) return;
-
     const start = el.hasAttribute('data-gsap-start') ? config.start : 'top 80%';
     const duration = el.hasAttribute('data-gsap-duration') && Number.isFinite(config.duration) ? config.duration : 0.7;
     const delay = el.hasAttribute('data-gsap-delay') && Number.isFinite(config.delay) ? config.delay : 0;
-    const stagger = config.stagger !== null ? config.stagger : 0.022;
-
-    gsap.set(allChars, { y: '115%', opacity: 0 });
-    gsap.to(allChars, {
-      y: '0%',
+    gsap.set(el, { y: 30, opacity: 0 });
+    gsap.to(el, {
+      y: 0,
       opacity: 1,
       duration,
       ease: 'power4.out',
-      stagger,
       delay,
       scrollTrigger: {
         trigger: el,
