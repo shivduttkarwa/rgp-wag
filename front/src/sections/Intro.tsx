@@ -25,8 +25,8 @@ const Intro = ({ data }: { data: IntroSection }) => {
 
         <h1
           className="intro-headline"
-          data-gsap="char-reveal"
-          data-gsap-start="top 85%"
+          data-gsap="fade-up"
+          data-gsap-delay="0.1"
         >
           {data.headline_line1}
           <br />
