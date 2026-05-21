@@ -49,8 +49,12 @@ urlpatterns = [
     path("api/testimonials/video/",    VideoTestimonialListAPIView.as_view(), name="api-video-testimonial-list"),
     path("api/testimonials/text/",     TextTestimonialListAPIView.as_view(),  name="api-text-testimonial-list"),
 
-    # Wagtail page serving (headless previews)
-    path("", include(wagtail_urls)),
 ]
 
+# Serve uploaded media before Wagtail's catch-all page routing.
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Wagtail page serving (headless previews) must remain last.
+urlpatterns += [
+    path("", include(wagtail_urls)),
+]
