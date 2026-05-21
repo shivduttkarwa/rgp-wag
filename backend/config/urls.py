@@ -13,6 +13,7 @@ from wagtail.documents.api.v2.views import DocumentsAPIViewSet
 from apps.home.api import HomePageAPIView
 from apps.properties.api import PropertyListAPIView, PropertyDetailAPIView
 from apps.forms.api import ContactFormAPIView, ExpressionOfInterestAPIView
+from apps.testimonials.api import VideoTestimonialListAPIView, TextTestimonialListAPIView
 
 # ─── Wagtail headless API router ─────────────────────────────────────────────
 
@@ -44,6 +45,9 @@ urlpatterns = [
 
     path("api/forms/contact/",         ContactFormAPIView.as_view(),         name="api-contact-form"),
     path("api/forms/eoi/",             ExpressionOfInterestAPIView.as_view(), name="api-eoi-form"),
+
+    path("api/testimonials/video/",    VideoTestimonialListAPIView.as_view(), name="api-video-testimonial-list"),
+    path("api/testimonials/text/",     TextTestimonialListAPIView.as_view(),  name="api-text-testimonial-list"),
 
     # Wagtail page serving (headless previews)
     path("", include(wagtail_urls)),

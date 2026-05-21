@@ -177,7 +177,15 @@ class VideoTestimonialsSectionBlock(StructBlock):
     section_label = CharBlock(default="Testimonials")
     heading       = CharBlock(default="What Our")
     heading_em    = CharBlock(default="Clients Say")
-    items         = ListBlock(VideoTestimonialItemBlock())
+    items         = ListBlock(
+        VideoTestimonialItemBlock(),
+        required=False,
+        help_text=(
+            "Optional manual fallback only. "
+            "If active records exist in CMS sidebar -> Testimonial -> Video Testimonial, "
+            "those are used automatically on the homepage API."
+        ),
+    )
 
     class Meta:
         icon  = "media"

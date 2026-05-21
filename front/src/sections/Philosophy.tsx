@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import type { VideoTestimonialsSection } from "@/types/homePage";
 import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
 import assetUrl from "@/lib/assetUrl";
@@ -160,6 +161,7 @@ function TestiCard({
 export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSection }) {
   const section = data ?? FALLBACK_SECTION;
   const [activeId, setActiveId] = useState<string | null>(null);
+  const desktopSwiperRef = useRef<SwiperType | null>(null);
 
   const testimonials =
     section.items.length > 0
@@ -171,6 +173,7 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
           tintVar: item.tint,
         }))
       : FALLBACK_TESTIMONIALS;
+  const useDesktopSlider = testimonials.length > 3;
 
   return (
     <section className="rg-philo" aria-label="Client Testimonials">
@@ -190,22 +193,100 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
 
         <div className="rg-philo__divider" role="separator" />
 
-        {/* Desktop grid */}
-        <div
-          data-gsap="clip-smooth-down"
-          data-gsap-stagger="0.14"
-          data-gsap-delay="0.1"
-          className="rg-philo__grid"
-        >
-          {testimonials.map((t) => (
-            <TestiCard
-              key={t.title}
-              t={t}
-              activeId={activeId}
-              setActiveId={setActiveId}
-            />
-          ))}
-        </div>
+        {/* Desktop: grid up to 3 items, slider beyond that */}
+        {useDesktopSlider ? (
+          <div className="rg-philo__desktop-swiper">
+            <div className="rg-philo__desktop-controls">
+              <div className="rg-philo__desktop-spacer" aria-hidden="true" />
+              <div className="rg-philo__desktop-nav">
+                <button
+                  type="button"
+                  className="rg-philo__nav-btn"
+                  aria-label="Previous testimonial"
+                  onClick={() => desktopSwiperRef.current?.slidePrev()}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M14.5 5.5L8 12l6.5 6.5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="rg-philo__nav-btn"
+                  aria-label="Next testimonial"
+                  onClick={() => desktopSwiperRef.current?.slideNext()}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M9.5 5.5L16 12l-6.5 6.5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <Swiper
+              modules={[Pagination]}
+              spaceBetween={20}
+              slidesPerView={3}
+              speed={420}
+              grabCursor
+              onSwiper={(swiper) => {
+                desktopSwiperRef.current = swiper;
+              }}
+              pagination={{
+                clickable: true,
+                el: ".rg-philo__desktop-pagination",
+              }}
+              breakpoints={{
+                981: { slidesPerView: 3, spaceBetween: 20 },
+                1200: { slidesPerView: 3, spaceBetween: 28 },
+              }}
+            >
+              {testimonials.map((t, i) => (
+                <SwiperSlide key={t.title}>
+                  <div
+                    className="rg-philo__card-wrap"
+                    data-gsap="clip-reveal-right"
+                    data-gsap-delay={`${i * 0.08}`}
+                    data-gsap-start="top 75%"
+                  >
+                    <TestiCard
+                      t={t}
+                      activeId={activeId}
+                      setActiveId={setActiveId}
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <div className="rg-philo__desktop-pagination" />
+          </div>
+        ) : (
+          <div
+            data-gsap="clip-smooth-down"
+            data-gsap-stagger="0.14"
+            data-gsap-delay="0.1"
+            className="rg-philo__grid"
+          >
+            {testimonials.map((t) => (
+              <TestiCard
+                key={t.title}
+                t={t}
+                activeId={activeId}
+                setActiveId={setActiveId}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Mobile swiper */}
         <div className="rg-philo__swiper-wrap">

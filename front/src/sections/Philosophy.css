@@ -69,6 +69,87 @@
   gap: clamp(1.1rem, 2.2vw, 2rem);
 }
 
+.rg-philo__desktop-swiper {
+  display: block;
+  padding-bottom: 2.75rem;
+}
+
+.rg-philo__desktop-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.rg-philo__desktop-spacer {
+  flex: 1 1 auto;
+}
+
+.rg-philo__desktop-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.rg-philo__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 0.0625rem solid rgba(15, 24, 112, 0.14);
+  background: #fff;
+  color: var(--rg-text-dark);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease,
+    color 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 0.5rem 1.4rem rgba(15, 24, 112, 0.08);
+}
+
+.rg-philo__nav-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.rg-philo__nav-btn:hover {
+  transform: translateY(-0.0625rem);
+  border-color: rgba(196, 145, 71, 0.5);
+  background: var(--rg-text-dark);
+  color: var(--rg-gold);
+}
+
+.rg-philo__nav-btn:focus-visible {
+  outline: 0.125rem solid rgba(212, 160, 86, 0.55);
+  outline-offset: 0.2rem;
+}
+
+.rg-philo__desktop-swiper .swiper-slide {
+  height: auto;
+}
+
+.rg-philo__desktop-swiper .rg-philo__card-wrap,
+.rg-philo__desktop-swiper .rg-philo__card {
+  height: 100%;
+}
+
+.rg-philo__desktop-swiper .swiper-pagination-bullet {
+  background: var(--rg-gold);
+  opacity: 0.4;
+}
+
+.rg-philo__desktop-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+.rg-philo__desktop-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+}
+
 /* Card */
 .rg-philo__card {
   position: relative;
@@ -265,6 +346,10 @@
 /* Responsive */
 @media (max-width: 980px) {
   .rg-philo__grid {
+    display: none;
+  }
+
+  .rg-philo__desktop-swiper {
     display: none;
   }
 

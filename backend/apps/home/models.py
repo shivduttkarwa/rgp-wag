@@ -1,3 +1,6 @@
+from typing import Any
+
+from django.db import DatabaseError
 from wagtail.admin.panels import FieldPanel, PublishingPanel
 from wagtail.fields import StreamField
 from wagtail.models import Page
@@ -39,6 +42,9 @@ class HomePage(Page):
         sections = {}
         for block in self.body:
             sections[block.block_type] = _serialise_block_value(block.value)
+
+        _inject_cms_video_testimonials(sections)
+
         return {
             "id":         self.pk,
             "title":      self.title,
@@ -46,6 +52,38 @@ class HomePage(Page):
             "sections":   sections,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
         }
+
+
+def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
+    """
+    Replace HomePage video testimonial items with active snippet entries, if any.
+    Falls back to manually-entered StreamField items when no snippet entries exist.
+    """
+    video_section = sections.get("video_testimonials")
+    if not isinstance(video_section, dict):
+        return
+
+    cms_items = _get_active_video_testimonial_items()
+    if cms_items:
+        video_section["items"] = cms_items
+
+
+def _get_active_video_testimonial_items() -> list[dict[str, Any]]:
+    try:
+        from apps.testimonials.models import VideoTestimonial
+    except Exception:
+        return []
+
+    try:
+        queryset = (
+            VideoTestimonial.objects.filter(is_active=True)
+            .select_related("poster_image")
+            .order_by("order", "id")
+        )
+        return [item.to_home_item() for item in queryset]
+    except DatabaseError:
+        # Gracefully fallback to manually entered StreamField testimonials.
+        return []
 
 
 def _serialise_block_value(value):
