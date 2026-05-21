@@ -1,6 +1,10 @@
 const rawBase = import.meta.env.BASE_URL ?? "/";
 const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
-const apiBase = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+const apiBase = (
+  import.meta.env.VITE_API_URL ??
+  import.meta.env.VITE_API_BASE_URL ??
+  ""
+).replace(/\/$/, "");
 
 const isExternal = (value: string) =>
   /^(https?:)?\/\//.test(value) || value.startsWith("data:") || value.startsWith("blob:");

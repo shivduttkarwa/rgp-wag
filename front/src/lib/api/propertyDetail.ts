@@ -1,6 +1,10 @@
 import type { PropertyData } from "@/components/reusable/PropDetails";
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+const API_BASE = (
+  import.meta.env.VITE_API_URL ??
+  import.meta.env.VITE_API_BASE_URL ??
+  ""
+).replace(/\/$/, "");
 
 type PropertyDetailApi = {
   slug: string;

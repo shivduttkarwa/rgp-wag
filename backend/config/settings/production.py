@@ -1,10 +1,23 @@
 from .base import *  # noqa: F401, F403
 from decouple import config
 
-DEBUG = False
+def env_flag(name: str, default: str = "False") -> bool:
+    return str(config(name, default=default)).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+DEBUG = env_flag("DEBUG", default="False")
+
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS + [".onrender.com"]))  # noqa: F405
 
 # Enforce HTTPS
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = env_flag("SECURE_SSL_REDIRECT", default="True")
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True

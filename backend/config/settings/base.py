@@ -2,14 +2,21 @@
 Base settings shared across all environments.
 """
 from pathlib import Path
-from decouple import config, Csv
+from decouple import config
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = config("SECRET_KEY")
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1")
+def csv_env(name: str, default: str = "") -> list[str]:
+    raw = config(name, default=default)
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+SECRET_KEY = config("SECRET_KEY", default="change-me-in-production")
+
+ALLOWED_HOSTS = csv_env("ALLOWED_HOSTS", default="localhost,127.0.0.1")
+
+CSRF_TRUSTED_ORIGINS = csv_env("CSRF_TRUSTED_ORIGINS")
 
 # ─── Applications ───────────────────────────────────────────────────────────
 
@@ -125,7 +132,14 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -161,9 +175,8 @@ REST_FRAMEWORK = {
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
 
-CORS_ALLOWED_ORIGINS = config(
+CORS_ALLOWED_ORIGINS = csv_env(
     "CORS_ALLOWED_ORIGINS",
-    cast=Csv(),
     default="http://localhost:5173,http://127.0.0.1:5173",
 )
 CORS_ALLOW_CREDENTIALS = False

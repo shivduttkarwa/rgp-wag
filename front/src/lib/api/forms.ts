@@ -1,4 +1,8 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+const API_BASE = (
+  import.meta.env.VITE_API_URL ??
+  import.meta.env.VITE_API_BASE_URL ??
+  ""
+).replace(/\/$/, "");
 
 type ContactPayload = {
   name: string;
@@ -45,4 +49,3 @@ export async function submitContactForm(payload: ContactPayload): Promise<void> 
 export async function submitEoiForm(payload: EoiPayload): Promise<void> {
   await postJson(`${API_BASE}/api/forms/eoi/`, payload);
 }
-
