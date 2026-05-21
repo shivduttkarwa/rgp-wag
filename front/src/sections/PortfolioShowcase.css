@@ -318,34 +318,7 @@ section.project-feature .projects-wrapper .project .content .sticky {
   letter-spacing: 0.08em;
 }
 
-/* ── CTA button — higher specificity beats the * reset ── */
-section.project-feature .pc-view-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 1rem 1.875rem;
-  border: none;
-  border-radius: 0.625rem;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  background-color: var(--rg-gold);
-  color: #00032e;
-  align-self: flex-start;
-  transition: background-color 0.25s ease, color 0.25s ease;
-  margin-top: 0.25rem;
-}
-
-section.project-feature .pc-view-btn:hover {
-  background-color: #fad840;
-  color: #00032e;
-}
-
-section.project-feature .pc-view-btn svg {
-  flex-shrink: 0;
-}
+/* CTA button styles are defined globally in src/index.css */
 
 /* ── Decorative gold corner ── */
 .pc-card .pc-corner {

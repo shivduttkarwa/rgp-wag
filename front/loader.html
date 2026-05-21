@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Real Estate Loader</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Montserrat:wght@200;300&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* =================================
+               🎛️ CONTROL KNOBS - ADJUST HERE
+               ================================= */
+
+            /* COLORS */
+            --gold: #F9C206;
+            --bg-dark: #050505;
+            --bg-gradient-center: #1a1a1a;
+            --text-muted: #666;
+
+            /* LOGO SIZE */
+            --logo-width: 200px;
+            --logo-height: 140px;
+
+            /* BORDER ANIMATION */
+            --border-duration: 3s;
+            /* How long border takes to draw */
+            --border-width: 3px;
+            /* Thickness of border */
+            --border-glow: 6px;
+            /* Glow spread around border */
+
+            /* FILL ANIMATION */
+            --fill-delay: 2s;
+            /* When fill starts (after border) */
+            --fill-duration: 1.6s;
+            /* How long fill takes */
+
+            /* GLOW */
+            --glow-delay: 3s;
+            /* When glow starts */
+            --glow-duration: 0.6s;
+            /* How long glow fade-in takes */
+            --glow-blur: 15px;
+            /* Glow blur amount */
+            --glow-opacity: 0.3;
+            /* Final glow opacity */
+
+            /* TEXT */
+            --title-delay: 2.4s;
+            /* When title appears */
+            --subtitle-delay: 2.6s;
+            /* When subtitle appears */
+            --text-duration: 0.5s;
+            /* Text fade-in duration */
+
+            /* LOADER */
+            --loader-hide-delay: 5000;
+            /* When loader hides (in JS - milliseconds) */
+            --loader-fade-duration: 1s;
+            /* Loader fade-out duration */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+        }
+
+        /* ================================
+           FULL PAGE LOADER
+           ================================ */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, var(--bg-gradient-center) 0%, var(--bg-dark) 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 50px;
+            z-index: 99999;
+            transition: opacity var(--loader-fade-duration) ease,
+                visibility var(--loader-fade-duration) ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ================================
+           LOGO CONTAINER
+           ================================ */
+        .logo-container {
+            position: relative;
+            width: var(--logo-width);
+            height: var(--logo-height);
+        }
+
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Border stroke */
+        .logo-stroke {
+            fill: none;
+            stroke: var(--gold);
+            stroke-width: var(--border-width);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+            animation: drawBorder var(--border-duration) ease-out forwards;
+            filter: drop-shadow(0 0 var(--border-glow) rgba(249, 194, 6, 0.5));
+        }
+
+        /* Gold fill - left to right */
+        .logo-fill {
+            fill: var(--gold);
+            clip-path: inset(0 100% 0 0);
+            animation: fillLeftToRight var(--fill-duration) ease-out forwards;
+            animation-delay: var(--fill-delay);
+        }
+
+        /* Glow */
+        .logo-glow {
+            fill: var(--gold);
+            opacity: 0;
+            filter: blur(var(--glow-blur));
+            animation: glowIn var(--glow-duration) ease-out forwards;
+            animation-delay: var(--glow-delay);
+        }
+
+        /* Animations */
+        @keyframes drawBorder {
+            0% {
+                stroke-dashoffset: 1500;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes fillLeftToRight {
+            0% {
+                clip-path: inset(0 100% 0 0);
+            }
+
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes glowIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: var(--glow-opacity);
+            }
+        }
+
+        /* ================================
+           LOADER TEXT
+           ================================ */
+        .loader-text {
+            text-align: center;
+        }
+
+        .loader-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--gold);
+            opacity: 0;
+            animation: fadeInText var(--text-duration) ease-out forwards;
+            animation-delay: var(--title-delay);
+        }
+
+        .loader-subtitle {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-top: 15px;
+            opacity: 0;
+            animation: fadeInText var(--text-duration) ease-out forwards;
+            animation-delay: var(--subtitle-delay);
+        }
+
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader">
+
+        <div class="logo-container">
+            <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 349 243">
+
+                <!-- Glow layer -->
+                <path class="logo-glow"
+                    d="M 176.00 10.00 L 161.00 25.00 L 160.00 25.00 L 160.00 26.00 L 159.00 27.00 L 158.00 27.00 L 61.00 124.00 L 60.00 124.00 L 16.00 168.00 L 16.00 169.00 L 14.00 171.00 L 14.00 172.00 L 13.00 173.00 L 13.00 174.00 L 12.00 175.00 L 12.00 176.00 L 11.00 177.00 L 11.00 180.00 L 10.00 181.00 L 10.00 191.00 L 11.00 192.00 L 11.00 196.00 L 12.00 197.00 L 12.00 199.00 L 13.00 200.00 L 13.00 201.00 L 14.00 202.00 L 14.00 204.00 L 16.00 206.00 L 16.00 207.00 L 17.00 208.00 L 17.00 209.00 L 19.00 211.00 L 19.00 212.00 L 30.00 223.00 L 31.00 223.00 L 33.00 225.00 L 34.00 225.00 L 36.00 227.00 L 37.00 227.00 L 38.00 228.00 L 39.00 228.00 L 40.00 229.00 L 42.00 229.00 L 43.00 230.00 L 45.00 230.00 L 46.00 231.00 L 50.00 231.00 L 51.00 232.00 L 59.00 232.00 L 60.00 231.00 L 64.00 231.00 L 65.00 230.00 L 67.00 230.00 L 68.00 229.00 L 69.00 229.00 L 70.00 228.00 L 71.00 228.00 L 73.00 226.00 L 74.00 226.00 L 78.00 222.00 L 79.00 222.00 L 81.00 220.00 L 81.00 219.00 L 121.00 179.00 L 121.00 178.00 L 161.00 138.00 L 161.00 137.00 L 177.00 121.00 L 187.00 131.00 L 187.00 132.00 L 201.00 146.00 L 201.00 147.00 L 214.00 160.00 L 214.00 161.00 L 227.00 174.00 L 227.00 175.00 L 240.00 188.00 L 240.00 189.00 L 254.00 203.00 L 254.00 204.00 L 267.00 217.00 L 267.00 218.00 L 277.00 228.00 L 278.00 228.00 L 280.00 230.00 L 281.00 230.00 L 282.00 231.00 L 284.00 231.00 L 285.00 232.00 L 288.00 232.00 L 289.00 233.00 L 297.00 233.00 L 298.00 232.00 L 302.00 232.00 L 303.00 231.00 L 305.00 231.00 L 306.00 230.00 L 308.00 230.00 L 309.00 229.00 L 310.00 229.00 L 311.00 228.00 L 312.00 228.00 L 314.00 226.00 L 315.00 226.00 L 317.00 224.00 L 318.00 224.00 L 322.00 220.00 L 323.00 220.00 L 326.00 217.00 L 326.00 216.00 L 330.00 212.00 L 330.00 211.00 L 332.00 209.00 L 332.00 208.00 L 334.00 206.00 L 334.00 205.00 L 335.00 204.00 L 335.00 203.00 L 336.00 202.00 L 336.00 200.00 L 337.00 199.00 L 337.00 197.00 L 338.00 196.00 L 338.00 193.00 L 339.00 192.00 L 339.00 182.00 L 338.00 181.00 L 338.00 178.00 L 337.00 177.00 L 337.00 176.00 L 336.00 175.00 L 336.00 174.00 L 335.00 173.00 L 335.00 172.00 L 333.00 170.00 L 333.00 169.00 L 310.00 146.00 L 310.00 145.00 L 277.00 112.00 L 277.00 111.00 L 246.00 80.00 L 246.00 79.00 L 213.00 46.00 L 213.00 45.00 L 182.00 14.00 L 182.00 13.00 L 179.00 10.00 Z" />
+
+                <!-- Gold fill -->
+                <path class="logo-fill"
+                    d="M 176.00 10.00 L 161.00 25.00 L 160.00 25.00 L 160.00 26.00 L 159.00 27.00 L 158.00 27.00 L 61.00 124.00 L 60.00 124.00 L 16.00 168.00 L 16.00 169.00 L 14.00 171.00 L 14.00 172.00 L 13.00 173.00 L 13.00 174.00 L 12.00 175.00 L 12.00 176.00 L 11.00 177.00 L 11.00 180.00 L 10.00 181.00 L 10.00 191.00 L 11.00 192.00 L 11.00 196.00 L 12.00 197.00 L 12.00 199.00 L 13.00 200.00 L 13.00 201.00 L 14.00 202.00 L 14.00 204.00 L 16.00 206.00 L 16.00 207.00 L 17.00 208.00 L 17.00 209.00 L 19.00 211.00 L 19.00 212.00 L 30.00 223.00 L 31.00 223.00 L 33.00 225.00 L 34.00 225.00 L 36.00 227.00 L 37.00 227.00 L 38.00 228.00 L 39.00 228.00 L 40.00 229.00 L 42.00 229.00 L 43.00 230.00 L 45.00 230.00 L 46.00 231.00 L 50.00 231.00 L 51.00 232.00 L 59.00 232.00 L 60.00 231.00 L 64.00 231.00 L 65.00 230.00 L 67.00 230.00 L 68.00 229.00 L 69.00 229.00 L 70.00 228.00 L 71.00 228.00 L 73.00 226.00 L 74.00 226.00 L 78.00 222.00 L 79.00 222.00 L 81.00 220.00 L 81.00 219.00 L 121.00 179.00 L 121.00 178.00 L 161.00 138.00 L 161.00 137.00 L 177.00 121.00 L 187.00 131.00 L 187.00 132.00 L 201.00 146.00 L 201.00 147.00 L 214.00 160.00 L 214.00 161.00 L 227.00 174.00 L 227.00 175.00 L 240.00 188.00 L 240.00 189.00 L 254.00 203.00 L 254.00 204.00 L 267.00 217.00 L 267.00 218.00 L 277.00 228.00 L 278.00 228.00 L 280.00 230.00 L 281.00 230.00 L 282.00 231.00 L 284.00 231.00 L 285.00 232.00 L 288.00 232.00 L 289.00 233.00 L 297.00 233.00 L 298.00 232.00 L 302.00 232.00 L 303.00 231.00 L 305.00 231.00 L 306.00 230.00 L 308.00 230.00 L 309.00 229.00 L 310.00 229.00 L 311.00 228.00 L 312.00 228.00 L 314.00 226.00 L 315.00 226.00 L 317.00 224.00 L 318.00 224.00 L 322.00 220.00 L 323.00 220.00 L 326.00 217.00 L 326.00 216.00 L 330.00 212.00 L 330.00 211.00 L 332.00 209.00 L 332.00 208.00 L 334.00 206.00 L 334.00 205.00 L 335.00 204.00 L 335.00 203.00 L 336.00 202.00 L 336.00 200.00 L 337.00 199.00 L 337.00 197.00 L 338.00 196.00 L 338.00 193.00 L 339.00 192.00 L 339.00 182.00 L 338.00 181.00 L 338.00 178.00 L 337.00 177.00 L 337.00 176.00 L 336.00 175.00 L 336.00 174.00 L 335.00 173.00 L 335.00 172.00 L 333.00 170.00 L 333.00 169.00 L 310.00 146.00 L 310.00 145.00 L 277.00 112.00 L 277.00 111.00 L 246.00 80.00 L 246.00 79.00 L 213.00 46.00 L 213.00 45.00 L 182.00 14.00 L 182.00 13.00 L 179.00 10.00 Z" />
+
+                <!-- Border stroke -->
+                <path class="logo-stroke"
+                    d="M 176.00 10.00 L 161.00 25.00 L 160.00 25.00 L 160.00 26.00 L 159.00 27.00 L 158.00 27.00 L 61.00 124.00 L 60.00 124.00 L 16.00 168.00 L 16.00 169.00 L 14.00 171.00 L 14.00 172.00 L 13.00 173.00 L 13.00 174.00 L 12.00 175.00 L 12.00 176.00 L 11.00 177.00 L 11.00 180.00 L 10.00 181.00 L 10.00 191.00 L 11.00 192.00 L 11.00 196.00 L 12.00 197.00 L 12.00 199.00 L 13.00 200.00 L 13.00 201.00 L 14.00 202.00 L 14.00 204.00 L 16.00 206.00 L 16.00 207.00 L 17.00 208.00 L 17.00 209.00 L 19.00 211.00 L 19.00 212.00 L 30.00 223.00 L 31.00 223.00 L 33.00 225.00 L 34.00 225.00 L 36.00 227.00 L 37.00 227.00 L 38.00 228.00 L 39.00 228.00 L 40.00 229.00 L 42.00 229.00 L 43.00 230.00 L 45.00 230.00 L 46.00 231.00 L 50.00 231.00 L 51.00 232.00 L 59.00 232.00 L 60.00 231.00 L 64.00 231.00 L 65.00 230.00 L 67.00 230.00 L 68.00 229.00 L 69.00 229.00 L 70.00 228.00 L 71.00 228.00 L 73.00 226.00 L 74.00 226.00 L 78.00 222.00 L 79.00 222.00 L 81.00 220.00 L 81.00 219.00 L 121.00 179.00 L 121.00 178.00 L 161.00 138.00 L 161.00 137.00 L 177.00 121.00 L 187.00 131.00 L 187.00 132.00 L 201.00 146.00 L 201.00 147.00 L 214.00 160.00 L 214.00 161.00 L 227.00 174.00 L 227.00 175.00 L 240.00 188.00 L 240.00 189.00 L 254.00 203.00 L 254.00 204.00 L 267.00 217.00 L 267.00 218.00 L 277.00 228.00 L 278.00 228.00 L 280.00 230.00 L 281.00 230.00 L 282.00 231.00 L 284.00 231.00 L 285.00 232.00 L 288.00 232.00 L 289.00 233.00 L 297.00 233.00 L 298.00 232.00 L 302.00 232.00 L 303.00 231.00 L 305.00 231.00 L 306.00 230.00 L 308.00 230.00 L 309.00 229.00 L 310.00 229.00 L 311.00 228.00 L 312.00 228.00 L 314.00 226.00 L 315.00 226.00 L 317.00 224.00 L 318.00 224.00 L 322.00 220.00 L 323.00 220.00 L 326.00 217.00 L 326.00 216.00 L 330.00 212.00 L 330.00 211.00 L 332.00 209.00 L 332.00 208.00 L 334.00 206.00 L 334.00 205.00 L 335.00 204.00 L 335.00 203.00 L 336.00 202.00 L 336.00 200.00 L 337.00 199.00 L 337.00 197.00 L 338.00 196.00 L 338.00 193.00 L 339.00 192.00 L 339.00 182.00 L 338.00 181.00 L 338.00 178.00 L 337.00 177.00 L 337.00 176.00 L 336.00 175.00 L 336.00 174.00 L 335.00 173.00 L 335.00 172.00 L 333.00 170.00 L 333.00 169.00 L 310.00 146.00 L 310.00 145.00 L 277.00 112.00 L 277.00 111.00 L 246.00 80.00 L 246.00 79.00 L 213.00 46.00 L 213.00 45.00 L 182.00 14.00 L 182.00 13.00 L 179.00 10.00 Z" />
+
+            </svg>
+        </div>
+
+        <div class="loader-text">
+            <h2 class="loader-title">Loading</h2>
+            <p class="loader-subtitle">Luxury Properties</p>
+        </div>
+    </div>
+
+    <script>
+        // Get the loader hide delay from CSS variable
+        const styles = getComputedStyle(document.documentElement);
+        const hideDelay = parseInt(styles.getPropertyValue('--loader-hide-delay')) || 5000;
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, hideDelay);
+        });
+    </script>
+
+</body>
+
+</html>

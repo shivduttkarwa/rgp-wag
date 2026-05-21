@@ -133,7 +133,7 @@ body.menu-open {
 
 .menu-bg-panel {
   flex: 1;
-  background: linear-gradient(160deg, #080d2a 0%, #040714 100%);
+  background: #001f49;
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);

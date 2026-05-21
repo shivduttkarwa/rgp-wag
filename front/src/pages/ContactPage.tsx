@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowRight, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronDown, FileText, Mail, Phone, Send } from "lucide-react";
 import HeroSection from "../sections/HeroSection";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
+import RgButton from "@/components/reusable/RgButton";
+import { submitContactForm } from "@/lib/api/forms";
 import "./ContactPage.css";
 
 export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLElement>(null);
+  const ptWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const guards = [
@@ -26,6 +28,38 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const [intent, setIntent] = useState("Buy");
   const [budget, setBudget] = useState(5_000_000);
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [propertyType, setPropertyType] = useState<string>("Any type");
+  const [ptOpen, setPtOpen] = useState(false);
+
+  const PROPERTY_TYPES = [
+    "Apartment",
+    "Villa / Townhouse",
+    "Penthouse",
+    "Commercial",
+    "Plot / Land",
+  ];
+
+  useEffect(() => {
+    const onDocMouseDown = (e: MouseEvent) => {
+      if (!ptOpen) return;
+      const wrap = ptWrapRef.current;
+      if (!wrap) return;
+      if (e.target instanceof Node && !wrap.contains(e.target)) setPtOpen(false);
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPtOpen(false);
+    };
+
+    document.addEventListener("mousedown", onDocMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onDocMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [ptOpen]);
 
   const formatBudget = (value: number) => {
     if (value >= 20_000_000) return "A$ 20M+";
@@ -56,20 +90,22 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
         subtitle="Our team is ready to guide you — from first enquiry to final key."
         panel={
           <div className="contact-hero-actions">
-            <a
+            <RgButton
               href="tel:+61450009291"
-              className="btn-secondary contact-hero-actions__link contact-hero-actions__link--primary"
+              variant="gold"
+              className="contact-hero-actions__link contact-hero-actions__link--primary"
               aria-label="Call us"
-            >
-              <span className="bs-text">Call Us</span>
-            </a>
-            <a
+              label="Call Us"
+              endIcon={<Phone size={18} aria-hidden="true" />}
+            />
+            <RgButton
               href="mailto:admin@realgoldproperties.com.au"
-              className="btn-secondary contact-hero-actions__link contact-hero-actions__link--secondary"
+              variant="blue"
+              className="contact-hero-actions__link contact-hero-actions__link--secondary"
               aria-label="Email us"
-            >
-              <span className="bs-text">Email Us</span>
-            </a>
+              label="Email Us"
+              endIcon={<Mail size={18} aria-hidden="true" />}
+            />
           </div>
         }
       />
@@ -120,12 +156,15 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
                 </svg>
               </a>
-            </nav>
 
-            <div className="hours" data-gsap="fade-up" data-gsap-delay="0.15">
-              <p className="h-label">Office Hours</p>
-              <div className="h-row"><span className="h-day">All days</span><span className="h-time">09:00 – 18:00</span></div>
-            </div>
+              <div className="c-item c-item--static" data-gsap="fade-up" data-gsap-delay="0.15">
+                <div>
+                  <p className="c-key">Office Hours</p>
+                  <p className="c-val">All days</p>
+                </div>
+                <p className="c-val c-val--time">09:00 – 18:00</p>
+              </div>
+            </nav>
 
             <div className="quote" data-gsap="fade-up" data-gsap-delay="0.1">
               <blockquote>
@@ -165,38 +204,111 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
             data-gsap="clip-smooth-down"
             data-gsap-delay="0.25"
             data-gsap-start="top 85%"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              setSuccess(true);
+              const form = e.currentTarget;
+              const formData = new FormData(form);
+              const firstName = String(formData.get("first_name") ?? "").trim();
+              const lastName = String(formData.get("last_name") ?? "").trim();
+              const email = String(formData.get("email") ?? "").trim();
+              const phone = String(formData.get("phone") ?? "").trim();
+              const message = String(formData.get("message") ?? "").trim();
+              const fullName = `${firstName} ${lastName}`.trim();
+
+              setSubmitError(null);
+              setIsSubmitting(true);
+              try {
+                await submitContactForm({
+                  name: fullName || "Website enquiry",
+                  email,
+                  phone,
+                  subject: `${intent} enquiry (${propertyType})`,
+                  message:
+                    `${message || "No additional message provided."}\n\n` +
+                    `Intent: ${intent}\n` +
+                    `Property type: ${propertyType}\n` +
+                    `Budget: ${formatBudget(budget)}`,
+                });
+                setSuccess(true);
+                form.reset();
+                setPropertyType("Any type");
+                setBudget(5_000_000);
+              } catch {
+                setSubmitError("Could not submit right now. Please try again.");
+              } finally {
+                setIsSubmitting(false);
+              }
             }}
           >
             <div className="fgrid">
               <div className="fg">
                 <label htmlFor="fn">First Name</label>
-                <input id="fn" type="text" placeholder="James" required />
+                <input id="fn" name="first_name" type="text" placeholder="James" required />
               </div>
               <div className="fg">
                 <label htmlFor="ln">Last Name</label>
-                <input id="ln" type="text" placeholder="Crawford" required />
+                <input id="ln" name="last_name" type="text" placeholder="Crawford" required />
               </div>
               <div className="fg">
                 <label htmlFor="em">Email</label>
-                <input id="em" type="email" placeholder="james@example.com" required />
+                <input id="em" name="email" type="email" placeholder="james@example.com" required />
               </div>
               <div className="fg">
                 <label htmlFor="ph">Phone</label>
-                <input id="ph" type="tel" placeholder="+61 4 0000 0000" />
+                <input id="ph" name="phone" type="tel" placeholder="+61 4 0000 0000" />
               </div>
-              <div className="fg full">
+              <div
+                className={`fg full fg--select${ptOpen ? " is-open" : ""}`}
+                ref={ptWrapRef}
+              >
                 <label htmlFor="pt">Property Type</label>
-                <select id="pt">
-                  <option value="">Any type</option>
-                  <option>Apartment</option>
-                  <option>Villa / Townhouse</option>
-                  <option>Penthouse</option>
-                  <option>Commercial</option>
-                  <option>Plot / Land</option>
-                </select>
+                <button
+                  id="pt"
+                  type="button"
+                  className="fg__select"
+                  aria-haspopup="listbox"
+                  aria-expanded={ptOpen}
+                  aria-controls="pt-listbox"
+                  onClick={() => setPtOpen((v) => !v)}
+                >
+                  <span className="fg__select-val">{propertyType}</span>
+                  <ChevronDown size={18} className="fg__chev" aria-hidden="true" />
+                </button>
+
+                <div
+                  id="pt-listbox"
+                  className="fg__menu"
+                  role="listbox"
+                  aria-label="Property type options"
+                >
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={propertyType === "Any type"}
+                    className={`fg__opt${propertyType === "Any type" ? " is-active" : ""}`}
+                    onClick={() => {
+                      setPropertyType("Any type");
+                      setPtOpen(false);
+                    }}
+                  >
+                    Any type
+                  </button>
+                  {PROPERTY_TYPES.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      role="option"
+                      aria-selected={propertyType === t}
+                      className={`fg__opt${propertyType === t ? " is-active" : ""}`}
+                      onClick={() => {
+                        setPropertyType(t);
+                        setPtOpen(false);
+                      }}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -233,20 +345,25 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
             <div className="fgrid fgrid--last">
               <div className="fg full">
                 <label htmlFor="msg">Message</label>
-                <textarea id="msg" placeholder="Preferred location, size, lifestyle needs…" />
+                <textarea id="msg" name="message" placeholder="Preferred location, size, lifestyle needs…" />
               </div>
             </div>
 
             <div className="srow">
-              <button type="submit" className="btn">
-                Send Enquiry
-              </button>
+              <RgButton
+                variant="gold"
+                type="submit"
+                label={isSubmitting ? "Sending..." : "Send Enquiry"}
+                endIcon={<Send size={18} aria-hidden="true" />}
+                disabled={isSubmitting}
+              />
               <p className="s-note">
                 We respond within
                 <br />
                 one business day.
               </p>
             </div>
+            {submitError ? <p className="s-note">{submitError}</p> : null}
             </form>
           </section>
         </div>
@@ -279,32 +396,45 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
             </p>
           </div>
 
-          <Link
+          <RgButton
             to="/expressions-of-interest"
+            variant="gold"
             className="contact-cta__button"
             data-gsap="btn-clip-reveal"
             data-gsap-delay="0.2"
-          >
-            <span>Open the Form</span>
-            <ArrowRight size={18} />
-          </Link>
+            label="Open the Form"
+            arrowSize={18}
+          />
         </section>
       </div>
 
-      <div className={`succ${success ? " show" : ""}`} role="dialog" aria-modal="true">
-        <div className="sc">
-          <span className="sc-orn">✦</span>
-          <h2>
+      <div
+        className={`succ-modal${success ? " show" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Enquiry received"
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setSuccess(false);
+        }}
+      >
+        <div className="succ-modal__card" role="document">
+          <button
+            type="button"
+            className="succ-modal__close"
+            onClick={() => setSuccess(false)}
+            aria-label="Close message"
+          >
+            ×
+          </button>
+
+          <span className="succ-modal__orn" aria-hidden="true">✦</span>
+          <h2 className="succ-modal__title">
             Enquiry <em>Received.</em>
           </h2>
-          <div className="sc-rule" />
-          <p>
-            Thank you for reaching out to Real Gold Properties. One of our
-            advisors will be in touch with you within one business day.
+          <div className="succ-modal__rule" aria-hidden="true" />
+          <p className="succ-modal__text">
+            Thank you for reaching out to Real Gold Properties. One of our advisors will be in touch with you within one business day.
           </p>
-          <button type="button" className="sc-btn" onClick={() => setSuccess(false)}>
-            Return to page
-          </button>
         </div>
       </div>
     </main>

@@ -3,6 +3,7 @@ import HeroSection from "../sections/HeroSection";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
+import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
 
 interface Testimonial {
@@ -786,30 +787,20 @@ const FinalCTA: React.FC = () => (
           </div>
         </div>
         <div className="tp-cta__actions">
-          <a
+          <RgButton
             href="/contact"
-            className="tp-cta__btn tp-cta__btn--solid"
+            variant="gold"
+            label="Book Your Appraisal"
             data-gsap="btn-clip-reveal"
             data-gsap-delay="0.2"
-          >
-            Book Your Appraisal
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
-          <a
+          />
+          <RgButton
             href="/contact"
-            className="tp-cta__btn tp-cta__btn--ghost"
+            variant="outline"
+            label="Talk to Rahul"
             data-gsap="btn-clip-reveal"
             data-gsap-delay="0.32"
-          >
-            Talk to Rahul
-          </a>
+          />
         </div>
       </div>
 

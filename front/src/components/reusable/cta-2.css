@@ -1,0 +1,208 @@
+/* CTA 2 — premium split layout with full-bleed image */
+.cta2 {
+  position: relative;
+  isolation: isolate;
+  z-index: 2;
+  min-height: var(--cta2-min-h, 100vh);
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--rg-blue-500, #001f49);
+}
+
+.cta2__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  filter: saturate(1.05) contrast(1.05) brightness(0.92);
+}
+
+.cta2__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  filter: saturate(1.05) contrast(1.05) brightness(0.92);
+  opacity: 0;
+  transition: opacity 520ms ease;
+}
+
+.cta2--video-ready .cta2__video {
+  opacity: 1;
+}
+
+.cta2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 31, 73, 0.88) 0%, rgba(0, 31, 73, 0.55) 55%, rgba(0, 31, 73, 0.12) 100%),
+    radial-gradient(70% 90% at 20% 30%, rgba(249, 195, 7, 0.18), transparent 55%),
+    radial-gradient(60% 80% at 75% 15%, rgba(255, 255, 255, 0.10), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta2::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle at 50% 50%, rgba(249, 195, 7, 0.16), transparent 55%);
+  filter: blur(28px);
+  opacity: 0.55;
+  transform: translate3d(10%, 12%, 0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta2__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--rg-max);
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5rem) var(--rg-pad);
+}
+
+.cta2__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(1.25rem, 3.2vw, 2.5rem);
+  align-items: center;
+}
+
+.cta2__copy {
+  max-width: 42rem;
+}
+
+.cta2__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 0.9rem;
+}
+
+.cta2__eyebrow::before {
+  content: "";
+  width: 2.2rem;
+  height: 1px;
+  background: rgba(249, 195, 7, 0.85);
+  box-shadow: 0 0 0 2px rgba(249, 195, 7, 0.12);
+}
+
+.cta2__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-title);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 4.8vw, 3.25rem);
+  line-height: 1.12;
+  color: #ffffff;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
+}
+
+.cta2__title em {
+  font-style: normal;
+  color: var(--rg-gold);
+}
+
+.cta2__text {
+  margin: 0 0 1.8rem;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 44ch;
+}
+
+.cta2__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+/* Make outline button readable on dark image (scoped) */
+.cta2 .rg-btn--outline {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+}
+
+.cta2 .rg-btn--outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.82);
+  color: #ffffff;
+}
+
+.cta2__commitments {
+  justify-self: end;
+  width: min(26rem, 100%);
+  padding: 1.2rem 1.25rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(249, 195, 7, 0.10);
+  backdrop-filter: blur(10px);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cta2__commitment {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.25rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.cta2__commitment-title {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 900px) {
+  .cta2__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta2__commitments {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta2 {
+    min-height: 90vh;
+  }
+
+  .cta2__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta2__commitments {
+    display: none;
+  }
+}
+

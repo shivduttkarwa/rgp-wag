@@ -1,5 +1,5 @@
 .eoi-page {
-  background: #fffdf6;
+  background: #ffffff;
   color: var(--rg-text-dark);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -7,7 +7,7 @@
 
 .eoi-shell {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .eoi-shell__rule {
@@ -200,22 +200,12 @@
   position: relative;
 }
 
-.eoi-select::after {
-  content: "";
-  position: absolute;
-  right: 1.05rem;
-  top: 50%;
-  width: 0.62rem;
-  height: 0.62rem;
-  border-right: 2px solid rgba(15, 24, 112, 0.72);
-  border-bottom: 2px solid rgba(15, 24, 112, 0.72);
-  transform: translateY(-70%) rotate(45deg);
-  pointer-events: none;
+.eoi-field__control--select {
+  padding: 0;
 }
 
-.eoi-field__control--select {
-  appearance: none;
-  padding-right: 2.8rem;
+.eoi-field__control--select .rg-select__trigger {
+  min-height: 0;
 }
 
 .eoi-submit {
@@ -254,55 +244,10 @@
 }
 
 .eoi-submit__button {
-  border: 0;
-  border-radius: 999px;
-  padding: 1rem 1.6rem;
-  background: linear-gradient(135deg, #f9c206 0%, #d4a200 100%);
-  color: #00032e;
-  font: inherit;
-  font-weight: 700;
-  letter-spacing: 0.02em;
   min-width: 17rem;
-  cursor: pointer;
-  box-shadow: 0 1rem 2rem rgba(249, 194, 6, 0.24);
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease;
 }
 
-.eoi-submit__button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 1.3rem 2.5rem rgba(249, 194, 6, 0.32);
-}
-
-.eoi-note {
-  padding: clamp(1.2rem, 3vw, 1.7rem);
-  border-radius: 1.4rem;
-  background:
-    linear-gradient(180deg, rgba(15, 24, 112, 0.96), rgba(22, 36, 150, 0.92)),
-    linear-gradient(135deg, rgba(249, 194, 6, 0.12), transparent 55%);
-  color: #fffef9;
-  box-shadow: 0 1.4rem 3rem rgba(15, 24, 112, 0.12);
-}
-
-.eoi-note__eyebrow {
-  display: inline-block;
-  margin-bottom: 0.8rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255, 248, 228, 0.88);
-}
-
-.eoi-note__body {
-  margin: 0;
-  color: rgba(255, 251, 239, 0.95);
-  line-height: 1.8;
-}
-
-.eoi-note__body + .eoi-note__body {
-  margin-top: 0.85rem;
-}
+/* Button styling is handled by RgButton (.rg-btn) */
 
 .eoi-success {
   position: fixed;
@@ -341,6 +286,7 @@
   transition:
     opacity 0.28s ease,
     transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
 }
 
 .eoi-success.is-visible .eoi-success__card {
@@ -358,6 +304,30 @@
   background: rgba(249, 194, 6, 0.12);
   color: var(--rg-gold);
   font-size: 1.3rem;
+}
+
+.eoi-success__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  border: 1px solid rgba(15, 24, 112, 0.16);
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--rg-text-dark);
+  cursor: pointer;
+  line-height: 2.25rem;
+  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.eoi-success__close:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(15, 24, 112, 0.28);
 }
 
 .eoi-success__card h2 {
@@ -383,19 +353,6 @@
   margin: 0;
   color: var(--rg-text-medium);
   line-height: 1.75;
-}
-
-.eoi-success__button {
-  margin-top: 1.4rem;
-  border: 0;
-  border-radius: 999px;
-  min-height: 3rem;
-  padding: 0 1.3rem;
-  background: var(--rg-text-dark);
-  color: #fffef9;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 @media (max-width: 1080px) {

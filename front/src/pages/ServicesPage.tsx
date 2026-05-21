@@ -1,12 +1,21 @@
 import { useEffect, useRef } from "react";
-import BtnSecondary from "../components/BtnSecondary";
 import HeroSection from "../sections/HeroSection";
 import PropertyMarqee from "../components/reusable/PropertyMarqee";
 import ServiceSelection from "../sections/ServiceSelection";
+import RgpCta from "@/components/reusable/RgpCta";
+import RgButton from "@/components/reusable/RgButton";
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  Building,
+  CalendarCheck,
+  Home,
+  Key,
+  Search,
+  TrendingUp,
+} from "lucide-react";
 
 const base = import.meta.env.BASE_URL?.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -218,9 +227,11 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
                   details so you can focus on the decision that matters.
                 </p>
                 <div className="split-cta">
-                  <BtnSecondary
+                  <RgButton
                     data-gsap="btn-clip-reveal"
                     data-gsap-delay="0.2"
+                    variant="outline"
+                    to="/properties"
                     label="Explore Our Homes"
                   />
                 </div>
@@ -243,23 +254,80 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
         </section>
 
         <ServiceSelection
-          data={{
-            header_eyebrow: "Our Services",
-            header_title: "Buy, Sell &",
-            header_title_em: "Rent",
-            header_subtitle: "One team, three core services — handled with clarity, speed, and market‑ready execution.",
-            services: [
-              { theme: "buy",  headline: "Buy",  title: "Buyer",   subtitle: "Representation", description: "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.",        features: ["Off‑market access and shortlists", "Pricing guidance and negotiation", "Contract support and due diligence"],   cta_label: "Start Buying" },
-              { theme: "sell", headline: "Sell", title: "Sales",   subtitle: "Strategy",        description: "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.",              features: ["Pricing strategy and campaign plan", "Styling, media, and buyer targeting", "Auction or private treaty management"], cta_label: "Plan My Sale" },
-              { theme: "rent", headline: "Rent", title: "Leasing", subtitle: "Management",      description: "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.",                          features: ["Tenant screening and onboarding", "Rent collection and inspections", "Ongoing management and renewals"],            cta_label: "Lease My Property" },
-            ],
-            cta_eyebrow: "Ready to Move?",
-            cta_title: "Get a",
-            cta_title_em: "Tailored Plan",
-            cta_text: "Tell us your goal and timeline — we’ll map the smartest path and execute with precision.",
-            cta_primary: { label: "Book a Consultation", href: "/contact" },
-            cta_secondary: { label: "0450 009 291", href: "tel:+61450009291" },
+          header={{
+            eyebrow: "Our Services",
+            title: "Buy, Sell &",
+            titleEm: "Rent",
+            subtitle:
+              "One team, three core services — handled with clarity, speed, and market‑ready execution.",
           }}
+          services={[
+            {
+              id: "buy",
+              icon: Search,
+              secondaryIcon: Key,
+              headline: "Buy",
+              title: "Buyer",
+              subtitle: "Representation",
+              description:
+                "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.",
+              features: [
+                "Off‑market access and shortlists",
+                "Pricing guidance and negotiation",
+                "Contract support and due diligence",
+              ],
+              cta: "Start Buying",
+              theme: "buy",
+            },
+            {
+              id: "sell",
+              icon: TrendingUp,
+              secondaryIcon: Home,
+              headline: "Sell",
+              title: "Sales",
+              subtitle: "Strategy",
+              description:
+                "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.",
+              features: [
+                "Pricing strategy and campaign plan",
+                "Styling, media, and buyer targeting",
+                "Auction or private treaty management",
+              ],
+              cta: "Plan My Sale",
+              theme: "sell",
+            },
+            {
+              id: "rent",
+              icon: CalendarCheck,
+              secondaryIcon: Building,
+              headline: "Rent",
+              title: "Leasing",
+              subtitle: "Management",
+              description:
+                "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.",
+              features: [
+                "Tenant screening and onboarding",
+                "Rent collection and inspections",
+                "Ongoing management and renewals",
+              ],
+              cta: "Lease My Property",
+              theme: "rent",
+            },
+          ]}
+        />
+        <RgpCta
+          eyebrow="Ready to Move?"
+          title="Get a"
+          titleEm="Tailored Plan"
+          text="Tell us your goal and timeline — we’ll map the smartest path and execute with precision."
+          bgVideo="vids/cta-vid.mp4"
+          primary={{ label: "Book a Consultation", to: "/contact" }}
+          secondary={{ label: "0450 009 291", href: "tel:+61450009291" }}
+          stats={[
+            { value: "5+", label: "Years Experience" },
+            { value: "100+", label: "Happy Clients" },
+            { value: "24/7", label: "Support Available" },
+          ]}
         />
 
         {/* 4) TURN-KEY */}
@@ -276,7 +344,11 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
               competition and protect your final result.
             </p>
             <div className="overlay-cta">
-              <BtnSecondary label="Request a Valuation" />
+              <RgButton
+                variant="gold"
+                to="/contact"
+                label="Request a Valuation"
+              />
             </div>
           </div>
         </section>
@@ -303,9 +375,10 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
                 your property protected and performing.
               </p>
               <div className="avail-cta">
-                <BtnSecondary
+                <RgButton
+                  variant="outline"
+                  to="/properties"
                   label="View Available Rentals"
-                  color="#00032e"
                   className="avail-cta__btn"
                 />
               </div>

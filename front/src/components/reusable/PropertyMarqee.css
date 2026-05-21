@@ -118,29 +118,6 @@
   margin-top: 1.75rem;
 }
 
-.rgMarquee__cta-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 2.25rem;
-  background: var(--rg-navy);
-  color: #fff;
-  border: 2px solid var(--rg-navy);
-  border-radius: 0.65rem;
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-decoration: none;
-}
-
-.rgMarquee__cta-btn:hover {
-  background: transparent;
-  color: var(--rg-navy);
-}
-
 @media (max-width: 640px) {
   .rgMarquee__cursor {
     display: none;

@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 .tv2 {
-  background: var(--rg-beige-light);
+  background: #ffffff;
   padding: clamp(5rem, 8vw, 7.5rem) clamp(1.5rem, 3vw, 3rem);
   overflow: hidden;
 }
@@ -270,13 +270,17 @@
 }
 
 .tv2-card__panel .tv2-panel__btn--outline {
-  color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 .tv2-card__panel .tv2-panel__btn--outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+}
+
+.tv2-card__panel .tv2-panel__btn--gold {
+  color: #0f1870;
 }
 
 .tv2-card__panel-scroll {
@@ -466,15 +470,15 @@
 
 .tv2-panel__btn--icon {
   background: transparent;
-  color: var(--rg-text-medium);
-  border-color: rgba(15, 24, 112, 0.15);
+  color: #ffffff;
+  border-color: #ffffff;
   padding: 8px 10px;
 }
 
 .tv2-panel__btn--icon:hover {
-  background: rgba(10, 102, 194, 0.07);
-  border-color: rgba(10, 102, 194, 0.3);
-  color: #1a5fa8;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+  color: #ffffff;
   transform: translateY(-2px);
 }
 
@@ -588,13 +592,13 @@
   }
 
   .tv2-card__panel .tv2-panel__btn--outline {
-    color: var(--rg-navy);
-    border-color: rgba(15, 24, 112, 0.2);
+    color: #ffffff;
+    border-color: #ffffff;
   }
 
   .tv2-card__panel .tv2-panel__btn--outline:hover {
-    background: rgba(15, 24, 112, 0.05);
-    border-color: rgba(15, 24, 112, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
   }
 
   .tv2-card__panel-scroll {

@@ -4,7 +4,7 @@
 
 .ap-page {
   min-height: 100vh;
-  background: var(--rg-beige-light);
+  background: #ffffff;
 }
 
 /* ─── Filter Slab (matches PropertyListingSection) ───────────────────────── */
@@ -184,6 +184,7 @@
 .ap-grid-section {
   padding: clamp(2.5rem, 5vw, 4rem) var(--rg-pad);
   overflow-anchor: none;
+  background: #ffffff;
 }
 
 .ap-grid-container {
@@ -260,35 +261,7 @@
   overflow-anchor: none;
 }
 
-.ap-view-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 2.25rem;
-  background: var(--rg-navy);
-  color: #fff;
-  border: 2px solid var(--rg-navy);
-  border-radius: 0.65rem;
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.ap-view-btn:hover {
-  background: transparent;
-  color: var(--rg-navy);
-}
-
-.ap-view-btn svg {
-  transition: transform 0.2s ease;
-}
-
-.ap-view-btn:hover svg {
-  transform: translateX(4px);
-}
+/* Button theme styles are defined globally in src/index.css */
 
 .ap-view-btn--ghost {
   background: transparent;
@@ -330,25 +303,20 @@
 
   .ap-filter-wrapper {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    justify-content: flex-start;
-    padding-bottom: 0.25rem;
-  }
-
-  .ap-filter-wrapper::-webkit-scrollbar {
-    display: none;
+    overflow-x: visible;
+    justify-content: center;
+    padding-bottom: 0;
   }
 
   .ap-filter-tabs {
-    width: max-content;
-    flex-wrap: nowrap;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .ap-filter-tab {
-    flex-shrink: 0;
-    padding: 0.625rem 0.875rem;
-    font-size: 0.8125rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
   }
 
   .ap-filter-group--dropdowns {
@@ -387,30 +355,56 @@
   }
 
   .ap-filter-wrapper {
-    overflow-x: visible;
     justify-content: center;
   }
 
+  /* Mobile-only redesign: big, clean, equal tabs */
   .ap-filter-tabs {
     width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
   }
 
+  /* Sliding pill feels cramped on mobile grid */
   .ap-filter-pill {
     display: none;
   }
 
   .ap-filter-tab {
-    flex: 1 1 calc(50% - 0.25rem);
+    width: 100%;
     justify-content: center;
-    padding: 0.55rem 0.5rem;
-    font-size: 0.78rem;
+    min-height: 3.25rem;
+    padding: 0.9rem 0.75rem;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    border-radius: 1rem;
+    border: 1px solid rgba(15, 24, 112, 0.14);
+    background: #ffffff;
+    box-shadow: 0 0.75rem 1.5rem rgba(15, 24, 112, 0.06);
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .ap-filter-tab:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 1rem 1.85rem rgba(15, 24, 112, 0.1);
   }
 
   .ap-filter-tab.active {
     background-color: var(--rg-gold);
+    border-color: rgba(249, 195, 7, 0.65);
     color: var(--rg-navy);
+    box-shadow: 0 1rem 2rem rgba(249, 195, 7, 0.18);
   }
 }
 
@@ -430,10 +424,5 @@
 
   .ap-card__price-val {
     font-size: 1.1rem;
-  }
-
-  .ap-view-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.85rem;
   }
 }

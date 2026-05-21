@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<!--[if lte IE 6]>
+<html class="preIE7 preIE8 preIE9" lang="en"><![endif]-->
+<!--[if IE 7]>
+<html class="preIE8 preIE9" lang="en"><![endif]-->
+<!--[if IE 8]>
+<html class="preIE9" lang="en"><![endif]-->
+<!--[if gte IE 9]><!-->
+<html lang="en"><!--<![endif]-->
+
+<head>
+
+  <!-- Analytics hosted locally to avoid content blockers -->
+  <script src="/js/analytics.min.js"></script>
+  <script
+    src="https://static-assets.cdn.rexsoftware.com/analytics-plugin-warehouse/v1.1.1/dist/analytics-plugin-warehouse.min.js"></script>
+  <script>
+    // Configuration
+    window.rexAnalyticsConfig = {
+      jitsu_key: 'iA8T9iMuijkRvlZggD18xYUN7GSe9qRG:ewoG2vgz9tGUEd7rPgJ8sUzrnvGUYsXa',
+      app: 'Sites',
+      website_id: '899ef61e-d3f2-11eb-821d-062a0ac0c06c',
+      website_domain: '//realwayedge.com.au/',
+      website_name: 'RealWay Edge'
+    };
+  </script>
+  <script>
+    // Wait for both scripts to load, then initialize with retries
+    function attemptInitialization() {
+      try {
+
+        var config = window.rexAnalyticsConfig;
+
+        if (typeof _warehousePlugin === 'undefined') {
+          return false;
+        }
+
+        // Function to add website context to any payload - defined early for use in fallback
+        function addWebsiteContext(payload) {
+          payload = payload || {};
+          payload.website_id = '899ef61e-d3f2-11eb-821d-062a0ac0c06c';
+          payload.website_domain = '//realwayedge.com.au/';
+          payload.website_name = 'RealWay Edge';
+          payload.page_type = 'unknown';
+          return payload;
+        }
+
+        // Check if Analytics library is available  
+        var AnalyticsLib = window._analytics && window._analytics.Analytics;
+        if (!AnalyticsLib) {
+          return false;
+        }
+
+        // Initialize with warehouse plugin
+        var rexAnalytics = AnalyticsLib(
+          _warehousePlugin.applyWarehousePlugin({
+            app: config.app,
+            version: 1,
+            jitsu_key: config.jitsu_key
+          })
+        );
+
+
+        // Add website context to ALL events with enhanced listener
+
+        // Enhanced event listeners to catch all possible event types
+        if (rexAnalytics.on) {
+          // Listen for all events with context verification
+          rexAnalytics.on('*', function (data) {
+            if (data && data.payload) {
+              addWebsiteContext(data.payload);
+            }
+          });
+
+          // Specific listeners for common events
+          ['page', 'track', 'identify'].forEach(function (eventType) {
+            rexAnalytics.on(eventType, function (data) {
+              if (data && data.payload) {
+                addWebsiteContext(data.payload);
+
+                if (missingKeys.length === 0) {
+                  console.log('Rex Analytics: ✓ Complete website context for ' + eventType + ' event');
+                } else {
+                  console.warn('Rex Analytics: ⚠️ Incomplete website context for ' + eventType + ' event. Missing:', missingKeys);
+                }
+              }
+            });
+          });
+        }
+
+        // Override track method to ensure context is always included
+        var originalTrack = rexAnalytics.track;
+        rexAnalytics.track = function (event, properties) {
+          properties = addWebsiteContext(properties || {});
+
+          // Verify context in track override
+          var contextKeys = ['website_id', 'website_name', 'website_domain'];
+          var missingKeys = contextKeys.filter(function (key) {
+            return !properties[key] || properties[key] === '';
+          });
+
+          if (missingKeys.length === 0) {
+            console.log('Rex Analytics: ✓ Track override - complete context for event:', event, properties);
+          } else {
+            console.warn('Rex Analytics: ⚠️ Track override - missing context for event:', event, 'Missing keys:', missingKeys, properties);
+          }
+
+          return originalTrack.call(this, event, properties);
+        };
+
+        // Override page method to ensure context is always included  
+        var originalPage = rexAnalytics.page;
+        rexAnalytics.page = function (properties) {
+          properties = addWebsiteContext(properties || {});
+
+          // Verify context in page override
+          var contextKeys = ['website_id', 'website_name', 'website_domain'];
+          var missingKeys = contextKeys.filter(function (key) {
+            return !properties[key] || properties[key] === '';
+          });
+
+          if (missingKeys.length === 0) {
+            console.log('Rex Analytics: ✓ Page override - complete context:', properties);
+          } else {
+            console.warn('Rex Analytics: ⚠️ Page override - missing context keys:', missingKeys, properties);
+          }
+
+          return originalPage.call(this, properties);
+        };
+
+        // Track page view
+        rexAnalytics.page({
+          title: document.title,
+          url: window.location.href,
+          path: window.location.pathname,
+          referrer: document.referrer
+        });
+
+        // Track listing views if on a listing page
+
+        // Track search if on search results page
+
+        // Make analytics available globally for form tracking
+        window.rexAnalytics = rexAnalytics;
+
+        // Log initialization summary with context verification
+        console.log('Rex Analytics: Initialization complete with context verification enabled');
+        console.log('Rex Analytics: Website context will be verified for ALL events:');
+        console.log('  ✓ Event listeners with verification active');
+        console.log('  ✓ Track method override with verification active');
+        console.log('  ✓ Page method override with verification active');
+        console.log('  ✓ Warehouse plugin methods with verification active');
+        console.log('  ✓ Form tracking with verification active');
+        console.log('Rex Analytics: Expected context keys:', ['website_id', 'website_name', 'website_domain', 'agency_id', 'page_type']);
+
+        // Track form submissions with context verification
+        document.addEventListener('submit', function (e) {
+          var form = e.target;
+          if (form.tagName === 'FORM') {
+            var formName = form.getAttribute('name') || form.getAttribute('id') || 'unknown';
+            var formType = form.getAttribute('data-form-type') || 'general';
+
+            var formData = {
+              form_name: formName,
+              form_type: formType,
+              form_url: window.location.href
+            };
+
+            // Context will be added by track override, but let's verify
+            console.log('Rex Analytics: Form submission detected:', formName, formType);
+            rexAnalytics.track('form_submission', formData);
+          }
+        });
+
+        return true;
+
+      } catch (error) {
+        console.error('Rex Analytics: Initialization failed:', error);
+        return false;
+      }
+    }
+
+    // Start trying to initialize after DOM loads
+    document.addEventListener('DOMContentLoaded', function () {
+      var attempts = 0;
+      var maxAttempts = 10;
+
+      function tryInit() {
+        attempts++;
+        console.log('Rex Analytics: Attempt', attempts, 'of', maxAttempts);
+
+        if (attemptInitialization()) {
+          console.log('Rex Analytics: Initialization successful!');
+          return;
+        }
+
+        if (attempts < maxAttempts) {
+          setTimeout(tryInit, 1000);
+        } else {
+          console.error('Rex Analytics: Failed to initialize after', maxAttempts, 'attempts');
+        }
+      }
+
+      tryInit();
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="user-scalable=no,width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta property="og:locale" content="en_GB" />
+  <title>Expression of Interest - RealWay Edge</title>
+  <meta property="og:title" content="Expression of Interest - RealWay Edge" />
+  <meta property="twitter:title" content="Expression of Interest - RealWay Edge" />
+  <meta name="description" content="[form id=&quot;570382be-1351-11ef-9702-3e431cd507c1&quot;] - RealWay Edge">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description"
+    content="[form id=&quot;570382be-1351-11ef-9702-3e431cd507c1&quot;] - RealWay Edge" />
+  <meta property="og:description" content="[form id=&quot;570382be-1351-11ef-9702-3e431cd507c1&quot;] - RealWay Edge" />
+  <meta name="keywords" content="greater springfield, realway edge Springfield, realway edge, spring mountain, realway">
+  <meta property="og:image"
+    content="https://s3.ap-southeast-2.amazonaws.com/app-spoke-sites-au/25/10ac91883cd6d48de6212b05b78f78b0.png" />
+  <meta property="twitter:image"
+    content="https://s3.ap-southeast-2.amazonaws.com/app-spoke-sites-au/25/10ac91883cd6d48de6212b05b78f78b0.png" />
+  <link rel="shortcut icon" type="image/png"
+    href="https://s3.ap-southeast-2.amazonaws.com/app-spoke-sites-au/25/963f5fef0be486543ed64c198f5e726d.png" />
+  <link rel="apple-touch-icon"
+    href="https://s3.ap-southeast-2.amazonaws.com/app-spoke-sites-au/25/dbe4e264f8f1d0e48f2e76dd7dba57a4.png" />
+  <meta property="og:url" content="https://realwayedge.com.au/expressions-of-interest" />
+  <link rel="canonical" href="https://realwayedge.com.au/expressions-of-interest" />
+  <meta property="og:type" content="article" />
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '3827657594117615');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=3827657594117615&ev=PageView&noscript=1" /></noscript>
+  <!-- End Meta Pixel Code -->
+
+
+
+
+  <script src="//use.typekit.net/uik8pdb.js" async="async" defer="defer"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+    @font-face {
+      font-family: dashicons;
+      src: dashicons;
+      font-display: swap;
+    }
+
+    .main {
+      overflow-y: visible;
+    }
+
+    a {
+      color: var(--brand_primary_color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    body .container {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    body,
+    p,
+    .container {
+      font-family: 'Proxima Nova', sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: normal;
+      overflow-wrap: break-word;
+    }
+
+    .v2-prose p {
+      font-family: inherit;
+      font-style: inherit;
+      font-weight: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      overflow-wrap: inherit;
+    }
+
+    .v2-prose a:hover {
+      text-decoration: underline !important;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6,
+    .text-display {
+      font-family: 'Poppins', sans-serif;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .post_content,
+    .post_content p,
+    .post_content blockquote,
+    .post_content ul,
+    .post_content li,
+    .post_content table,
+    .post_content span,
+    .post_content figure,
+    .post_content figcaption,
+    .post_content hgroup,
+    .post_content summary,
+    .post_content section,
+    .post_content article,
+    .post_content label {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #333;
+      letter-spacing: normal;
+    }
+
+    blockquote:after {
+      visibility: hidden;
+      content: close-quote;
+    }
+
+    .post_content blockquote {
+      border-left: 5px solid #ccc;
+      margin: 1.5em 10px;
+      padding: 0.5em 10px;
+      quotes: "\201C" "\201D" "\2018" "\2019";
+      font-style: italic;
+    }
+
+    .post_content blockquote:before {
+      color: #ccc;
+      content: open-quote;
+      font-size: 4em;
+      line-height: 0.1em;
+      margin-right: 0.25em;
+      vertical-align: -0.4em;
+    }
+
+    .post_content blockquote p {
+      display: inline;
+    }
+
+    .post_content img {
+      max-width: 100%;
+    }
+
+    .post_content video {
+      max-width: 100%;
+    }
+
+    .post_content img.aligncenter {
+      display: block;
+      margin: auto;
+    }
+
+    .post_content img.alignright {
+      float: right;
+      display: block;
+      margin: 21px 0 10px 10px;
+    }
+
+    .post_content img.alignleft {
+      float: left;
+      display: block;
+      margin: 21px 10px 0 10px;
+    }
+
+    .post_content ul {
+      overflow: hidden;
+    }
+
+
+    /* TODO uncomment when all pages finished */
+    /*strong {*/
+    /*    font-weight: 700;*/
+    /*}*/
+
+    /* Avoid styling headers directly to not mess with other pages.
+    *  I've made an exception for headers inside of posts, since they need
+    *  to look consistent without being manually styled
+    */
+
+    .post_content h1,
+    .post_content h2,
+    .post_content h3,
+    .post_content h4,
+    .post_content h5,
+    .post_content h6 {
+      font-family: 'Poppins', sans-serif;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: normal;
+    }
+
+    .post_content h1 {
+      font-size: 32px;
+      line-height: 40px;
+      margin-top: 32px;
+      margin-bottom: 24px;
+    }
+
+    .post_content h2 {
+      font-size: 24px;
+      line-height: 30px;
+      margin-top: 24px;
+      margin-bottom: 20px;
+    }
+
+    .post_content h3 {
+      font-size: 20px;
+      line-height: 24px;
+      margin-top: 20px;
+      margin-bottom: 16px;
+    }
+
+    .post_content h4 {
+      font-size: 18px;
+      line-height: 24px;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+
+    .post_content h5 {
+      font-size: 14px;
+      line-height: 18px;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    .post_content h6 {
+      font-size: 12px;
+      line-height: 14px;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .post_content a {
+      text-decoration: underline;
+      font-weight: 400;
+    }
+
+    .post_content a:hover {
+      text-decoration: none;
+    }
+
+    .post_content .button {
+      padding: 12px 16px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+
+      /* font size medium */
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: normal;
+
+      /* Font weight bold */
+      font-weight: 600;
+
+      background-clip: padding-box;
+      white-space: nowrap;
+      border: none;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .post_content .button:hover {
+      opacity: 0.85;
+    }
+
+    h1,
+    .h1 {
+      font-size: 32px;
+      line-height: 40px;
+      letter-spacing: normal;
+      margin-top: 32px;
+      margin-bottom: 24px;
+    }
+
+    h2,
+    .h2 {
+      font-size: 24px;
+      line-height: 30px;
+      letter-spacing: normal;
+      margin-top: 24px;
+      margin-bottom: 20px;
+    }
+
+    h3,
+    .h3 {
+      font-size: 20px;
+      line-height: 24px;
+      letter-spacing: normal;
+      margin-top: 20px;
+      margin-bottom: 16px;
+    }
+
+    h4,
+    .h4 {
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: normal;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+
+    h5,
+    .h5 {
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: normal;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+
+    h6,
+    .h6 {
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: normal;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    .font-size-large {
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: normal;
+    }
+
+    .font-size-normal {
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: normal;
+    }
+
+    /* TODO remove - some homepage sections have extra line height */
+    .text-block__content,
+    .about-us-section__wrap__container__paragraph {
+      line-height: 2em;
+    }
+
+    .font-size-small {
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: normal;
+    }
+
+    .font-size-tiny {
+      font-size: 12px;
+      line-height: 14px;
+      letter-spacing: normal;
+    }
+
+    .weight-medium {
+      font-weight: 400;
+    }
+
+    .weight-semibold {
+      font-weight: 600;
+    }
+
+    .weight-bold {
+      font-weight: 700;
+    }
+
+    .text-display {
+      font-size: 42px;
+      line-height: 48px;
+      letter-spacing: normal;
+      margin-top: 42px;
+      margin-bottom: 32px;
+      font-weight: bold;
+    }
+
+    /* Staff section overrides */
+    .staff-section__wrap__header__heading {
+      margin-top: 20px;
+    }
+
+    /* Quick Links items */
+    .menu-item-type-custom {
+      text-transform: capitalize;
+    }
+
+    /* Forms */
+    form button span {
+      color: #ffffff !important;
+      /* Important because .post_content span would take priority */
+    }
+
+    form button {
+      text-decoration-color: #ffffff !important;
+      /* Important to override default button style. This color should always match the above colour */
+    }
+
+    .react-form-wrapper form button span {
+      color: #374151 !important;
+      /* Important to override default button style. This color should always match the above colour */
+    }
+
+    form textarea {
+      font-family: inherit;
+    }
+
+    /* Remove borders around dropdowns on forms */
+    div[data-es-keys="MenuContent.container"] {
+      border-top-style: none;
+      border-bottom-style: none;
+      border-left-style: none;
+      border-right-style: none;
+    }
+
+    /* Header */
+    .icons-row {
+      float: right;
+      margin-right: 10px;
+    }
+
+    .icons-row svg {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      color: var(--menu_font_color);
+      opacity: 0.5;
+      margin: 10px;
+      transition: all .3s;
+    }
+
+    .icons-row svg:hover {
+      color: var(--menu_font_hover_color);
+      opacity: 0.7;
+    }
+
+    /* React components that we can't add classes to */
+    .listing__rooms .room p {
+      /* normal medium font */
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: normal;
+      font-weight: 400;
+    }
+
+    .listing__rooms .room h4 {
+      /* normal bold font */
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: normal;
+      font-weight: 700;
+    }
+
+    /* React components */
+    .rc-menu,
+    .rc-menu-item,
+    .rc-menu-submenu,
+    .rc-menu a {
+      /* Same as normal bold text */
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 20px;
+      letter-spacing: normal;
+      color: var(--menu_font_color);
+    }
+
+    .rc-menu:hover,
+    .rc-menu-item:hover,
+    .rc-menu-submenu:hover,
+    .rc-menu a:hover {
+      color: var(--menu_font_hover_color);
+    }
+
+    .rc-menu-submenu .rc-menu-item,
+    .rc-menu-submenu .rc-menu-item a,
+    .rc-menu-sub>.rc-menu-submenu {
+      color: var(--menu_dropdown_font_color);
+      background-color: var(--menu_dropdown_background_color);
+    }
+
+    .rc-menu-submenu .rc-menu-item:hover,
+    .rc-menu-submenu .rc-menu-item a:hover,
+    .rc-menu-sub>.rc-menu-submenu:hover {
+      color: var(--menu_dropdown_font_hover_color);
+    }
+
+    .rc-menu-item a:hover,
+    .rc-menu-item a:active {
+      text-decoration: none;
+    }
+
+    /* Form */
+    .footer .form-title {
+      display: none;
+    }
+
+    /* Padding at bottom of form in slideout */
+    .slide-pane__content form {
+      padding-bottom: 24px;
+    }
+
+    /* Other styles */
+    .modal-content {
+      max-height: 80vh;
+      overflow-y: scroll;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+    }
+
+    /* Slideout */
+    .slide-pane__header,
+    .slide-pane__content {
+      color: #333;
+      border: none;
+    }
+
+    /* Cover Background Slideshow */
+    #background-slideshow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    #background-slideshow .slideshow-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #background-slideshow .slideshow-image.active {
+      opacity: 1;
+    }
+  </style>
+
+  <style>
+    :root {
+      /**
+     * In the following we define CSS variables dynamically from the personas theme settings.
+     * That way we can access these values easily from within the css/less. We generate
+     * variables instead of class names here because for the less and tailwind
+     * preprocessors to pick class names up correctly, they need to be defined within
+     * the parsed CSS tree :/
+     **/
+
+      /* Colors */
+      --color--primary-400: 358, 76%, 41%;
+      --color--primary-500: 358, 76%, 51%;
+      --color--primary-600: 358, 76%, 61%;
+      --color--primary-800: 358, 76%, 96%;
+      --color--primary-hover: 358, 76%, 56%;
+      --color--primary-active: 358, 76%, 46%;
+      --color--secondary-400: 223, 52%, 15%;
+      --color--secondary-500: 223, 52%, 25%;
+      --color--secondary-600: 223, 52%, 35%;
+      --color--secondary-hover: 223, 52%, 30%;
+      --color--secondary-active: 223, 52%, 20%;
+      --color--dark-400: 358, 76%, 5%;
+      --color--dark-500: 358, 76%, 10%;
+      --color--dark-600: 358, 76%, 20%;
+      --color--dark-hover: 358, 76%, 15%;
+      --color--dark-active: 358, 76%, 25%;
+      --color--light-400: 358, 5%, 65%;
+      --color--light-500: 358, 5%, 95%;
+      --color--light-600: 358, 5%, 100%;
+      --color--light-hover: 358, 5%, 90%;
+      --color--light-active: 358, 5%, 80%;
+
+      /* Required for the listings gallery slider, to highlight active image. */
+      --brand_primary_color: hsl(358, 76%, 51%);
+
+      /* Fonts & Text Styles */
+      --font--base-size: 10px;
+      --font--header-family: Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font--body-family: Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+      --text--display--font-weight: bold;
+      --text--display--font-size: calc(5.6rem * 1);
+      --text--display--letter-spacing: -0.015rem;
+      --text--display--line-height: 1.2;
+      --text--display-small--font-weight: 700;
+      --text--display-small--font-size: calc(3.6rem * 1);
+      --text--display-small--letter-spacing: -0.015rem;
+      --text--display-small--line-height: 1.2;
+      --text--h1--font-weight: bold;
+      --text--h1--font-size: calc(3.6rem * 1);
+      --text--h1--letter-spacing: -0.015rem;
+      --text--h1--line-height: 4rem;
+      --text--h2--font-weight: bold;
+      --text--h2--font-size: calc(2.72rem * 1);
+      --text--h2--letter-spacing: -0.005rem;
+      --text--h2--line-height: 1.2;
+      --text--h3--font-weight: bold;
+      --text--h3--font-size: calc(2.4rem * 1);
+      --text--h3--letter-spacing: 0rem;
+      --text--h3--line-height: 1.2;
+      --text--h4--font-weight: bold;
+      --text--h4--font-size: calc(2.08rem * 1);
+      --text--h4--letter-spacing: 0.0025rem;
+      --text--h4--line-height: 1.2;
+      --text--h5--font-weight: 700;
+      --text--h5--font-size: calc(1.8rem * 1);
+      --text--h5--letter-spacing: 0.0025rem;
+      --text--h5--line-height: 2.5rem;
+      --text--body--font-weight: 500;
+      --text--body--font-size: calc(1.6rem * 1);
+      --text--body--letter-spacing: 0.005rem;
+      --text--body--line-height: 2.4rem;
+      --text--body-bold--font-weight: 700;
+      --text--body-bold--font-size: calc(1.6rem * 1);
+      --text--body-bold--letter-spacing: 0.005rem;
+      --text--body-bold--line-height: 2.4rem;
+      --text--body-small--font-weight: 300;
+      --text--body-small--font-size: calc(1.28rem * 1);
+      --text--body-small--letter-spacing: 0.0025rem;
+      --text--body-small--line-height: 1.5;
+      --text--body-small-bold--font-weight: 700;
+      --text--body-small-bold--font-size: calc(1.3rem * 1);
+      --text--body-small-bold--letter-spacing: 0.0025rem;
+      --text--body-small-bold--line-height: 2rem;
+      --text--body-large--font-weight: 500;
+      --text--body-large--font-size: calc(2rem * 1);
+      --text--body-large--letter-spacing: 0.0025rem;
+      --text--body-large--line-height: 2.8rem;
+      --text--button--font-weight: bold;
+      --text--button--font-size: calc(1.6rem * 1);
+      --text--button--letter-spacing: 0.0125rem;
+      --text--button--line-height: 2rem;
+      --text--caption--font-weight: bold;
+      --text--caption--font-size: calc(1.28rem * 1);
+      --text--caption--letter-spacing: 0.0040rem;
+      --text--caption--line-height: 1.5;
+      --text--overline--font-weight: bold;
+      --text--overline--font-size: calc(1.28rem * 1);
+      --text--overline--letter-spacing: 0.015rem;
+      --text--overline--line-height: 1.9rem;
+      --text--overline--text-transform: uppercase;
+      --text--testimonials--font-weight: 400;
+      --text--testimonials--font-size: calc(2.2rem * 1);
+      --text--testimonials--letter-spacing: 0rem;
+      --text--testimonials--line-height: 2.8rem;
+    }
+  </style>
+
+  <link rel="stylesheet" href="//realwayedge.com.au/css/styles.css?id=8dfd4d1b0976474d23a0" />
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.5.9/slick/slick.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+  <style>
+    /* commented out for V2 migration */
+    /*
+.front-page__top-section__overlay {
+    opacity: 0.5 !important;
+    background-color: #1f0c0c;
+}
+
+.quick-links-section__container__menu {
+    color: #FFF!important;
+}
+
+.macro--staff-card__media {
+    min-height: 300px!important;
+}
+*/
+
+    .v2-banner-block {
+      display: none !important;
+    }
+
+    #agency-opening-times div {
+      width: 350px !important;
+    }
+  </style>
+
+
+  <meta name="google-site-verification" content="AA4iNSVg6_XsrIaSvhO7Pa_RA0A-NwtpKMvFpwK-PGE" />
+  <meta name="google-site-verification" content="1BHK0OmlxyTydZW56Gx9FZju6302F0RJBjl15SDde8Q" />
+  <meta name="google-site-verification" content="-c312xVfgwb1SiVyHjLBvKqIVb238KoYlDQtMF3l9DU" />
+  <link rel="stylesheet" href="https://popup.conciergeservices.ai/style.css" />
+  <link rel="stylesheet" href="https://popup.conciergeservices.ai/style.css" />
+  <script src="https://popup.conciergeservices.ai/aiconcierge.js"></script>
+  <script>
+    if (window.Assistant) {
+      let assistant = new Assistant({
+        target: "target-chat-id",
+        apiKey: "684c22dc-38ee-4fdb-9b29-7bc699674aac",
+        productId: "random-id",
+        chatBotType: "SalesConcierge"
+      });
+      window.onload = function () { assistant.init(); }
+    }
+    if (window.dispatcher) {
+      dispatcher.on("bot-ready", (e) => {
+        console.log(e.detail);
+      });
+    }
+  </script>
+
+  <script>
+    // Localisation mapping
+    const localisationValues = [{ "locale": "English", "currency_code": "AUD", "currency_symbol": "$", "under_offer": "Under Offer", "suburb_label": "Suburb" }][0];
+    const __ = (localisationKey) => {
+      return localisationValues[localisationKey] || '';
+    }
+  </script>
+
+
+</head>
+
+
+
+<body id="body">
+  <div id="page-body" class="v2-overflow-x-hidden v2-overflow-y-hidden">
+
+
+    <script src="https://realwayedge.com.au/js/dist/~setup.b87d95d9e4d03b8580e0.js"></script>
+    <script src="https://realwayedge.com.au/js/dist/~runtime.b87d95d9e4d03b8580e0.js"></script>
+
+    <link rel="stylesheet" href="//realwayedge.com.au/css/v2-header.css?id=3a101918eee7f57c1261" />
+
+
+    <div class="v2-header-container" style="height: max-content; background-color: #ffffff;">
+      <script src="https://realwayedge.com.au/js/dist/~runtime.b87d95d9e4d03b8580e0.js"></script>
+      <script src="https://realwayedge.com.au/js/dist/~setup.b87d95d9e4d03b8580e0.js"></script>
+      <script src="https://realwayedge.com.au/js/dist/vendors-react.b87d95d9e4d03b8580e0.js"></script>
+      <script src="https://realwayedge.com.au/js/dist/vendors-lodash.b87d95d9e4d03b8580e0.js"></script>
+      <script src="https://realwayedge.com.au/js/dist/~twig-react-old.b87d95d9e4d03b8580e0.js"></script>
+      <div id='byron/header/HeaderBlock_69bfe14b92b3e' style='position:relative;width:100%;'></div>
+      <script>if (!window.__TwigReact || !window.__TwigReact.render) { console.error('TwigReact not loaded!'); } else { window.__TwigReact.render('byron/header/HeaderBlock_69bfe14b92b3e', { "menuFontColor": "#000000", "menuDropdownFontColor": "#ffffff", "menuFontHoverColor": "#1f3263", "menuDropdownFontHoverColor": "#c9c9c9", "menuBackgroundColor": "#ffffff", "menuDropdownBackgroundColor": "#1f3263", "menuItemHoverColor": false, "headerBehaviour": "full_stick", "menu": { "id": 2, "name": "Main Menu", "slug": "main-menu", "parent": null, "count": 0, "items": [{ "id": "0aa6d956-9f3c-11ec-b0d4-fa425e321e26", "title": "Home", "url": "\/", "slug": "\/", "parent": null, "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "title": "Buying", "url": "\/listings?saleOrRental=Sale&status=available_under_contract&sortby=dateListed-desc", "slug": "\/listings?saleOrRental=Sale&status=available_under_contract&sortby=dateListed-desc", "parent": null, "type": "nav-menu-item", "external": 0, "children": [{ "id": "0adb75c6-9f3c-11ec-8a7f-fa425e321e26", "title": "Current Listings", "url": "\/listings?saleOrRental=Sale&status=available_under_contract&sortby=dateListed-desc", "slug": "\/listings?saleOrRental=Sale&status=available_under_contract&sortby=dateListed-desc", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0ae30584-9f3c-11ec-a392-fa425e321e26", "title": "Open Homes", "url": "\/openhomes?type=sale", "slug": "\/openhomes?type=sale", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0b17b2ac-9f3c-11ec-867d-fa425e321e26", "title": "Auction", "url": "\/openhomes?type=auction", "slug": "\/openhomes?type=auction", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0afff6c6-9f3c-11ec-91d9-fa425e321e26", "title": "Tips For Buying", "url": "\/tips-for-buying", "slug": "\/tips-for-buying", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0af98e62-9f3c-11ec-bd08-fa425e321e26", "title": "Foreign Investors In Australia", "url": "\/foreign-investment-review-board-information", "slug": "\/foreign-investment-review-board-information", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0af26312-9f3c-11ec-ba1c-fa425e321e26", "title": "Transfer or Stamp Duty - QLD", "url": "\/property-transfer-duty-in-queensland", "slug": "\/property-transfer-duty-in-queensland", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0aeb389e-9f3c-11ec-9654-fa425e321e26", "title": "Investment Property", "url": "\/investment-property", "slug": "\/investment-property", "parent": "0aad365c-9f3c-11ec-aac1-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }] }, { "id": "0ab7fda8-9f3c-11ec-825a-fa425e321e26", "title": "Renting", "url": "\/listings?saleOrRental=Rental&status=available_under_contract&sortby=dateListed-desc", "slug": "\/listings?saleOrRental=Rental&status=available_under_contract&sortby=dateListed-desc", "parent": null, "type": "nav-menu-item", "external": 0, "children": [{ "id": "c3c485f4-14bc-11ee-b21e-ba9bbc982eef", "title": "Current Listings", "url": "\/listings?saleOrRental=Rental&status=available&sortby=dateListed-desc", "slug": "\/listings?saleOrRental=Rental&status=available&sortby=dateListed-desc", "parent": "0ab7fda8-9f3c-11ec-825a-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "03d69362-14bd-11ee-92b1-ba9bbc982eef", "title": "Open Homes", "url": "\/openhomes?type=rental", "slug": "\/openhomes?type=rental", "parent": "0ab7fda8-9f3c-11ec-825a-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0b084b0a-9f3c-11ec-be69-fa425e321e26", "title": "Property Management By RealWay", "url": "\/property-management-services", "slug": "\/property-management-services", "parent": "0ab7fda8-9f3c-11ec-825a-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }] }, { "id": "0ab2f65a-9f3c-11ec-b050-fa425e321e26", "title": "Selling", "url": "\/listings\/?saleOrRental=Sale&status=sold", "slug": "\/listings\/?saleOrRental=Sale&status=sold", "parent": null, "type": "nav-menu-item", "external": 0, "children": [{ "id": "0b286174-9f3c-11ec-a58b-fa425e321e26", "title": "Sold Properties", "url": "\/listings\/?saleOrRental=Sale&status=sold", "slug": "\/listings\/?saleOrRental=Sale&status=sold", "parent": "0ab2f65a-9f3c-11ec-b050-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0b2f1e6a-9f3c-11ec-8f23-fa425e321e26", "title": "Selling the RealWay to maximise your price", "url": "\/selling-the-real-way", "slug": "\/selling-the-real-way", "parent": "0ab2f65a-9f3c-11ec-b050-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }] }, { "id": "0abd37aa-9f3c-11ec-960d-fa425e321e26", "title": "About Us", "url": "\/agency\/realway-edge\/", "slug": "\/agency\/realway-edge\/", "parent": null, "type": "nav-menu-item", "external": 0, "children": [{ "id": "0b3ce57c-9f3c-11ec-be58-fa425e321e26", "title": "Our Agency", "url": "\/agency\/realway-edge\/", "slug": "\/agency\/realway-edge\/", "parent": "0abd37aa-9f3c-11ec-960d-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0b4305ba-9f3c-11ec-8ba2-fa425e321e26", "title": "Our Team", "url": "\/staff", "slug": "\/staff", "parent": "0abd37aa-9f3c-11ec-960d-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0b4bdf1e-9f3c-11ec-9552-fa425e321e26", "title": "Testimonials", "url": "\/testimonials", "slug": "\/testimonials", "parent": "0abd37aa-9f3c-11ec-960d-fa425e321e26", "type": "nav-menu-item", "external": 0, "children": null }] }, { "id": "0b56427e-9f3c-11ec-992e-fa425e321e26", "title": "Contact Us", "url": "\/offcanvas_form\/?location=agency_contact", "slug": "\/offcanvas_form\/?location=agency_contact", "parent": null, "type": "nav-menu-item", "external": 0, "children": null }, { "id": "0384893c-180e-11ef-8a78-2ab1e165399d", "title": "Expression of Interest", "url": "\/expressions-of-interest", "slug": "\/expressions-of-interest", "parent": null, "type": "nav-menu-item", "external": 0, "children": null }] }, "desktopLogo": "https:\/\/s3.ap-southeast-2.amazonaws.com\/app-spoke-sites-au\/25\/18204225eb4d249b18b5298977594a6f.png", "desktopLogoSize": "250", "mobileLogo": "https:\/\/s3.ap-southeast-2.amazonaws.com\/app-spoke-sites-au\/25\/b62b3734f1c8dc001f78021c8d200e81.png", "mobileLogoSize": "140", "logoAspectRatio": 2.300169348010161, "boxed": false, "headerAccentColor": "#e12228", "email": "info@realwayedge.com.au", "phone": "07 3282 4805", "enableContactDetails": true, "contactDetailsFontColor": "#000000", "onInnerPage": true, "socials": { "facebook": "https:\/\/www.facebook.com\/profile.php?id=100064013671375", "instagram": "https:\/\/www.instagram.com\/realway.edge\/", "twitter": false, "pinterest": false, "youtube": false, "linkedin": false } }, 'byron/header/HeaderBlock'); }</script>
+    </div>
+
+    <div style="height: 0 !important">
+      <div id='shared/components/popups/PopupButton_69bfe14b92b86' style='position:relative;width:100%;'></div>
+      <script>if (!window.__TwigReact || !window.__TwigReact.render) { console.error('TwigReact not loaded!'); } else { window.__TwigReact.render('shared/components/popups/PopupButton_69bfe14b92b86', { "popups": null }, 'shared/components/popups/PopupButton'); }</script>
+
+      <div id='shared/components/popups/PopupTarget_69bfe14b92b8d' style='position:relative;width:100%;'></div>
+      <script>if (!window.__TwigReact || !window.__TwigReact.render) { console.error('TwigReact not loaded!'); } else { window.__TwigReact.render('shared/components/popups/PopupTarget_69bfe14b92b8d', { "popups": null }, 'shared/components/popups/PopupTarget'); }</script>
+
+      <div id='shared/components/slide-out/slideout_69bfe14b92b94' style='position:relative;width:100%;'></div>
+      <script>if (!window.__TwigReact || !window.__TwigReact.render) { console.error('TwigReact not loaded!'); } else { window.__TwigReact.render('shared/components/slide-out/slideout_69bfe14b92b94', { "paneDirection": "right", "websiteId": "899ef61e-d3f2-11eb-821d-062a0ac0c06c", "menuFontColor": "#000000" }, 'shared/components/slide-out/slideout'); }</script>
+    </div>
+
+
+
+    <div id="hero-banner" style="min-height: 50vh" class="v2-flex v2-justify-center v2-relative v2-w-full v2-min-h-1/2">
+
+
+      <img loading="eager" data-testid="shared-image-component" class="v2-absolute v2-w-full v2-h-full v2-object-cover"
+        sizes='(min-width: 1536px) 100%,
+                (min-width: 1280px) 100%,
+                (min-width: 1024px) 100%,
+                (min-width: 768px) 100%,
+                (min-width: 640px) 100%,
+                100%' srcset=',,,,,,,,,,,,,,,,,,,'
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxMDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.sZoi9SyDu8ZZm2GM7f61-MGZubA5dp_XAbOV-CGy1yk
+        100w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywyMDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.L5yGHjGw06feQ77NRrJbHcZ9ywifU0-8JzJ62Jz8-gw
+        200w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywzMDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.b3zVw5b16p1NWGL-JKDRxY1EXWcD8-68OPLg65WeIt4
+        300w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw0MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.5HnBgPM58S6Mh2q-okorqq-GjMv2ZLS0joj7bTUrABw
+        400w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw1MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.kmseq7mEqXWRmJpp-i9maKSjEakI-m6jDEz4N__WvNw
+        500w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw2MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.oD2xy9szOLsGujSB4MzXeDDOBIV7y-NxcqJ_e_RCjHs
+        600w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw3MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.96AHO1r__Gyss0nxbds8cZFOn6CG2t7LCcX9EybNN2c
+        700w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw4MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.3g5MrkMNHYfo8WGPLvDameb1vh66UOgbBiiVEdoxC-Y
+        800w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMyw5MDAsMTQ0MCwyXSxbNCwid2VicCIsOTBdXSwiaXNzIjoiYjBjNGRlNjAtOWFjMS0xMWVkLThmOWMtNWQ5ODUxMDI5MTc2In0.HTxrGv6vhkNuF6tHmLWr33ZGvQSew5yPUfCrEhGIJ14
+        900w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxMDAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9._L9D1MtzUw4RW-BM_H5rPaQFJLMX7GMITdNZN6nUHrc
+        1000w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxMTAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.oHs7QKeNG_5hzHoxl9jv9uSPRUsm3_P4QhRqmgQu8kg
+        1100w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxMjAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.8Z0cl94sEO-Tb3TOg-fh2T7T41JE8B1M9EEQrO29WQM
+        1200w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxMzAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.4R9MW3gajLJ3A4mL5v8-faY-EOJoKHDYBDZtsXtEPME
+        1300w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxNDAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.Z2KPIp8Rj9Nfa6S6tQf-HcbfR7aL-seReuTdGdpcf9s
+        1400w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxNTAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.ayibmLiv4B5_ME7hYV8qgZ4MxQd8al_ecEZv9kBFWiI
+        1500w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxNjAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.zrVYviv1i6Mdfbp4VMLNCm6EIuDIaB5FvkpKEm2_bkA
+        1600w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxNzAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.7lGuDWKthwuUYqM1uZqUrA0GIIY2Bd6YLhUQWbHaQOM
+        1700w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxODAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.GGsputBkbvlOeo5KGNupYCfcPShYLKAtQ96wNLH8Sss
+        1800w
+        https://au-mirage.cdns.rexsoftware.com/api/v1/output/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdGciOltbNywiaHR0cHM6XC9cL2FwcC1zcG9rZS1zaXRlcy1hdS5zMy5hbWF6b25hd3MuY29tXC91cGxvYWRzXC9zaXRlc1wvMjVcLzIwMjRcLzA1XC9LZXktUmluZy0yLnBuZyJdLFsxMywxOTAwLDE0NDAsMl0sWzQsIndlYnAiLDkwXV0sImlzcyI6ImIwYzRkZTYwLTlhYzEtMTFlZC04ZjljLTVkOTg1MTAyOTE3NiJ9.QGxzJ0LRDFoL7rkqdRXJ9c6El0llIgqvri578cCo8Y0
+        1900w src='https://app-spoke-sites-au.s3.amazonaws.com/uploads/sites/25/2024/05/Key-Ring-2.png'
+        alt='Full width project banner image' />
+
+
+      <div style="opacity: 0.3" class="v2-bg-white v2-absolute v2-w-full v2-h-full v2-top-none v2-z-10">
+      </div>
+
+      <div class="v2-px-l v2-w-full v2-flex v2-flex-col v2-justify-center v2-items-center v2-z-20">
+        <div class="v2-flex v2-flex-col v2-justify-center v2-items-center v2-text-center
+             v2-w-full lg:v2-w-3/4 xl:v2-w-3/5 v2-gap-y-2.5 sm:v2-gap-y-5 v2-text-white">
+          <h2 style="width: inherit" class="v2-text-overline v2-truncate" role="text-banner-subtitle">
+            Make an Offer
+          </h2>
+          <h1 class="v2-line-clamp-2 v2-text-h2 sm:v2-text-h1" role="text-banner-title">
+            Expression of Interest
+          </h1>
+
+
+        </div>
+      </div>
+    </div>
+
+
+    <div id="inner-block-wrapper" class="v2-block v2-relative v2-w-full
+     v2-px-5 sm:v2-px-10 lg:v2-px-25 xl:v2-px-60 2xl:v2-px-72
+     v2-my-4 md:v2-my-9">
+      <div class="v2-flex v2-flex-col v2-h-auto v2-w-full v2-gap-y-5 v2-pt-8 sm:v2-pt-10">
+
+
+
+        <div id="page-content" class="v2-flex v2-flex-col v2-justify-center v2-text-body v2-bg-white
+             
+             
+             v2-pb-10 lg:v2-pb-13">
+
+
+          <div id="about-content"
+            class="v2-prose v2-max-w-none v2-text-body siteloft-ucg v2-text-text-grey v2-mb-8 sm:v2-mb-13 v2-mt-5">
+            <p>
+
+            <div class="
+v2--mx-3
+">
+              <div class=" v2-px-3">
+                <h2 class="                    v2-text-h2
+             v2-text-dark-500" style="margin-top: 0 !important;" role="text-form-title">
+                  Expression of Interest Form
+                </h2>
+
+
+                <p class="v2-text-body">
+                  I/We acknowledge that if this offer is accepted, I/We will be required to enter into and execute a
+                  contract of sale on these terms. I/We acknowledge that we may be one of several parties making offers
+                  to the seller for their consideration. Both purchaser and seller must sign a contract of sale before
+                  this offer becomes legally binding. An offer may be withdrawn at any time before signing a contract of
+                  sale.
+                </p>
+              </div>
+
+              <form onSubmit="event.preventDefault(); contactForm().submit(this);"
+                data-target="/api/v1/websites/899ef61e-d3f2-11eb-821d-062a0ac0c06c/submissions"
+                data-id="570382be-1351-11ef-9702-3e431cd507c1" data-name="Expression of Interest Form"
+                data-recaptcha="1" class="v2-flex v2-flex-col v2-gap-y-7 v2-w-full">
+
+                <div class="v2-px-3">
+                  <div class="v2-hidden v2-flex-grow v2-justify-center v2-items-center v2-gap-x-2.5 v2-py-2 v2-w-full
+                v2-animate-slideBottom v2-bg-green
+                v2-transition-colors v2-duration-700 v2-animate-fadeInSlow
+                v2-text-body v2-text-white v2-align-middle" role="form-success-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="v2-w-5 v2-h-5 lg:v2-w-6 lg:v2-h-6" width="24"
+                      height="24" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M16.5123 8.78056C16.6869 8.56668 16.6552 8.2517 16.4413 8.07703C16.2274 7.90235 15.9124 7.93413 15.7377 8.14801L16.5123 8.78056ZM10.8214 14.9582L10.4679 15.3118C10.5678 15.4117 10.7054 15.4647 10.8466 15.4576C10.9877 15.4505 11.1193 15.384 11.2087 15.2745L10.8214 14.9582ZM7.63927 11.0689C7.44401 10.8737 7.12742 10.8737 6.93216 11.0689C6.7369 11.2642 6.7369 11.5808 6.93216 11.7761L7.63927 11.0689ZM15.7377 8.14801L10.4342 14.6419L11.2087 15.2745L16.5123 8.78056L15.7377 8.14801ZM11.175 14.6047L7.63927 11.0689L6.93216 11.7761L10.4679 15.3118L11.175 14.6047ZM22.5 12C22.5 17.799 17.799 22.5 12 22.5V23.5C18.3513 23.5 23.5 18.3513 23.5 12H22.5ZM12 22.5C6.20101 22.5 1.5 17.799 1.5 12H0.5C0.5 18.3513 5.64873 23.5 12 23.5V22.5ZM1.5 12C1.5 6.20101 6.20101 1.5 12 1.5V0.5C5.64873 0.5 0.5 5.64873 0.5 12H1.5ZM12 1.5C17.799 1.5 22.5 6.20101 22.5 12H23.5C23.5 5.64873 18.3513 0.5 12 0.5V1.5Z"
+                        fill="currentColor" />
+                    </svg> Request submitted!
+                  </div>
+
+                  <div class="v2-hidden v2-flex-grow v2-justify-center v2-items-center v2-gap-x-2.5 v2-py-2 v2-w-full
+                v2-animate-slideBottom v2-bg-white
+                v2-transition-colors v2-duration-700 v2-animate-fadeInSlow" role="form-error-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="v2-w-5 v2-h-5 lg:v2-w-6 lg:v2-h-6" width="24"
+                      height="24" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 5.4V12M12 17.8667L12.011 16.4M23 12C23 18.0751 18.0751 23 12 23C5.92486 23 1 18.0751 1 12C1 5.92486 5.92486 1 12 1C18.0751 1 23 5.92486 23 12Z"
+                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <p class="v2-text-body-small v2-text-red v2-align-middle" role="form-error-message-text">
+                      Something went wrong
+                    </p>
+                  </div>
+                </div>
+
+                <div class="v2-flex v2-flex-row v2-flex-wrap _v2-gap-x-8 v2-gap-y-7">
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_propertyAddress">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="propertyAddress">Property
+                      Address*</label>
+
+                    <textarea id="propertyAddress" name="property_address" rows="3" minlength="" maxlength=""
+                      placeholder="Property Address*" required class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_buyer1FullLegalName">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="buyer1FullLegalName">Buyer 1 - Full
+                      Legal Name:*</label>
+
+                    <input id="buyer1FullLegalName" name="buyer_1_full_legal_name" type="text"
+                      placeholder="Buyer 1 - full legal name:" minlength="" maxlength="" size="10" required class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_addressBuyer1">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="addressBuyer1">Address - Buyer
+                      1*</label>
+
+                    <textarea id="addressBuyer1" name="address_buyer_1" rows="3" minlength="" maxlength=""
+                      placeholder="Address - Buyer 1*" required class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_phoneBuyer1">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="phoneBuyer1">Phone - Buyer 1*</label>
+
+                    <textarea id="phoneBuyer1" name="phone_buyer_1" rows="3" minlength="" maxlength=""
+                      placeholder="Phone - Buyer 1*" required class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_emailBuyer1">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="emailBuyer1">Email - Buyer 1*</label>
+
+                    <textarea id="emailBuyer1" name="email_buyer_1" rows="3" minlength="" maxlength=""
+                      placeholder="Email - Buyer 1*" required class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_buyer2FullLegalName">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="buyer2FullLegalName">Buyer 2 - Full
+                      Legal Name:</label>
+
+                    <textarea id="buyer2FullLegalName" name="buyer_2_full_legal_name" rows="3" minlength="" maxlength=""
+                      placeholder="Buyer 2 - Full Legal Name:" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_addressBuyer2IfDifferentToBuyer1">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1"
+                      for="addressBuyer2IfDifferentToBuyer1">Address - Buyer 2 (if different to Buyer 1)</label>
+
+                    <textarea id="addressBuyer2IfDifferentToBuyer1" name="address_buyer_2_if_different_to_buyer_1"
+                      rows="3" minlength="" maxlength="" placeholder="Address - Buyer 2 (if different to Buyer 1)"
+                      class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_phoneBuyer2">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="phoneBuyer2">Phone - Buyer 2</label>
+
+                    <textarea id="phoneBuyer2" name="phone_buyer_2" rows="3" minlength="" maxlength=""
+                      placeholder="Phone - Buyer 2" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_emailBuyer2">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="emailBuyer2">Email - Buyer 2</label>
+
+                    <textarea id="emailBuyer2" name="email_buyer_2" rows="3" minlength="" maxlength=""
+                      placeholder="Email - Buyer 2" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_offerPrice">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="offerPrice">Offer Price ($)*</label>
+
+                    <input id="offerPrice" name="offer_price" type="number" placeholder="Offer price ($)" minlength=""
+                      maxlength="" size="10" required class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_initialDeposit">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="initialDeposit">Initial Deposit
+                      ($)*</label>
+
+                    <input id="initialDeposit" name="initial_deposit" type="number" placeholder="Initial deposit  ($)"
+                      minlength="" maxlength="" size="10" required class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_balanceDeposit">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="balanceDeposit">Balance Deposit
+                      ($)</label>
+
+                    <input id="balanceDeposit" name="balance_deposit" type="number" placeholder="Balance deposit  ($)"
+                      minlength="" maxlength="" size="10" class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-px-3" role="form_select"
+                    id="select_willYourOfferBeSubjectToFinance">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="willYourOfferBeSubjectToFinance">Will
+                      your offer be subject to finance?*</label>
+                    <div class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-bg-white
+     v2-border v2-border-border-grey v2-overflow-hidden
+     v2-text-body v2-px-5 v2-h-11 focus:v2-outline-none">
+
+                      <select id="willYourOfferBeSubjectToFinance" name="will_your_offer_be_subject_to_finance" required
+                        class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-w-full v2-bg-white
+         v2-text-body v2-h-11 v2-px-0 focus:v2-outline-none v2-cursor-pointer">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <style>
+                    select {
+                      -webkit-appearance: none;
+                      -moz-appearance: none;
+                      appearance: none;
+                      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+                      background-repeat: no-repeat, repeat !important;
+                      background-position: right .7em top 50%, 0 0 !important;
+                      background-size: .65em auto, 100% !important;
+                      border: none;
+                      border-radius: 0px;
+                    }
+                  </style>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_ifYesHowManyDays">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="ifYesHowManyDays">If yes, how many
+                      days?</label>
+
+                    <input id="ifYesHowManyDays" name="if_yes_how_many_days" type="text"
+                      placeholder="If yes, how many days?" minlength="" maxlength="" size="10" class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-px-3" role="form_select"
+                    id="select_willYourOfferBeSubjectToBuildingPest">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1"
+                      for="willYourOfferBeSubjectToBuildingPest">Will your offer be subject to Building &amp;
+                      Pest</label>
+                    <div class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-bg-white
+     v2-border v2-border-border-grey v2-overflow-hidden
+     v2-text-body v2-px-5 v2-h-11 focus:v2-outline-none">
+
+                      <select id="willYourOfferBeSubjectToBuildingPest"
+                        name="will_your_offer_be_subject_to_building_pest" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-w-full v2-bg-white
+         v2-text-body v2-h-11 v2-px-0 focus:v2-outline-none v2-cursor-pointer">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <style>
+                    select {
+                      -webkit-appearance: none;
+                      -moz-appearance: none;
+                      appearance: none;
+                      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+                      background-repeat: no-repeat, repeat !important;
+                      background-position: right .7em top 50%, 0 0 !important;
+                      background-size: .65em auto, 100% !important;
+                      border: none;
+                      border-radius: 0px;
+                    }
+                  </style>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_ifYesHowManyDays1">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="ifYesHowManyDays1">If yes, how many
+                      days?</label>
+
+                    <textarea id="ifYesHowManyDays1" name="if_yes_how_many_days" rows="3" minlength="" maxlength=""
+                      placeholder="If yes, how many days?" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-px-3" role="form_select"
+                    id="select_doYouHaveAnyOtherConditionsForPurchase">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1"
+                      for="doYouHaveAnyOtherConditionsForPurchase">Do you have any other conditions for
+                      purchase?</label>
+                    <div class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-bg-white
+     v2-border v2-border-border-grey v2-overflow-hidden
+     v2-text-body v2-px-5 v2-h-11 focus:v2-outline-none">
+
+                      <select id="doYouHaveAnyOtherConditionsForPurchase"
+                        name="do_you_have_any_other_conditions_for_purchase" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-w-full v2-bg-white
+         v2-text-body v2-h-11 v2-px-0 focus:v2-outline-none v2-cursor-pointer">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <style>
+                    select {
+                      -webkit-appearance: none;
+                      -moz-appearance: none;
+                      appearance: none;
+                      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+                      background-repeat: no-repeat, repeat !important;
+                      background-position: right .7em top 50%, 0 0 !important;
+                      background-size: .65em auto, 100% !important;
+                      border: none;
+                      border-radius: 0px;
+                    }
+                  </style>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_ifYesPleaseStateBriefDetails">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="ifYesPleaseStateBriefDetails">If yes,
+                      please state brief details</label>
+
+                    <textarea id="ifYesPleaseStateBriefDetails" name="if_yes_please_state_brief_details" rows="3"
+                      minlength="" maxlength="" placeholder="If yes, please state brief details" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col v2-w-full v2-relative v2-px-3" role="form_textarea"
+                    id="textarea_solicitorDetails">
+
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="solicitorDetails">Solicitor
+                      Details*</label>
+
+                    <textarea id="solicitorDetails" name="solicitor_details" rows="3" minlength="" maxlength=""
+                      placeholder="Solicitor Details*" required class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-flex-shrink-0 v2-w-full v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-p-5 focus:v2-outline-none"></textarea>
+
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-px-3" role="form_select" id="select_select">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="select">Are you happy for us to store
+                      your information in our database?</label>
+                    <div class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-bg-white
+     v2-border v2-border-border-grey v2-overflow-hidden
+     v2-text-body v2-px-5 v2-h-11 focus:v2-outline-none">
+
+                      <select id="select" name="are_you_happy_for_us_to_store_your_information_in_our_database" class="v2-flex v2-justify-center v2-items-center v2-flex-grow v2-w-full v2-bg-white
+         v2-text-body v2-h-11 v2-px-0 focus:v2-outline-none v2-cursor-pointer">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <style>
+                    select {
+                      -webkit-appearance: none;
+                      -moz-appearance: none;
+                      appearance: none;
+                      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+                      background-repeat: no-repeat, repeat !important;
+                      background-position: right .7em top 50%, 0 0 !important;
+                      background-size: .65em auto, 100% !important;
+                      border: none;
+                      border-radius: 0px;
+                    }
+                  </style>
+
+
+
+
+
+                  <div class="v2-flex v2-flex-col dynamic-form-field v2-flex-grow v2-relative v2-px-3" role="form_text"
+                    id="text_submit">
+                    <label class="v2-text-body-bold v2-text-dark-500 v2-mb-1" for="submit">Submit</label>
+
+                    <input id="submit" name="submit" type="button" placeholder="Submit" minlength="" maxlength=""
+                      size="10" class="v2-flex v2-justify-center v2-items-center v2-bg-white v2-cursor-text
+                    v2-border v2-border-border-grey
+                    v2-text-body v2-h-11 v2-px-5 focus:v2-outline-none" />
+                    <span x-text="error" class="v2-text-red v2-px-2 v2-absolute v2--bottom-4"></span>
+                  </div>
+
+
+                  <div class="v2-px-3">
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="6LeA-rArAAAAAFJMwDe9nr404dalEWtYeruBodwZ"></div>
+                  </div>
+                </div>
+
+                <div class="v2-flex v2-flex-col v2-w-full v2-items-center v2-gap-y-3">
+
+                  <button id="" type="submit" role="form-submit-btn" class="primary-button v2-flex v2-flex-grow sm:v2-flex-grow-0 v2-justify-center v2-items-center
+                v2-text-white v2-transition-colors v2-ease-in v2-px-10
+                v2-bg-primary-500 hover:v2-bg-primary-hover v2-py-3
+                v2-rounded v2-text-button v2-duration-200 hover:v2-underline">
+                    Submit
+                  </button>
+
+                </div>
+              </form>
+            </div>
+
+            <script src="https://realwayedge.com.au/js/dist/~form-submit.b87d95d9e4d03b8580e0.js"></script>
+            </p>
+
+          </div>
+
+        </div>
+        <script src="https://realwayedge.com.au/js/dist/~twig-js.b87d95d9e4d03b8580e0.js"></script>
+        <script> window.__TwigJs && window.__TwigJs.dynamicImport('shared/components/video/initialise')</script>
+
+      </div>
+    </div>
+
+
+
+
+
+    <footer class="v2-block">
+      <div id="bottom-footer-section" style="background-color: #ffffff"
+        class="v2-flex v2-flex-col v2-w-full v2-min-h-xs v2-px-5 md:v2-px-10 v2-p-20 v2-pb-9 v2-border-t-2 v2-border-primary-500">
+
+        <div class="v2-flex v2-flex-col sm:v2-flex-row v2-w-full v2-justify-between v2-gap-10 v2-items-center">
+          <div id="footer-logo" class="v2-flex-1">
+            <a href="/" target="_self">
+              <img
+                src="https://s3.ap-southeast-2.amazonaws.com/app-spoke-sites-au/25/18204225eb4d249b18b5298977594a6f.png"
+                height="auto" width="200px" loading="lazy" />
+            </a>
+          </div>
+
+          <div id="footer-socials" class="v2-flex v2-flex-1 v2-justify-center">
+            <ul style="color: #000000"
+              class="v2-flex v2-justify-center v2-space-x-8 text-center v2-text-xs lg:v2-text-base">
+              <li class="v2-flex v2-justify-center v2-items-center hover:v2-opacity-45">
+                <a href="https://www.facebook.com/profile.php?id=100064013671375" target="_blank">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="v2-w-5 v2-h-5 lg:v2-w-6 lg:v2-h-6" width="24"
+                    height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M24 12C24 5.37097 18.629 0 12 0C5.37097 0 0 5.37097 0 12C0 17.9894 4.38823 22.9539 10.125 23.8548V15.4689H7.07661V12H10.125V9.35613C10.125 6.34887 11.9153 4.68774 14.6574 4.68774C15.9706 4.68774 17.3439 4.92194 17.3439 4.92194V7.87355H15.8303C14.34 7.87355 13.875 8.79871 13.875 9.74758V12H17.2031L16.6708 15.4689H13.875V23.8548C19.6118 22.9539 24 17.9894 24 12Z"
+                      fill="currentColor" />
+                  </svg>
+                </a>
+              </li>
+
+              <li class="v2-flex v2-justify-center v2-items-center hover:v2-opacity-45">
+                <a href="https://www.instagram.com/realway.edge/" target="_blank">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="v2-w-5 v2-h-5 lg:v2-w-6 lg:v2-h-6" width="24"
+                    height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12.0025 6.35948C8.88098 6.35948 6.36319 8.87783 6.36319 12C6.36319 15.1222 8.88098 17.6405 12.0025 17.6405C15.1239 17.6405 17.6417 15.1222 17.6417 12C17.6417 8.87783 15.1239 6.35948 12.0025 6.35948ZM12.0025 15.6671C9.98528 15.6671 8.3362 14.0225 8.3362 12C8.3362 9.97746 9.98037 8.33292 12.0025 8.33292C14.0245 8.33292 15.6687 9.97746 15.6687 12C15.6687 14.0225 14.0196 15.6671 12.0025 15.6671ZM19.1877 6.12875C19.1877 6.8602 18.5988 7.44438 17.8724 7.44438C17.1411 7.44438 16.5571 6.85529 16.5571 6.12875C16.5571 5.40221 17.146 4.81312 17.8724 4.81312C18.5988 4.81312 19.1877 5.40221 19.1877 6.12875ZM22.9227 7.46402C22.8393 5.70166 22.4368 4.14058 21.146 2.8544C19.8601 1.56822 18.2994 1.16568 16.5374 1.07732C14.7215 0.974227 9.27853 0.974227 7.46258 1.07732C5.70552 1.16077 4.14479 1.56332 2.85399 2.84949C1.56319 4.13567 1.16564 5.69675 1.0773 7.45911C0.974233 9.27547 0.974233 14.7196 1.0773 16.536C1.16074 18.2983 1.56319 19.8594 2.85399 21.1456C4.14479 22.4318 5.70061 22.8343 7.46258 22.9227C9.27853 23.0258 14.7215 23.0258 16.5374 22.9227C18.2994 22.8392 19.8601 22.4367 21.146 21.1456C22.4319 19.8594 22.8344 18.2983 22.9227 16.536C23.0258 14.7196 23.0258 9.28037 22.9227 7.46402ZM20.5767 18.4849C20.1939 19.4471 19.4528 20.1883 18.4859 20.5761C17.038 21.1505 13.6025 21.018 12.0025 21.018C10.4025 21.018 6.96196 21.1456 5.51902 20.5761C4.55705 20.1932 3.81595 19.452 3.42822 18.4849C2.85399 17.0367 2.9865 13.6004 2.9865 12C2.9865 10.3996 2.8589 6.95838 3.42822 5.51512C3.81104 4.55294 4.55215 3.81167 5.51902 3.42385C6.96687 2.84949 10.4025 2.98204 12.0025 2.98204C13.6025 2.98204 17.0429 2.8544 18.4859 3.42385C19.4479 3.80676 20.189 4.54803 20.5767 5.51512C21.1509 6.96329 21.0184 10.3996 21.0184 12C21.0184 13.6004 21.1509 17.0416 20.5767 18.4849Z"
+                      fill="currentColor" stroke="currentColor" stroke-width="0.5" />
+                  </svg> </a>
+              </li>
+
+
+
+
+            </ul>
+
+          </div>
+
+          <div id="siteloft-trademark"
+            class="v2-flex-1 v2-flex v2-justify-end v2-text-center sm:v2-text-right v2-flex-col v2-gap-y-1.5 v2-gap-x-3.5">
+            <p style="color: #000000; opacity: 0.75;" class="v2-text-body-small">
+
+            </p>
+            <p style="color: #000000; opacity: 0.75;" class="v2-text-body-small">Powered by
+              <span class="v2-font-bold">
+                <a href="https://www.rexsoftware.com/products/real-estate-websites" class="v2-underline"
+                  target="_blank">Rex Websites</a>
+              </span>
+            </p>
+          </div>
+
+        </div>
+
+        <div class="v2-w-full v2-text-center v2-pt-5">
+          <span style="color: #000000; opacity: 0.75;" class="v2-text-body-small">
+          </span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>

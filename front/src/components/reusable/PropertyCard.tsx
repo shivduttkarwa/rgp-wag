@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   MapPin, Bed, Bath, Square, Car,
-  Heart, ArrowRight, Tag, CheckCircle, Clock, Eye,
+  Heart, Tag, CheckCircle, Clock, Eye,
 } from "lucide-react";
+import RgButton from "@/components/reusable/RgButton";
 import "./PropertyCard.css";
 
 // ─── Type ──────────────────────────────────────────────────────────────────
@@ -195,15 +195,14 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Link
-          to={`/properties/${property.slug}`}
-          className="card-btn btn-primary"
-        >
-          <span>
-            {isSold ? "View Details" : isRent ? "Schedule Tour" : "View Property"}
-          </span>
-          <ArrowRight size={16} />
-        </Link>
+        <div className="card-actions">
+          <RgButton
+            variant="gold"
+            to={`/properties/${property.slug}`}
+            label={isSold ? "View Details" : isRent ? "Schedule Tour" : "View Property"}
+            arrowSize={16}
+          />
+        </div>
       </div>
     </div>
   );

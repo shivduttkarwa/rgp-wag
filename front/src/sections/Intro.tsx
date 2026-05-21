@@ -1,19 +1,23 @@
-import { Link } from "react-router-dom";
+import RgButton from "@/components/reusable/RgButton";
+import assetUrl from "@/lib/assetUrl";
 import type { IntroSection } from "@/types/homePage";
 import "./Intro.css";
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
-const base = import.meta.env.BASE_URL?.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const resolveUrl = (url: string) => {
-  if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/media/") || url.startsWith("/static/")) return `${API_BASE}${url}`;
-  return `${base}${url}`;
-};
+const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
 
 const Intro = ({ data }: { data: IntroSection }) => {
+  const primaryHref = data.primary_cta.href || "/contact";
+  const secondaryHref = data.secondary_cta.href || "/about";
+  const primaryLinkProps = isExternalHref(primaryHref)
+    ? { href: primaryHref }
+    : { to: primaryHref };
+  const secondaryLinkProps = isExternalHref(secondaryHref)
+    ? { href: secondaryHref }
+    : { to: secondaryHref };
+
   return (
     <section className="intro">
+      {/* Left: Content */}
       <div className="intro-content">
         <span className="intro-label" data-gsap="fade-up">
           {data.label}
@@ -35,38 +39,42 @@ const Intro = ({ data }: { data: IntroSection }) => {
         </p>
 
         <div className="intro-cta-group">
-          <Link
-            to={data.primary_cta.href}
-            className="intro-cta intro-cta--primary"
+          <RgButton
+            variant="blue"
+            {...primaryLinkProps}
+            label={data.primary_cta.label}
+            arrowSize={16}
             data-gsap="btn-clip-reveal"
             data-gsap-delay="0.2"
-          >
-            <span>{data.primary_cta.label}</span>
-            <svg viewBox="0 0 24 24">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </Link>
-
-          {data.secondary_cta.label && (
-            <Link
-              to={data.secondary_cta.href}
-              className="intro-cta intro-cta--ghost"
+          />
+          {data.secondary_cta.label ? (
+            <RgButton
+              variant="outline"
+              {...secondaryLinkProps}
+              label={data.secondary_cta.label}
+              arrowSize={16}
               data-gsap="btn-clip-reveal"
               data-gsap-delay="0.3"
-            >
-              <span>{data.secondary_cta.label}</span>
-            </Link>
-          )}
+            />
+          ) : null}
         </div>
       </div>
 
+      {/* Right: Image */}
       <div
         className="intro-image"
         data-gsap="clip-reveal-right"
         data-gsap-start="top 60%"
       >
-        <img src={resolveUrl(data.image?.url ?? data.image_url)} alt={data.founder_name} />
+        <img
+          src={assetUrl(data.image?.url ?? data.image_url)}
+          alt={`${data.founder_name} — Real Gold Properties`}
+        />
+
+        {/* Bottom gradient */}
         <div className="intro-img-gradient" />
+
+        {/* Corner brackets */}
         <div className="intro-img-corner intro-img-corner--tl" />
         <div className="intro-img-corner intro-img-corner--br" />
       </div>

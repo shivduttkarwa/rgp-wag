@@ -243,36 +243,6 @@
   justify-content: center;
 }
 
-.rg-philo__cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8125rem 1.625rem;
-  border-radius: 0.5rem;
-  background: var(--rg-blue-500, #0f1870);
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.rg-philo__cta-btn:hover {
-  background: #162496;
-  transform: translateY(-0.125rem);
-}
-
-.rg-philo__cta-btn svg {
-  width: 1rem;
-  height: 1rem;
-  transition: transform 0.25s ease;
-}
-
-.rg-philo__cta-btn:hover svg {
-  transform: translateX(0.25rem);
-}
-
 /* Mobile swiper — hidden on desktop */
 .rg-philo__swiper-wrap {
   display: none;

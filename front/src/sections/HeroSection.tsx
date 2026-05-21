@@ -1,41 +1,8 @@
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import BtnSecondary from "../components/BtnSecondary";
+import RgButton from "@/components/reusable/RgButton";
+import assetUrl from "@/lib/assetUrl";
 import "./HeroSection.css";
-
-// ─── URL helpers ─────────────────────────────────────────────────────────────
-
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
-
-/**
- * Resolve any URL to a fully usable src:
- *  - Already absolute (http/https) → as-is
- *  - Starts with /media/ or /static/ → Django-served, prepend API_BASE
- *  - Otherwise → relative to Vite public/, prepend publicUrl
- */
-function resolveMediaUrl(url: string, publicUrl: string): string {
-  if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/media/") || url.startsWith("/static/")) return `${API_BASE}${url}`;
-  return `${publicUrl}${url}`;
-}
-
-// ─── Vimeo helpers ────────────────────────────────────────────────────────────
-
-function extractVimeoId(url: string): string | null {
-  const match = url.match(
-    /(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/,
-  );
-  return match ? match[1] : null;
-}
-
-function buildVimeoEmbedUrl(id: string): string {
-  return `https://player.vimeo.com/video/${id}?background=1&autoplay=1&loop=1&muted=1&autopause=0`;
-}
-
-function isVimeoUrl(url: string): boolean {
-  return /vimeo\.com/.test(url);
-}
 
 type HeroSectionProps = {
   ready?: boolean;
@@ -69,7 +36,7 @@ export default function HeroSection({
     </>
   ),
   subtitle =
-    "350+ premium properties delivered — luxury villas, penthouses & exclusive estates crafted for those who demand the extraordinary.",
+    "Premium properties delivered — residential houses, units, land, and exclusive estates crafted for those who demand the extraordinary.",
   ctaLabel = "Explore Properties",
   ctaOnClick,
   showCta = true,
@@ -80,8 +47,6 @@ export default function HeroSection({
   footer,
   panel,
 }: HeroSectionProps) {
-  const publicUrl = import.meta.env.BASE_URL || "/";
-  const hasVideo = Boolean(showVideo && bgVideo);
   const bgRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
   const titleOneRef = useRef<HTMLDivElement>(null);
@@ -90,15 +55,15 @@ export default function HeroSection({
   const revealCtaRef = useRef<HTMLDivElement>(null);
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const posterSrc = assetUrl(bgPoster || bgImage);
+  const videoSrc = assetUrl(bgVideo);
 
   useEffect(() => {
-    // Prevent stale "ready" state from hiding the poster when switching to image-only hero data.
-    if (!hasVideo) setVideoReady(false);
-  }, [hasVideo, bgVideo, bgImage, bgPoster]);
+    if (titleOneRef.current) titleOneRef.current.dataset.charSplit = "false";
+    if (titleTwoRef.current) titleTwoRef.current.dataset.charSplit = "false";
+  }, [titleLine1, titleLine2]);
 
   useEffect(() => {
-    if (!hasVideo) return;
-
     const video = videoRef.current;
     if (!video) return;
 
@@ -125,7 +90,7 @@ export default function HeroSection({
     return () => {
       video.removeEventListener("playing", handlePlaying);
     };
-  }, [hasVideo, bgVideo]);
+  }, []);
 
   // Set initial states on mount — bg fully visible, only content hidden
   useLayoutEffect(() => {
@@ -143,11 +108,11 @@ export default function HeroSection({
     gsap.set([titleOne, titleTwo], { y: 50, opacity: 0 });
     gsap.set([revealSub], { x: -60, opacity: 0 });
     if (revealCta) {
-      if (panel) {
-        gsap.set(revealCta, { clipPath: "inset(0 0 100% 0)", opacity: 1, willChange: "clip-path" });
-      } else {
-        gsap.set(revealCta, { x: -60, opacity: 0, scale: 0.9 });
-      }
+      gsap.set(revealCta, {
+        clipPath: "inset(0 0 100% 0)",
+        opacity: 1,
+        willChange: "clip-path",
+      });
     }
   }, []);
 
@@ -162,24 +127,80 @@ export default function HeroSection({
 
     if (!titleOne || !titleTwo || !revealSub) return;
 
-    gsap.set([titleOne, titleTwo], { y: 40, opacity: 0 });
+    const splitToChars = (el: HTMLElement) => {
+      if (el.dataset.charSplit === "true") {
+        return Array.from(el.querySelectorAll<HTMLElement>(".hero-char"));
+      }
+      el.dataset.charSplit = "true";
+
+      const allChars: HTMLElement[] = [];
+      const processText = (text: string, container: HTMLElement) => {
+        const parts = text.split(/(\s+)/);
+        parts.forEach((part) => {
+          if (/^\s+$/.test(part)) {
+            container.appendChild(document.createTextNode(part));
+          } else if (part) {
+            const wordWrap = document.createElement("span");
+            wordWrap.className = "hero-word";
+            wordWrap.style.cssText =
+              "display:inline-block;overflow:hidden;vertical-align:top";
+            part.split("").forEach((ch) => {
+              const charSpan = document.createElement("span");
+              charSpan.className = "hero-char";
+              charSpan.style.display = "inline-block";
+              charSpan.textContent = ch;
+              wordWrap.appendChild(charSpan);
+              allChars.push(charSpan);
+            });
+            container.appendChild(wordWrap);
+          }
+        });
+      };
+
+      const originalNodes = Array.from(el.childNodes);
+      el.innerHTML = "";
+      originalNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          processText(node.textContent || "", el);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const wrapper = document.createElement(
+            (node as Element).nodeName.toLowerCase(),
+          );
+          Array.from((node as Element).attributes).forEach((attr) =>
+            wrapper.setAttribute(attr.name, attr.value),
+          );
+          processText(node.textContent || "", wrapper);
+          el.appendChild(wrapper);
+        }
+      });
+
+      return allChars;
+    };
+
+    const titleOneChars = splitToChars(titleOne);
+    const titleTwoChars = splitToChars(titleTwo);
+
+    gsap.set([...titleOneChars, ...titleTwoChars], { y: 40, opacity: 0 });
+    gsap.set([titleOne, titleTwo], { opacity: 1 });
 
     const tl = gsap.timeline();
-    tl.to(titleOne, {
+    tl.to(titleOneChars, {
       y: 0,
       opacity: 1,
-      duration: 1,
-      ease: "power3.out",
+      duration: 1.1,
+      ease: "back.out(1.4)",
+      stagger: 0.03,
     });
     tl.to(
-      titleTwo,
+      titleTwoChars,
       {
         y: 0,
         opacity: 1,
-        duration: 1,
-        ease: "power3.out",
+        duration: 1.1,
+        ease: "back.out(1.4)",
+        stagger: 0.03,
       },
-      0.15,
+      0.25,
     );
     tl.to(
       revealSub,
@@ -187,19 +208,11 @@ export default function HeroSection({
       0.9,
     );
     if (revealCta) {
-      if (panel) {
-        tl.to(
-          revealCta,
-          { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" },
-          1.1,
-        );
-      } else {
-        tl.to(
-          revealCta,
-          { x: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power4.out" },
-          1,
-        );
-      }
+      tl.to(
+        revealCta,
+        { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" },
+        1.1,
+      );
     }
 
     return () => {
@@ -214,70 +227,43 @@ export default function HeroSection({
     <div className="rgp-hero-wrap">
       <section className="rgp-hero">
         {/* ── BACKGROUND ── */}
-        {(() => {
-          const resolvedBgImage = resolveMediaUrl(bgImage ?? "", publicUrl);
-          const resolvedPoster  = bgPoster
-            ? resolveMediaUrl(bgPoster, publicUrl)
-            : resolvedBgImage;
-
-          const vimeoId = bgVideo && isVimeoUrl(bgVideo)
-            ? extractVimeoId(bgVideo)
-            : null;
-
-          return (
-            <div
-              className={`rgp-hero__bg ${hasVideo && videoReady ? "rgp-hero__bg--ready" : ""}`}
-              ref={bgRef}
-              aria-hidden="true"
-            >
-              {/* Poster / static image (always rendered as fallback) */}
-              <img
-                className="rgp-hero__bg-poster"
-                src={resolvedPoster}
-                alt=""
-                loading="eager"
-                fetchPriority="high"
-              />
-
-              {hasVideo && (
-                vimeoId ? (
-                  /* ── Vimeo background iframe ── */
-                  <iframe
-                    className="rgp-hero__bg-video rgp-hero__bg-video--vimeo"
-                    src={buildVimeoEmbedUrl(vimeoId)}
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                    onLoad={() => setVideoReady(true)}
-                  />
-                ) : (
-                  /* ── Direct video file ── */
-                  <video
-                    className="rgp-hero__bg-video"
-                    ref={videoRef}
-                    src={resolveMediaUrl(bgVideo, publicUrl)}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    controls={false}
-                    disablePictureInPicture
-                    preload="auto"
-                    poster={resolvedPoster}
-                    onLoadedMetadata={() => {
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => setVideoReady(true));
-                      });
-                    }}
-                    onCanPlay={() => {
-                      setVideoReady(true);
-                      void videoRef.current?.play();
-                    }}
-                  />
-                )
-              )}
-            </div>
-          );
-        })()}
+        <div
+          className={`rgp-hero__bg ${videoReady ? "rgp-hero__bg--ready" : ""}`}
+          ref={bgRef}
+          aria-hidden="true"
+        >
+          <img
+            className="rgp-hero__bg-poster"
+            src={posterSrc}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+          />
+          {showVideo && (
+            <video
+              className="rgp-hero__bg-video"
+              ref={videoRef}
+              src={videoSrc}
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls={false}
+              disablePictureInPicture
+              preload="auto"
+              poster={posterSrc}
+              onLoadedMetadata={() => {
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => setVideoReady(true));
+                });
+              }}
+              onCanPlay={() => {
+                setVideoReady(true);
+                void videoRef.current?.play();
+              }}
+            />
+          )}
+        </div>
 
         {/* ── VIGNETTE ── */}
         <div
@@ -311,7 +297,12 @@ export default function HeroSection({
             </div>
           ) : showCta ? (
             <div className="rgp-hero__cta" ref={revealCtaRef}>
-              <BtnSecondary label={ctaLabel} onClick={ctaOnClick} />
+              <RgButton
+                variant="gold"
+                onClick={ctaOnClick}
+                label={ctaLabel}
+                arrowSize={16}
+              />
             </div>
           ) : null}
         </div>

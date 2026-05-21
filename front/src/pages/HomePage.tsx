@@ -7,9 +7,17 @@ import PortfolioShowcase from "../sections/PortfolioShowcase";
 import PropertyListingSection from "@/sections/PropertyListingSection";
 import ServiceSelection from "@/sections/ServiceSelection";
 import PhilosophyPillars from "@/sections/Philosophy";
+import RgpCta from "@/components/reusable/RgpCta";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useHomePage } from "@/hooks/useHomePage";
+
+const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
+
+const toRgpLink = (label: string, href: string) => {
+  if (isExternalHref(href)) return { label, href };
+  return { label, to: href };
+};
 
 export default function HomePage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -31,52 +39,72 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
     return cleanup;
   }, []);
 
-  const hero = sections.hero!;
-  const heroTabs = hero.search_tabs?.filter((tab) => tab.label && tab.href) ?? [];
-  const legacyCta = hero.cta;
+  const hero = sections.hero;
+  const heroTabs = hero?.search_tabs?.filter((tab) => tab.label && tab.href) ?? [];
+  const legacyCta = hero?.cta;
   const showLegacyCta = heroTabs.length === 0 && Boolean(legacyCta?.label);
+  const services = sections.services;
+
+  const primaryCta = toRgpLink(
+    services?.cta_primary.label || "Talk to an Expert",
+    services?.cta_primary.href || "/contact",
+  );
+  const secondaryCta = toRgpLink(
+    services?.cta_secondary.label || "0450 009 291",
+    services?.cta_secondary.href || "tel:+61450009291",
+  );
 
   return (
     <div ref={pageRef}>
-      {/* ── Hero ── */}
       <HeroSection
         ready={ready}
-        titleLine1={renderHeroAccentTokens(hero.title_line_1)}
-        titleLine2={renderHeroAccentTokens(hero.title_line_2)}
-        subtitle={hero.subtitle}
-        ctaLabel={legacyCta?.label ?? ""}
+        titleLine1={renderHeroAccentTokens(hero?.title_line_1 ?? "Your [gold]Dream[/gold] Home")}
+        titleLine2={renderHeroAccentTokens(hero?.title_line_2 ?? "[amber]Perfectly[/amber] Delivered")}
+        subtitle={hero?.subtitle}
+        ctaLabel={legacyCta?.label ?? "Explore Properties"}
         showCta={showLegacyCta}
         ctaOnClick={() => {
           const href = legacyCta?.href || "/properties";
-          if (/^[a-z][a-z0-9+.-]*:/i.test(href)) {
+          if (isExternalHref(href)) {
             window.location.assign(href);
-          } else {
-            navigate(href);
+            return;
           }
+          navigate(href);
         }}
-        showVideo={hero.show_video}
-        bgImage={hero.background_image?.url ?? hero.background_image_url}
-        bgPoster={hero.background_image?.url ?? hero.background_image_url}
-        bgVideo={hero.background_video_url || undefined}
+        showVideo={hero?.show_video ?? true}
+        bgImage={hero?.background_image?.url ?? hero?.background_image_url}
+        bgPoster={hero?.background_image?.url ?? hero?.background_image_url}
+        bgVideo={hero?.background_video_url || undefined}
         panel={heroTabs.length > 0 ? <HeroSearchPanel tabs={heroTabs} /> : undefined}
       />
 
-      {/* ── Intro / Founder ── */}
-      {sections.intro && <Intro data={sections.intro} />}
+      {sections.intro ? <Intro data={sections.intro} /> : null}
 
-      {/* ── Property Listings ── */}
-      {sections.property_listing && <PropertyListingSection data={sections.property_listing} />}
+      {sections.property_listing ? <PropertyListingSection data={sections.property_listing} /> : null}
 
-      {/* ── Services ── */}
-      {sections.services && <ServiceSelection data={sections.services} />}
+      {services ? (
+        <>
+          <ServiceSelection data={services} />
+          <RgpCta
+            eyebrow={services.cta_eyebrow}
+            title={services.cta_title}
+            titleEm={services.cta_title_em}
+            text={services.cta_text}
+            bgVideo="vids/cta-vid.mp4"
+            primary={primaryCta}
+            secondary={secondaryCta}
+            stats={[
+              { value: "5+", label: "Years Experience" },
+              { value: "100+", label: "Happy Clients" },
+              { value: "24/7", label: "Support Available" },
+            ]}
+          />
+        </>
+      ) : null}
 
-      {/* ── Video Testimonials ── */}
-      {sections.video_testimonials && (
-        <PhilosophyPillars data={sections.video_testimonials} />
-      )}
+      {sections.video_testimonials ? <PhilosophyPillars data={sections.video_testimonials} /> : null}
 
-      {/* ── Portfolio Showcase ── */}
-      {sections.portfolio && <PortfolioShowcase data={sections.portfolio} />}
+      {sections.portfolio ? <PortfolioShowcase data={sections.portfolio} /> : null}
     </div>
   );
 }

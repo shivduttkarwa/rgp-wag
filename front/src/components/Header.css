@@ -13,9 +13,9 @@
 .rg-header__bg {
   position: absolute;
   inset: 0;
-  background: rgba(8, 13, 60, 0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: #001f49;
+  
+  
   opacity: 0;
   z-index: 0;
   border-bottom: 1px solid rgba(249, 195, 7, 0.18);
@@ -27,7 +27,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(1.25rem, 3vw, 2.5rem);
-  height: 86px;
+  height: 6.45rem;
   position: relative;
   z-index: 1;
   padding-left: 1.45rem;
@@ -43,16 +43,16 @@
 }
 
 .rg-header__logo:focus-visible {
-  outline: 2px solid var(--rg-gold);
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline: 0.125rem solid var(--rg-gold);
+  outline-offset: 0.25rem;
+  border-radius: 0.25rem;
 }
 
 .rg-header__logo img {
-  width: clamp(76px, 8vw, 118px);
+  width: clamp(6.175rem, 10.4vw, 9.6rem);
   height: auto;
   display: block;
-  margin-top: 3px;
+  margin-top: 0.5rem;
 }
 
 /* ══════════════════════════════════════
@@ -70,13 +70,13 @@
 
 .rg-header__nav-link {
   font-family: var(--font-title);
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.98);
   text-decoration: none;
   position: relative;
-  padding-bottom: 3px;
+  padding-bottom: 0.1875rem;
   transition: color 0.3s ease;
   white-space: nowrap;
 }
@@ -88,9 +88,9 @@
   left: 0;
   bottom: 0;
   width: 0;
-  height: 1.5px;
+  height: 0.09375rem;
   background: var(--rg-gold);
-  border-radius: 2px;
+  border-radius: 0.125rem;
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -123,76 +123,7 @@
 }
 
 /* ── CTA button ── */
-.rg-header__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.5rem;
-  background: linear-gradient(135deg, #f9c307, #d4a200);
-  color: #03071e;
-  border: 1.5px solid rgba(249, 195, 7, 0.95);
-  border-radius: 8px;
-  font-family: var(--font-title);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-  white-space: nowrap;
-  position: relative;
-  overflow: hidden;
-  transition:
-    background 0.28s ease,
-    border-color 0.28s ease,
-    box-shadow 0.28s ease,
-    transform 0.2s ease;
-}
-
-.rg-header__cta svg {
-  flex-shrink: 0;
-  transition: transform 0.28s ease;
-}
-
-.rg-header__cta::after {
-  content: "";
-  position: absolute;
-  top: -20%;
-  left: -120%;
-  width: 70%;
-  height: 140%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.65),
-    transparent
-  );
-  transform: skewX(-20deg);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.rg-header__cta:hover {
-  border-color: var(--rg-gold);
-  box-shadow: 0 6px 24px rgba(249, 195, 7, 0.35);
-  transform: translateY(-1px);
-}
-
-.rg-header__cta:hover svg {
-  transform: translate(2px, -2px);
-}
-
-.rg-header__cta:hover::after {
-  opacity: 1;
-  animation: rgCtaShine 0.85s ease forwards;
-}
-
-@keyframes rgCtaShine {
-  from {
-    left: -120%;
-  }
-  to {
-    left: 140%;
-  }
-}
+/* Header CTA visual styles now come from the universal button theme in src/index.css */
 
 /* ══════════════════════════════════════
    MOBILE HAMBURGER  (hidden on desktop)
@@ -202,9 +133,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  width: 48px;
-  height: 48px;
+  gap: 0.375rem;
+  width: 3rem;
+  height: 3rem;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -215,7 +146,7 @@
 }
 
 .rg-hamburger:hover {
-  transform: translateY(-1px);
+  transform: translateY(-0.0625rem);
 }
 
 .rg-hamburger.active {
@@ -223,14 +154,14 @@
 }
 
 .rg-hamburger.active .rg-hamburger__line {
-  width: 34px;
+  width: 2.125rem;
   background: rgba(249, 195, 7, 0.98);
 }
 
 .rg-hamburger__line {
   display: block;
-  width: 30px;
-  height: 2.5px;
+  width: 1.875rem;
+  height: 0.15625rem;
   background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.55));
   border-radius: 999px;
   transition:
@@ -242,22 +173,22 @@
 }
 
 .rg-hamburger__line:nth-child(1) {
-  width: 36px;
-  transform: translateX(-2px);
+  width: 2.25rem;
+  transform: translateX(-0.125rem);
 }
 
 .rg-hamburger__line:nth-child(2) {
-  width: 26px;
-  transform: translateX(3px);
+  width: 1.625rem;
+  transform: translateX(0.1875rem);
 }
 
 .rg-hamburger__line:nth-child(3) {
-  width: 32px;
-  transform: translateX(1px);
+  width: 2rem;
+  transform: translateX(0.0625rem);
 }
 
 .rg-hamburger.active .rg-hamburger__line:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(0.5rem) rotate(45deg);
 }
 
 .rg-hamburger.active .rg-hamburger__line:nth-child(2) {
@@ -266,7 +197,7 @@
 }
 
 .rg-hamburger.active .rg-hamburger__line:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-0.5rem) rotate(-45deg);
 }
 
 /* ══════════════════════════════════════
@@ -278,7 +209,7 @@
   position: relative;
   z-index: 1;
   padding: 0.5rem clamp(1.25rem, 3vw, 2.5rem) 1.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.07);
   background: rgba(5, 8, 28, 0.98);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -291,7 +222,7 @@
   color: rgba(255, 255, 255, 0.68);
   text-decoration: none;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.06);
   letter-spacing: 0.04em;
   transition:
     color 0.22s ease,
@@ -312,8 +243,8 @@
   padding: 0.9rem 1.75rem;
   background: transparent;
   color: var(--rg-gold);
-  border: 1.5px solid rgba(249, 195, 7, 0.6);
-  border-radius: 8px;
+  border: 0.09375rem solid rgba(249, 195, 7, 0.6);
+  border-radius: 0.5rem;
   font-family: var(--font-body);
   font-size: 0.9375rem;
   font-weight: 600;
@@ -359,10 +290,10 @@
 
 @media (max-width: 480px) {
   .rg-header__inner {
-    height: 86px;
+    height: 6.45rem;
   }
 
   .rg-header__logo img {
-    width: calc(clamp(76px, 8vw, 118px) * 1.728);
+    width: calc(clamp(4.75rem, 8vw, 7.375rem) * 1.728);
   }
 }

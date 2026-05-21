@@ -5,7 +5,7 @@
 
 /* ── BASE & LAYOUT ─────────────────────────────────────── */
 .tv3-page {
-  background: var(--rg-beige-light);
+  background: #ffffff;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -201,7 +201,7 @@
    ════════════════════════════════════════════════════════ */
 .tv3-philosophy {
   padding: 8rem 0;
-  background: var(--rg-beige);
+  background: #ffffff;
 }
 
 .tv3-philosophy__grid {
@@ -281,7 +281,7 @@
    ════════════════════════════════════════════════════════ */
 .tv3-leadership {
   padding: 8rem 0;
-  background: var(--rg-beige-light);
+  background: #ffffff;
 }
 
 .tv3-leadership__grid {
@@ -536,7 +536,7 @@
    ════════════════════════════════════════════════════════ */
 .tv3-team {
   padding: 8rem 0;
-  background: var(--rg-beige);
+  background: #ffffff;
 }
 
 .tv3-filters {
@@ -743,7 +743,7 @@
    ════════════════════════════════════════════════════════ */
 .tv3-culture {
   padding: 8rem 0;
-  background: var(--rg-beige-light);
+  background: #ffffff;
 }
 
 .tv3-culture__grid {

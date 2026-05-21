@@ -1,55 +1,68 @@
 /* ===== Legal Pages — shared styles ===== */
 .legal-page {
-  background: #faf9f6;
+  background: #ffffff;
   min-height: 100vh;
   font-family: var(--font-body);
 }
 
 /* ---- Hero ---- */
 .legal-hero {
-  background: #00032e;
-  padding: 148px 40px 72px;
+  background-color: #00032e;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 9.25rem 2.5rem 4.5rem;
   position: relative;
+}
+
+.legal-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 3, 46, 0.45);
+}
+
+.legal-hero__inner {
+  max-width: 56.25rem;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .legal-hero::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 40px;
-  right: 40px;
-  height: 1px;
+  left: 2.5rem;
+  right: 2.5rem;
+  height: 0.0625rem;
   background: rgba(249, 195, 7, 0.2);
-}
-
-.legal-hero__inner {
-  max-width: 900px;
-  margin: 0 auto;
+  z-index: 1;
 }
 
 .legal-hero__eyebrow {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #f9c307;
-  margin-bottom: 22px;
+  margin-bottom: 1.375rem;
 }
 
 .legal-hero__title {
   font-family: var(--font-title);
-  font-size: clamp(36px, 5.5vw, 68px);
+  font-size: clamp(1.35rem, 3.3vw, 2.55rem);
   font-weight: 700;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   line-height: 1;
-  margin: 0 0 20px;
+  margin: 0 0 1.25rem;
 }
 
 .legal-hero__meta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(255, 255, 255, 0.38);
   letter-spacing: 0.06em;
   margin: 0;
@@ -198,16 +211,16 @@
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .legal-hero {
-    padding: 120px 24px 56px;
+    padding: 7.5rem 1.5rem 3.5rem;
   }
 
   .legal-hero::after {
-    left: 24px;
-    right: 24px;
+    left: 1.5rem;
+    right: 1.5rem;
   }
 
   .legal-content {
-    padding: 56px 24px 80px;
+    padding: 3.5rem 1.5rem 5rem;
   }
 
   .legal-table {
@@ -218,15 +231,15 @@
 
 @media (max-width: 480px) {
   .legal-hero {
-    padding: 108px 20px 48px;
+    padding: 6.75rem 1.25rem 3rem;
   }
 
   .legal-hero::after {
-    left: 20px;
-    right: 20px;
+    left: 1.25rem;
+    right: 1.25rem;
   }
 
   .legal-content {
-    padding: 40px 20px 64px;
+    padding: 2.5rem 1.25rem 4rem;
   }
 }

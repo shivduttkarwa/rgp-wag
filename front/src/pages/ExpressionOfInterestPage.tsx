@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import HeroSection from "../sections/HeroSection";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
+import RgButton from "@/components/reusable/RgButton";
+import { Send } from "lucide-react";
+import RgSelect from "@/components/reusable/RgSelect";
+import { submitEoiForm } from "@/lib/api/forms";
 import "./ExpressionOfInterestPage.css";
 
 type FieldType = "text" | "email" | "tel" | "number" | "textarea" | "select";
@@ -259,19 +263,15 @@ function Field({ field }: { field: FieldConfig }) {
 
       {field.type === "select" ? (
         <div className="eoi-select">
-          <select
-            id={field.id}
-            name={field.name}
-            required={field.required}
-            defaultValue=""
-            className="eoi-field__control eoi-field__control--select"
-          >
-            {field.options?.map((option) => (
-              <option key={option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className="eoi-field__control eoi-field__control--select">
+            <RgSelect
+              id={field.id}
+              name={field.name}
+              required={field.required}
+              defaultValue={field.options?.[0]?.value ?? ""}
+              options={field.options ?? []}
+            />
+          </div>
         </div>
       ) : null}
 
@@ -298,6 +298,8 @@ export default function ExpressionOfInterestPage({
   const pageRef = useRef<HTMLElement>(null);
   const formTopRef = useRef<HTMLDivElement>(null);
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     const guards = [
@@ -325,9 +327,46 @@ export default function ExpressionOfInterestPage({
     return cleanup;
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSuccess(true);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const fullName = String(formData.get("buyer_1_full_legal_name") ?? "").trim();
+    const [firstName = "", ...rest] = fullName.split(/\s+/);
+    const lastName = rest.join(" ");
+    const email = String(formData.get("email_buyer_1") ?? "").trim();
+    const phone = String(formData.get("phone_buyer_1") ?? "").trim();
+    const propertyType = String(formData.get("property_address") ?? "").trim();
+    const budget = String(formData.get("offer_price") ?? "").trim();
+    const timeline = String(formData.get("finance_if_yes_how_many_days") ?? "").trim();
+
+    const messageEntries = Array.from(formData.entries()).map(([key, value]) => {
+      const raw = String(value ?? "").trim();
+      if (!raw) return null;
+      return `${key}: ${raw}`;
+    }).filter((line): line is string => Boolean(line));
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      await submitEoiForm({
+        first_name: firstName || "Unknown",
+        last_name: lastName || "Unknown",
+        email,
+        phone,
+        property_type: propertyType,
+        budget,
+        timeline,
+        message: messageEntries.join("\n"),
+      });
+      setSuccess(true);
+      form.reset();
+    } catch {
+      setSubmitError("Could not submit right now. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -414,52 +453,47 @@ export default function ExpressionOfInterestPage({
                   </p>
                 </div>
 
-                <button type="submit" className="eoi-submit__button">
-                  Submit Expression of Interest
-                </button>
+                <RgButton
+                  variant="gold"
+                  type="submit"
+                  className="eoi-submit__button"
+                  label={isSubmitting ? "Submitting..." : "Submit Expression of Interest"}
+                  endIcon={<Send size={18} aria-hidden="true" />}
+                  disabled={isSubmitting}
+                />
               </div>
+              {submitError ? <p className="eoi-submit__note">{submitError}</p> : null}
             </form>
-
-            <div
-              className="eoi-note"
-              data-gsap="clip-smooth-down"
-              data-gsap-start="top 88%"
-              data-gsap-duration="0.95"
-            >
-              <span className="eoi-note__eyebrow">Important information</span>
-              <p className="eoi-note__body">
-                Submitting an Expression of Interest does not create a legally
-                binding contract. If your offer is accepted, you will be asked
-                to sign a formal contract of sale on the agreed terms.
-              </p>
-              <p className="eoi-note__body">
-                The seller may consider multiple offers at the same time, and an
-                offer may be withdrawn at any point before a contract of sale
-                has been signed by both purchaser and seller.
-              </p>
-            </div>
           </div>
         </div>
       </section>
 
-      <div className={`eoi-success${success ? " is-visible" : ""}`} role="dialog" aria-modal="true">
+      <div
+        className={`eoi-success${success ? " is-visible" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Expression of Interest submitted"
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setSuccess(false);
+        }}
+      >
         <div className="eoi-success__card">
+          <button
+            type="button"
+            className="eoi-success__close"
+            onClick={() => setSuccess(false)}
+            aria-label="Close message"
+          >
+            ×
+          </button>
           <span className="eoi-success__mark">✦</span>
           <h2>
             Expression of Interest <em>submitted.</em>
           </h2>
           <div className="eoi-success__rule" />
           <p>
-            Thank you for your submission. Our team will review your details
-            and be in touch shortly regarding the next steps for your offer.
+            Thank you — we’ve received your Expression of Interest. Our team will review your offer details and contact you shortly with next steps.
           </p>
-          <button
-            type="button"
-            className="eoi-success__button"
-            onClick={() => setSuccess(false)}
-          >
-            Return to form
-          </button>
         </div>
       </div>
     </main>

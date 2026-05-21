@@ -5,7 +5,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import EoiCta from "@/components/reusable/eoi-cta";
 import type { PropertyListingSection as PropertyListingSectionData } from "@/types/homePage";
+import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
+import assetUrl from "@/lib/assetUrl";
 import {
   ArrowRight,
   ArrowLeft,
@@ -24,14 +27,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+const FALLBACK_SECTION = DEFAULT_HOME_PAGE_SECTIONS.property_listing!;
 
-const resolveUrl = (url: string): string => {
-  if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  if (url.startsWith("/media/") || url.startsWith("/static/")) return `${API_BASE}${url}`;
-  return url;
-};
+const isCategory = (value: string): value is Category =>
+  value === "for-sale" || value === "sold" || value === "for-rent";
 
 const propertiesData = [
   {
@@ -327,7 +326,8 @@ const propertiesData = [
   },
 ];
 
-const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) => {
+const PropertyListingSection = ({ data }: { data?: PropertyListingSectionData }) => {
+  const sectionData = data ?? FALLBACK_SECTION;
   const [activeFilter, setActiveFilter] = useState<Category | "*">("for-sale");
   const [displayedFilter, setDisplayedFilter] = useState<Category | "*">(
     "for-sale",
@@ -388,18 +388,19 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
     });
   }, []);
 
-  const sourceProperties: ListingCardProperty[] = useMemo(() => {
-    const validCards = data.cards?.filter((card): card is NonNullable<typeof card> => Boolean(card)) ?? [];
-    if (!validCards.length) return propertiesData as ListingCardProperty[];
-    return validCards.map((card) => ({
-      id: card.id,
+  const sourceProperties = useMemo<ListingCardProperty[]>(() => {
+    const cards = sectionData.cards?.filter((card): card is NonNullable<typeof card> => Boolean(card)) ?? [];
+    if (!cards.length) return propertiesData as ListingCardProperty[];
+
+    return cards.map((card) => ({
+      id: Number(card.id),
       slug: card.slug,
-      category: card.category as Category,
+      category: isCategory(card.category) ? card.category : "for-sale",
       title: card.title,
       location: card.location,
       price: Number(card.price || 0),
       soldPrice: card.soldPrice == null ? undefined : Number(card.soldPrice),
-      image: resolveUrl(card.image),
+      image: assetUrl(card.image),
       beds: Number(card.beds || 0),
       baths: Number(card.baths || 0),
       sqft: Number(card.sqft || 0),
@@ -412,8 +413,8 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
       daysOnMarket: card.daysOnMarket == null ? undefined : Number(card.daysOnMarket),
       deposit: card.deposit == null ? undefined : Number(card.deposit),
       minLease: card.minLease || undefined,
-    })) as ListingCardProperty[];
-  }, [data.cards]);
+    }));
+  }, [sectionData.cards]);
 
   const filterTabs = useMemo(() => {
     const countBy = (category: Category) =>
@@ -428,9 +429,7 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
   const displayed =
     displayedFilter === "*"
       ? sourceProperties.reduce<ListingCardProperty[]>((acc, p) => {
-          const count = acc.filter(
-            (item) => item.category === p.category,
-          ).length;
+          const count = acc.filter((item) => item.category === p.category).length;
           if (count < 3) acc.push(p);
           return acc;
         }, [])
@@ -454,33 +453,33 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
         <header className="section-header">
           <div className="section-badge" data-gsap="fade-up">
             <Building2 size={16} />
-            <span>{data.eyebrow}</span>
+            <span>{sectionData.eyebrow}</span>
           </div>
           <h2
             className="section-title"
             data-gsap="char-reveal"
             data-gsap-start="top 85%"
           >
-            {data.heading}
+            {sectionData.heading}
           </h2>
           <p
             className="section-subtitle"
             data-gsap="fade-up"
             data-gsap-delay="0.15"
           >
-            {data.subtitle}
+            {sectionData.subtitle}
           </p>
         </header>
 
         <div
           className="filter-wrapper"
-          data-gsap="fade-up"
+          data-gsap="fade-in"
           data-gsap-delay="0.1"
         >
           <div
             ref={filterTabsRef}
             className="filter-tabs"
-            data-gsap="fade-right"
+            data-gsap="fade-in"
             data-gsap-stagger="0.09"
             data-gsap-delay="0.25"
           >
@@ -499,7 +498,6 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
               >
                 <tab.icon size={16} />
                 <span>{tab.label}</span>
-                <span className="filter-tab__count">{tab.count}</span>
               </button>
             ))}
           </div>
@@ -578,46 +576,16 @@ const PropertyListingSection = ({ data }: { data: PropertyListingSectionData }) 
           </Link>
         </div>
 
-        <div
-          className="stats-bar"
-          data-gsap="clip-smooth-down"
-          data-gsap-start="top 88%"
-        >
-          <div className="listing-cta">
-            <div className="listing-cta__copy">
-              <div className="listing-cta__badge" data-gsap="fade-up">
-                <Building2 size={20} />
-                <span>Expression of Interest</span>
-              </div>
-              <h3
-                className="listing-cta__title"
-                data-gsap="char-reveal"
-                data-gsap-start="top 88%"
-              >
-                Ready to make an offer on a property you love?
-              </h3>
-              <p
-                className="listing-cta__text"
-                data-gsap="fade-up"
-                data-gsap-delay="0.14"
-              >
-                Complete our full Expression of Interest form with the exact
-                buyer, offer, condition, and solicitor details needed for a
-                clean review.
-              </p>
-            </div>
-
-            <Link
-              to="/expressions-of-interest"
-              className="listing-cta__button"
-              data-gsap="btn-clip-reveal"
-              data-gsap-delay="0.2"
-            >
-              <span>Open the Form</span>
-              <ArrowRight size={18} />
-            </Link>
-          </div>
-        </div>
+        <EoiCta
+          badgeIcon={<Building2 size={20} />}
+          badgeText="Expression of Interest"
+          title="Ready to make an offer on a property you love?"
+          text="Complete our full Expression of Interest form with the exact buyer, offer, condition, and solicitor details needed for a clean review."
+          buttonLabel="Open the Form"
+          buttonTo="/expressions-of-interest"
+          minHeight="100vh"
+          mobileMinHeight="70vh"
+        />
       </div>
     </section>
   );

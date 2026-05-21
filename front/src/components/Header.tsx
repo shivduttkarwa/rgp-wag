@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Menu from "./Menu";
+import RgButton from "./reusable/RgButton";
 import gsap from "gsap";
 import { MAIN_NAV_ITEMS } from "./navigationItems";
 import "./Header.css";
@@ -128,12 +129,12 @@ export default function Header({ ready = false }: { ready?: boolean }) {
 
           {/* Right: CTA + mobile hamburger */}
           <div className="rg-header__actions">
-            <Link to="/contact" className="rg-header__cta">
-              <span>Book a Consultation</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M7 17L17 7M17 7H7M17 7V17" />
-              </svg>
-            </Link>
+            <RgButton
+              variant="gold"
+              to="/contact"
+              label="Book a Consultation"
+              className="rg-header__cta"
+            />
 
             <button
               className={`rg-hamburger${mobileOpen ? " active" : ""}`}

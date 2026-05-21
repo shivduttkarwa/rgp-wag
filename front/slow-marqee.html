@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <section class="rg-marquee">
+  <div class="wrap">
+    <div class="rg-marquee__head">
+      <div class="rg-marquee__kicker">Featured</div>
+      <h2 class="rg-marquee__title"><span>Available</span> <em>Properties</em></h2>
+      <p class="rg-marquee__sub">
+        A curated stream of opportunities — drag to explore.
+      </p>
+    </div>
+  </div>
+
+  <div class="rg-marquee__rail" aria-label="Property marquee slider">
+    <div class="rg-marquee__fade rg-marquee__fade--l" aria-hidden="true"></div>
+    <div class="rg-marquee__fade rg-marquee__fade--r" aria-hidden="true"></div>
+
+    <div class="rg-marquee__viewport" id="rgMarqueeViewport">
+      <div class="rg-marquee__track" id="rgMarqueeTrack">
+        <!-- ====== SET A (original) ====== -->
+        <article class="rg-prop">
+          <div class="rg-prop__media">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85" alt="Montreal Distribution Center" />
+            <div class="rg-prop__pill">Industrial</div>
+          </div>
+          <div class="rg-prop__body">
+            <div class="rg-prop__top">
+              <h3 class="rg-prop__name">Montreal Distribution Center</h3>
+              <div class="rg-prop__meta">Montreal • 82,000 sq ft</div>
+            </div>
+            <div class="rg-prop__row">
+              <div class="rg-prop__tag">Lease</div>
+              <div class="rg-prop__tag">Dock doors</div>
+              <div class="rg-prop__tag">High clear</div>
+            </div>
+            <div class="rg-prop__cta">
+              <button class="rg-prop__btn">View Details <span>→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="rg-prop">
+          <div class="rg-prop__media">
+            <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=85" alt="Toronto Class-A Offices" />
+            <div class="rg-prop__pill">Commercial</div>
+          </div>
+          <div class="rg-prop__body">
+            <div class="rg-prop__top">
+              <h3 class="rg-prop__name">Toronto Class-A Offices</h3>
+              <div class="rg-prop__meta">Toronto • 14 floors</div>
+            </div>
+            <div class="rg-prop__row">
+              <div class="rg-prop__tag">Core CBD</div>
+              <div class="rg-prop__tag">Transit</div>
+              <div class="rg-prop__tag">Concierge</div>
+            </div>
+            <div class="rg-prop__cta">
+              <button class="rg-prop__btn">View Details <span>→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="rg-prop">
+          <div class="rg-prop__media">
+            <img src="https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1200&q=85" alt="Riverside Residences" />
+            <div class="rg-prop__pill">Residential</div>
+          </div>
+          <div class="rg-prop__body">
+            <div class="rg-prop__top">
+              <h3 class="rg-prop__name">Riverside Residences</h3>
+              <div class="rg-prop__meta">Waterfront • 168 units</div>
+            </div>
+            <div class="rg-prop__row">
+              <div class="rg-prop__tag">New build</div>
+              <div class="rg-prop__tag">Gym</div>
+              <div class="rg-prop__tag">Parking</div>
+            </div>
+            <div class="rg-prop__cta">
+              <button class="rg-prop__btn">View Details <span>→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="rg-prop">
+          <div class="rg-prop__media">
+            <img src="https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&w=1200&q=85" alt="Logistics Park West" />
+            <div class="rg-prop__pill">Industrial</div>
+          </div>
+          <div class="rg-prop__body">
+            <div class="rg-prop__top">
+              <h3 class="rg-prop__name">Logistics Park West</h3>
+              <div class="rg-prop__meta">Etobicoke • 210,000 sq ft</div>
+            </div>
+            <div class="rg-prop__row">
+              <div class="rg-prop__tag">For sale</div>
+              <div class="rg-prop__tag">ESFR</div>
+              <div class="rg-prop__tag">Trailer</div>
+            </div>
+            <div class="rg-prop__cta">
+              <button class="rg-prop__btn">View Details <span>→</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="rg-prop">
+          <div class="rg-prop__media">
+            <img src="https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=1200&q=85" alt="Midtown Suites" />
+            <div class="rg-prop__pill">Multi-Residential</div>
+          </div>
+          <div class="rg-prop__body">
+            <div class="rg-prop__top">
+              <h3 class="rg-prop__name">Midtown Suites</h3>
+              <div class="rg-prop__meta">Toronto • 96 units</div>
+            </div>
+            <div class="rg-prop__row">
+              <div class="rg-prop__tag">Stabilized</div>
+              <div class="rg-prop__tag">Retail base</div>
+              <div class="rg-prop__tag">Low capex</div>
+            </div>
+            <div class="rg-prop__cta">
+              <button class="rg-prop__btn">View Details <span>→</span></button>
+            </div>
+          </div>
+        </article>
+        <!-- ====== /SET A ====== -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ===== Marquee Section ===== */
+  .rg-marquee{
+    padding: clamp(48px, 6vw, 88px) 0;
+    background: var(--rg-beige-light);
+    border-top: 1px solid rgba(44,24,16,.08);
+    border-bottom: 1px solid rgba(44,24,16,.08);
+    overflow: hidden;
+  }
+
+  .rg-marquee__head{ margin-bottom: 22px; }
+  .rg-marquee__kicker{
+    display:flex; align-items:center; gap: 12px;
+    font-size: 14px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(92,77,66,.72);
+    margin-bottom: 10px;
+  }
+  .rg-marquee__kicker::before{
+    content:"";
+    width: 46px; height: 1px;
+    background: var(--rg-gold);
+    opacity: .9;
+  }
+  .rg-marquee__title{
+    margin: 0 0 8px;
+    font-size: clamp(34px, 3.4vw, 56px);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-weight: 400;
+    color: var(--rg-text-dark);
+    font-family: var(--font-body);
+  }
+  .rg-marquee__title em{
+    font-family: var(--font-title);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .rg-marquee__sub{
+    margin: 0;
+    color: rgba(92,77,66,.78);
+    max-width: 62ch;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  /* Rail */
+  .rg-marquee__rail{
+    position: relative;
+    padding: 10px 0 2px;
+  }
+  .rg-marquee__fade{
+    position:absolute; top:0; bottom:0;
+    width: min(180px, 12vw);
+    pointer-events:none;
+    z-index: 3;
+  }
+  .rg-marquee__fade--l{
+    left:0;
+    background: linear-gradient(90deg, var(--rg-beige-light) 0%, rgba(255,248,240,0) 100%);
+  }
+  .rg-marquee__fade--r{
+    right:0;
+    background: linear-gradient(270deg, var(--rg-beige-light) 0%, rgba(255,248,240,0) 100%);
+  }
+
+  .rg-marquee__viewport{
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+  .rg-marquee__viewport.is-dragging{ cursor: grabbing; }
+
+  .rg-marquee__track{
+    display:flex;
+    gap: 18px;
+    will-change: transform;
+    padding: 10px var(--rg-pad);
+  }
+
+  /* ===== Property Card ===== */
+  .rg-prop{
+    flex: 0 0 auto;
+    width: clamp(280px, 26vw, 380px);
+    border-radius: 18px;
+    background: rgba(255,248,240,.74);
+    border: 1px solid rgba(44,24,16,.10);
+    box-shadow: 0 18px 40px rgba(44,24,16,.10);
+    overflow: hidden;
+    transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+    position: relative;
+  }
+  .rg-prop:hover{
+    transform: translateY(-3px);
+    background: rgba(255,248,240,.90);
+    box-shadow: 0 22px 58px rgba(44,24,16,.14);
+  }
+
+  .rg-prop__media{
+    position: relative;
+    height: 220px;
+    overflow:hidden;
+    background: var(--rg-beige-dark);
+  }
+  .rg-prop__media img{
+    width:100%; height:100%;
+    object-fit: cover;
+    transform: scale(1.04);
+    filter: saturate(1.02) contrast(1.03);
+  }
+  .rg-prop__media::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,.00) 45%, rgba(0,0,0,.34) 100%);
+    pointer-events:none;
+  }
+
+  .rg-prop__pill{
+    position:absolute;
+    left: 14px; top: 14px;
+    z-index: 2;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255,248,240,.96);
+    background: rgba(27,17,12,.58);
+    border: 1px solid rgba(255,248,240,.25);
+    backdrop-filter: blur(6px);
+  }
+
+  .rg-prop__body{
+    padding: 16px 16px 16px;
+  }
+  .rg-prop__top{
+    display:flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .rg-prop__name{
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--rg-text-dark);
+    font-weight: 500;
+  }
+  .rg-prop__meta{
+    font-size: 13px;
+    color: rgba(92,77,66,.78);
+  }
+
+  .rg-prop__row{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .rg-prop__tag{
+    font-size: 12px;
+    color: rgba(44,24,16,.80);
+    background: rgba(232,220,200,.55);
+    border: 1px solid rgba(44,24,16,.08);
+    padding: 7px 10px;
+    border-radius: 999px;
+    line-height: 1;
+  }
+
+  .rg-prop__cta{ display:flex; }
+  .rg-prop__btn{
+    width: 100%;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(44,24,16,.16);
+    background: rgba(255,248,240,.88);
+    color: var(--rg-text-dark);
+    font-size: 13px;
+    letter-spacing: .01em;
+    cursor:pointer;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .rg-prop__btn span{
+    display:inline-flex;
+    width: 26px; height: 26px;
+    border-radius: 999px;
+    align-items:center; justify-content:center;
+    background: rgba(212,160,86,.20);
+    border: 1px solid rgba(212,160,86,.32);
+    color: rgba(44,24,16,.92);
+    transition: transform .18s ease;
+  }
+  .rg-prop__btn:hover{
+    transform: translateY(-1px);
+    background:#fff;
+    border-color: rgba(44,24,16,.24);
+  }
+  .rg-prop__btn:hover span{ transform: translateX(2px); }
+
+  @media (max-width: 640px){
+    .rg-prop{ width: 86vw; }
+    .rg-prop__media{ height: 200px; }
+  }
+</style>
+
+<script>
+  (function(){
+    const viewport = document.getElementById("rgMarqueeViewport");
+    const track = document.getElementById("rgMarqueeTrack");
+
+    if (!viewport || !track) return;
+
+    // --- Duplicate Set A to create seamless loop ---
+    // We clone children until we have at least 2 full sets.
+    const originals = Array.from(track.children);
+    originals.forEach(node => track.appendChild(node.cloneNode(true)));
+
+    // --- Animation State ---
+    let baseSpeed = 18;      // px/sec (very slow)
+    let speed = baseSpeed;
+    let x = 0;
+
+    // For wrapping:
+    function getHalfWidth(){
+      // width of first set (original count)
+      let w = 0;
+      for (let i=0; i<originals.length; i++){
+        w += originals[i].getBoundingClientRect().width;
+        if (i < originals.length - 1) w += getGap();
+      }
+      return w;
+    }
+    function getGap(){
+      // read CSS gap
+      const cs = getComputedStyle(track);
+      const gap = parseFloat(cs.columnGap || cs.gap || "0");
+      return isNaN(gap) ? 0 : gap;
+    }
+
+    // --- Drag State ---
+    let isDown = false;
+    let startX = 0;
+    let startOffset = 0;
+
+    // velocity (for inertia)
+    let lastMoveTime = 0;
+    let lastMoveX = 0;
+    let velocity = 0;
+
+    function onDown(e){
+      isDown = true;
+      viewport.classList.add("is-dragging");
+
+      const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+      startX = clientX;
+      startOffset = x;
+
+      velocity = 0;
+      lastMoveTime = performance.now();
+      lastMoveX = clientX;
+
+      // Pause auto by setting speed to 0 while dragging
+      speed = 0;
+
+      // prevent image drag ghost
+      e.preventDefault?.();
+    }
+
+    function onMove(e){
+      if (!isDown) return;
+
+      const clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+      const dx = clientX - startX;
+
+      x = startOffset + dx; // drag feels direct (right drag moves track right)
+
+      // compute velocity for inertia
+      const now = performance.now();
+      const dt = Math.max(16, now - lastMoveTime);
+      const dv = clientX - lastMoveX;
+      velocity = dv / dt; // px per ms
+
+      lastMoveTime = now;
+      lastMoveX = clientX;
+    }
+
+    function onUp(){
+      if (!isDown) return;
+      isDown = false;
+      viewport.classList.remove("is-dragging");
+
+      // Add inertia: convert velocity to px/sec and ease out
+      let throwSpeed = velocity * 1000; // px/sec
+      // clamp
+      throwSpeed = Math.max(-1800, Math.min(1800, throwSpeed));
+
+      // We’ll animate inertia via a decay factor
+      let inertia = throwSpeed;
+
+      // restore to base after inertia settles
+      const decay = 0.92;
+      function drift(){
+        // stop condition
+        if (Math.abs(inertia) < 8){
+          speed = baseSpeed; // resume slow marquee
+          return;
+        }
+        // apply inertia by updating x directly
+        x += inertia * (16/1000);
+        inertia *= decay;
+        requestAnimationFrame(drift);
+      }
+      requestAnimationFrame(drift);
+    }
+
+    // Pointer + touch events
+    viewport.addEventListener("pointerdown", onDown, {passive:false});
+    window.addEventListener("pointermove", onMove, {passive:false});
+    window.addEventListener("pointerup", onUp);
+
+    viewport.addEventListener("touchstart", onDown, {passive:false});
+    window.addEventListener("touchmove", onMove, {passive:false});
+    window.addEventListener("touchend", onUp);
+
+    // optional: pause on hover (still draggable)
+    viewport.addEventListener("mouseenter", ()=> { if(!isDown) speed = baseSpeed * 0.2; });
+    viewport.addEventListener("mouseleave", ()=> { if(!isDown) speed = baseSpeed; });
+
+    // --- RAF loop ---
+    let last = performance.now();
+    function tick(now){
+      const dt = (now - last) / 1000;
+      last = now;
+
+      if (!isDown){
+        x -= speed * dt; // move left continuously
+      }
+
+      // Wrap seamlessly based on half width (1 full set)
+      const half = getHalfWidth();
+      // Keep x in range [-half, 0] for stability
+      if (x <= -half) x += half;
+      if (x >= 0) x -= half;
+
+      track.style.transform = `translate3d(${x}px,0,0)`;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // Recalc on resize (wrap still stable)
+    window.addEventListener("resize", ()=>{
+      // keep x within range after resize
+      const half = getHalfWidth();
+      while (x <= -half) x += half;
+      while (x >= 0) x -= half;
+    });
+
+  })();
+</script>
+
+</body>
+</html>

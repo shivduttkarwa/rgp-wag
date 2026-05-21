@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, useMemo, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import HeroSection from "../sections/HeroSection";
 import gsap from "gsap";
 import {
@@ -9,8 +9,6 @@ import {
   ChevronDown,
   X,
   ArrowRight,
-  MessageCircle,
-  Phone,
 } from "lucide-react";
 import {
   PropertyCard,
@@ -19,8 +17,8 @@ import {
 } from "../components/reusable/PropertyCard";
 import { allProperties } from "../data/listingProperties";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
+import Cta2 from "@/components/reusable/cta-2";
 import "./PropertiesPage.css";
-import "../sections/ServiceSelection.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const INITIAL_COUNT = 6;
@@ -53,7 +51,7 @@ const categoryTabs = [
 const PAGE_CTA = {
   eyebrow: "Need Help Choosing?",
   title: "Let’s Find Your",
-  titleEm: "Perfect Property",
+  titleEm: "Perfect Home",
   text: "Tell us what you’re looking for and we’ll shortlist the best options, arrange inspections, and guide you through every step.",
   primaryLabel: "Talk to an Expert",
   primaryHref: "/contact",
@@ -501,7 +499,7 @@ export default function PropertiesPage() {
                   filtered.length > INITIAL_COUNT && (
                     <button
                       type="button"
-                      className="ap-view-btn ap-view-btn--ghost"
+                      className="ap-view-btn"
                       onMouseDown={preventPointerFocus}
                       onClick={(event) => {
                         event.currentTarget.blur();
@@ -518,59 +516,22 @@ export default function PropertiesPage() {
       </div>
 
       {/* ── CTA ───────────────────────────────────────────────────────── */}
-      <div className="svc-cta">
-        <div className="svc-cta__container">
-          <div className="svc-cta__decor svc-cta__decor--left" />
-          <div className="svc-cta__decor svc-cta__decor--right" />
-
-          <div className="svc-cta__content">
-            <span className="svc-cta__eyebrow" data-gsap="fade-up">
-              {PAGE_CTA.eyebrow}
-            </span>
-            <h3 className="svc-cta__title">
-              {PAGE_CTA.title} <em>{PAGE_CTA.titleEm}</em>
-            </h3>
-            <p className="svc-cta__text">{PAGE_CTA.text}</p>
-
-            <div className="svc-cta__actions">
-              <Link
-                to={PAGE_CTA.primaryHref}
-                className="svc-cta__btn svc-cta__btn--primary"
-              >
-                <MessageCircle size={20} />
-                <span>{PAGE_CTA.primaryLabel}</span>
-                <ArrowRight size={18} />
-              </Link>
-              <a
-                href={PAGE_CTA.secondaryHref}
-                className="svc-cta__btn svc-cta__btn--secondary"
-              >
-                <Phone size={18} />
-                <span>{PAGE_CTA.secondaryLabel}</span>
-              </a>
-            </div>
-
-            <div className="svc-cta__trust">
-              <div className="svc-cta__trust-item">
-                <span className="svc-cta__trust-value">150+</span>
-                <span className="svc-cta__trust-label">Local Deals Closed</span>
-              </div>
-              <div className="svc-cta__trust-divider" />
-              <div className="svc-cta__trust-item">
-                <span className="svc-cta__trust-value">24/7</span>
-                <span className="svc-cta__trust-label">Buyer Support</span>
-              </div>
-              <div className="svc-cta__trust-divider" />
-              <div className="svc-cta__trust-item">
-                <span className="svc-cta__trust-value">100%</span>
-                <span className="svc-cta__trust-label">
-                  Client Satisfaction
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Cta2
+        eyebrow={PAGE_CTA.eyebrow}
+        title={PAGE_CTA.title}
+        titleEm={PAGE_CTA.titleEm}
+        text={PAGE_CTA.text}
+        primary={{ label: PAGE_CTA.primaryLabel, to: PAGE_CTA.primaryHref }}
+        secondary={{ label: PAGE_CTA.secondaryLabel, href: PAGE_CTA.secondaryHref }}
+        commitments={[
+          { title: "Data‑backed guidance" },
+          { title: "Inspection‑ready planning" },
+          { title: "Negotiation that protects" },
+        ]}
+        bgImage="images/int.jpg"
+        bgVideo="vids/cta-2-vid.mp4"
+        minHeight="100vh"
+      />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import HeroSection from "../sections/HeroSection";
-import BtnSecondary from "../components/BtnSecondary";
+import RgButton from "@/components/reusable/RgButton";
 
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -18,7 +17,6 @@ const img = (name: string) => `${base}images/${name}`;
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
-  const navigate = useNavigate();
   const splitVideoRef = useRef<HTMLVideoElement | null>(null);
   const [splitFullPlay, setSplitFullPlay] = useState(false);
 
@@ -148,9 +146,11 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
         showVideo={false}
         showCta={false}
         panel={
-          <BtnSecondary
+          <RgButton
+            variant="gold"
+            to="/contact"
             label="Book a Free Appraisal"
-            onClick={() => navigate("/contact")}
+            arrowSize={16}
           />
         }
         bgImage="images/hero4.jpg"
@@ -273,14 +273,13 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                   </li>
                 </ul>
                 <div className="split-cta">
-                  <Link
+                  <RgButton
                     to="/contact"
-                    className="btn-secondary"
+                    variant="outline"
+                    label="Book Your Appraisal"
                     data-gsap="btn-clip-reveal"
                     data-gsap-delay="0.2"
-                  >
-                    <span className="bs-text">Book Your Appraisal</span>
-                  </Link>
+                  />
                 </div>
               </div>
             </div>
@@ -342,14 +341,14 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                 a clear price range, honest advice, and a next-step plan.
               </p>
               <div className="avail-cta">
-                <Link
+                <RgButton
                   to="/contact"
-                  className="btn-secondary avail-cta__btn"
+                  variant="outline"
+                  label="Book Your Appraisal"
+                  className="avail-cta__btn"
                   data-gsap="btn-clip-reveal"
                   data-gsap-delay="0.2"
-                >
-                  <span className="bs-text">Book Your Appraisal</span>
-                </Link>
+                />
               </div>
             </div>
           </div>

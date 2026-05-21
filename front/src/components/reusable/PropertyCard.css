@@ -206,10 +206,6 @@
   transition: color 0.3s ease;
 }
 
-.property-card:hover .card-title {
-  color: var(--rg-gold);
-}
-
 .property-card .card-location {
   display: flex;
   align-items: center;
@@ -330,40 +326,11 @@
   font-weight: 600;
 }
 
-/* ── Button ─────────────────────────────────────────────────────────────── */
-.property-card .card-btn {
-  width: 100%;
+/* ── Actions ────────────────────────────────────────────────────────────── */
+.property-card .card-actions {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem;
-  border-radius: 10px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.property-card .card-btn svg {
-  transition: transform 0.3s ease;
-}
-
-.property-card .card-btn:hover svg {
-  transform: translateX(4px);
-}
-
-.property-card .btn-primary {
-  background-color: var(--rg-gold);
-  color: #00032e;
-}
-
-.property-card .btn-primary:hover {
-  background-color: #fad840;
-  color: #00032e;
+  margin-top: 1rem;
 }
 
 /* ── Focus ──────────────────────────────────────────────────────────────── */

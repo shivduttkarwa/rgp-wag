@@ -106,14 +106,18 @@
 .about-page .split-green {
   background: #ffffff;
   color: var(--rg-text-dark);
+  padding-top: clamp(1.625rem, 3.8vw, 3.375rem);
+  padding-bottom: clamp(3.25rem, 7.6vw, 6.75rem);
 }
 
 .about-page .split-green .wrap {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(1.125rem, 3vw, 2.5rem);
+  /* more breathing room between media + copy */
+  gap: clamp(1.75rem, 4vw, 3.25rem);
   align-items: stretch;
-  padding: clamp(1.625rem, 3.8vw, 3.375rem);
+  /* align with other sections (container already provides padding) */
+  padding: 0;
 }
 
 .about-page .split-green .img-card {
@@ -212,6 +216,12 @@
 
 .about-page .split-green .split-cta {
   margin-top: 0.75rem;
+}
+
+/* Split CTA now uses universal buttons */
+.about-page .split-green .split-cta .rg-btn--outline {
+  padding: 0.875rem 1.75rem;
+  font-size: 0.9rem;
 }
 
 .about-page .split-green .btn-secondary {
@@ -558,4 +568,9 @@
   .about-page .avail .photo img {
     position: relative;
   }
+
+/* Ensure consistent breathing room before global footer (prod + dev) */
+.about-page .rgMarquee {
+  margin-bottom: clamp(1.5rem, 4vw, 3.5rem);
+}
 }

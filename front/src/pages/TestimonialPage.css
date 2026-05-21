@@ -76,7 +76,7 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
-  background: rgba(5, 9, 74, 0.9);
+  background: #001f49;
   border: 1px solid rgba(249, 195, 7, 0.2);
   border-radius: 1.25rem;
   padding: 1.25rem 2rem;
@@ -1094,7 +1094,7 @@
   position: relative;
   padding: 7.5rem var(--rg-pad);
   overflow: hidden;
-  background: #fffbea;
+ 
 }
 
 .tp-cta__inner {

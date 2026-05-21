@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>The Estates – Clone (No Header/Footer)</title>
+
+    <!-- Fonts (close to Primland look) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f7f0de;
+            /* warm cream */
+            --ink: #2d3b2f;
+            /* body text */
+            --green: #3f6248;
+            /* primary green */
+            --green-2: #355a41;
+            /* darker */
+            --line: rgba(63, 98, 72, .22);
+            /* dividers */
+            --accent: #bf6d2d;
+            /* warm orange */
+            --max: 1180px;
+            /* content width */
+            --pad: clamp(18px, 2.2vw, 30px);
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* helpers */
+        .container {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 var(--pad);
+        }
+
+        .section {
+            padding: clamp(38px, 6vw, 92px) 0;
+        }
+
+        .stack {
+            display: grid;
+            gap: clamp(14px, 2vw, 22px);
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .h-serif {
+            font-family: "Cormorant Garamond", serif;
+            color: var(--green);
+            font-weight: 500;
+            line-height: 1.06;
+        }
+
+        .lead {
+            font-family: "Cormorant Garamond", serif;
+            color: var(--green);
+            font-weight: 500;
+            line-height: 1.12;
+        }
+
+        .muted {
+            opacity: .86
+        }
+
+        .center {
+            text-align: center
+        }
+
+        .rule {
+            height: 1px;
+            background: var(--line);
+            width: 100%
+        }
+
+        /* HERO */
+        .hero-title {
+            font-size: clamp(44px, 5.4vw, 78px);
+            letter-spacing: -0.01em;
+            margin: 0;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: clamp(360px, 52vw, 640px);
+            object-fit: cover;
+            display: block;
+            border-radius: 0;
+            /* Primland is very square */
+        }
+
+        /* Intro statement + mark */
+        .intro-statement {
+            font-size: clamp(28px, 3.5vw, 52px);
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .mark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+            color: var(--green);
+        }
+
+        .mark svg {
+            width: 18px;
+            height: 18px;
+            opacity: .95
+        }
+
+        .mark .t1 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .mark .t2 {
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            font-size: 10px;
+            margin-top: 3px;
+            opacity: .9;
+        }
+
+        .mark .twrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        /* Split green section (image left, text right) */
+        .split-green {
+            background: var(--green);
+            color: rgba(247, 240, 222, .92);
+        }
+
+        .split-green .wrap {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: clamp(18px, 3vw, 40px);
+            align-items: center;
+            padding: clamp(26px, 3.8vw, 54px);
+        }
+
+        .split-green .img-card {
+            background: var(--bg);
+            padding: clamp(12px, 1.4vw, 18px);
+        }
+
+        .split-green img {
+            width: 100%;
+            display: block;
+            height: clamp(360px, 34vw, 520px);
+            object-fit: cover;
+        }
+
+        .split-green h3 {
+            margin: 0 0 10px 0;
+            color: var(--bg);
+            font-size: clamp(34px, 3vw, 44px);
+        }
+
+        .split-green p {
+            margin: 0;
+            max-width: 42ch;
+            font-size: 13.5px;
+            line-height: 1.7;
+            color: rgba(247, 240, 222, .82);
+        }
+
+        /* Two-col cream sections */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(18px, 3vw, 54px);
+            align-items: start;
+        }
+
+        .two-col .copy {
+            padding-top: 4px;
+            max-width: 46ch;
+        }
+
+        .two-col h2 {
+            margin: 10px 0 10px 0;
+            font-size: clamp(22px, 2.1vw, 28px);
+        }
+
+        .two-col p {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.75;
+            opacity: .9;
+        }
+
+        .two-col .img {
+            width: 100%;
+            height: clamp(380px, 34vw, 560px);
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Section title "Features / Facilities" */
+        .feature-title {
+            font-size: clamp(30px, 3.1vw, 44px);
+            margin: 0 0 16px 0;
+        }
+
+        /* Accordion */
+        .accordion {
+            border-top: 1px solid var(--line);
+            margin-top: 10px;
+        }
+
+        .acc-item {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .acc-btn {
+            width: 100%;
+            padding: 16px 0;
+            border: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+            cursor: pointer;
+            color: var(--ink);
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .acc-btn .label {
+            color: var(--green-2);
+            font-weight: 600;
+        }
+
+        .acc-btn .icon {
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            color: var(--green-2);
+            opacity: .85;
+            font-size: 16px;
+            line-height: 1;
+            transform: translateY(-1px);
+        }
+
+        .acc-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .35s ease;
+        }
+
+        .acc-panel .inner {
+            padding: 0 0 16px 0;
+            font-size: 13.5px;
+            line-height: 1.75;
+            opacity: .9;
+            max-width: 52ch;
+        }
+
+        .acc-item[data-open="true"] .acc-panel {
+            max-height: 240px;
+        }
+
+        .acc-item[data-open="true"] .acc-btn .icon {
+            opacity: 1
+        }
+
+        /* Decorative slice */
+        .slice {
+            width: 62px;
+            height: 340px;
+            background: url("https://ownprimland.com/estate-slice.jpg") center/cover no-repeat;
+            opacity: .8;
+            filter: saturate(.95);
+        }
+
+        /* Availability green split (image left full, text right) */
+        .avail {
+            background: var(--green);
+            color: rgba(247, 240, 222, .92);
+        }
+
+        .avail .grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            min-height: clamp(520px, 46vw, 680px);
+        }
+
+        .avail .photo {
+            position: relative;
+            background: #1d2a20;
+        }
+
+        .avail .photo img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avail .panel {
+            padding: clamp(28px, 4.3vw, 62px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .avail .panel h3 {
+            margin: 0;
+            color: var(--bg);
+            font-size: clamp(34px, 3.2vw, 46px);
+        }
+
+        .avail .panel p {
+            margin: 0;
+            max-width: 40ch;
+            font-size: 13.5px;
+            line-height: 1.75;
+            color: rgba(247, 240, 222, .80);
+        }
+
+        .link-underline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(247, 240, 222, .92);
+            text-decoration: none;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 500;
+            width: max-content;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            margin-top: 6px;
+        }
+
+        /* Turn-key overlay card on image */
+        .img-overlay {
+            position: relative;
+            min-height: clamp(520px, 52vw, 720px);
+            background: #111;
+            overflow: hidden;
+        }
+
+        .img-overlay img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay-card {
+            position: absolute;
+            right: clamp(18px, 4vw, 54px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: min(520px, 44vw);
+            background: var(--bg);
+            padding: clamp(26px, 3vw, 44px);
+        }
+
+        .overlay-card h3 {
+            margin: 0 0 22px 0;
+            font-size: clamp(34px, 3.2vw, 46px);
+        }
+
+        .overlay-card p {
+            margin: 0 0 18px 0;
+            max-width: 36ch;
+            font-size: 13.5px;
+            line-height: 1.75;
+            opacity: .9;
+        }
+
+        .overlay-card .cta {
+            color: var(--green-2);
+            text-decoration: none;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* responsive */
+        @media (max-width: 980px) {
+
+            .split-green .wrap,
+            .two-col,
+            .avail .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overlay-card {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                margin: 0 auto;
+                max-width: 640px;
+            }
+
+            .img-overlay {
+                padding: 22px;
+                display: grid;
+                align-content: end;
+            }
+
+            .img-overlay img {
+                filter: brightness(.92);
+            }
+
+            .slice {
+                display: none;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .split-green .img-card {
+                padding: 10px
+            }
+
+            .split-green img {
+                height: 340px
+            }
+
+            .two-col .img {
+                height: 340px
+            }
+
+            .avail .grid {
+                min-height: 0
+            }
+
+            .avail .photo {
+                height: 360px
+            }
+
+            .avail .photo img {
+                position: relative
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1) HERO -->
+    <section class="section">
+        <div class="container center stack">
+            <h1 class="hero-title h-serif">A Collection Of Handselected<br />Estate Homesites</h1>
+        </div>
+        <div style="margin-top: clamp(18px, 3vw, 34px);">
+            <img class="hero-img" alt="Hero"
+                src="https://www.datocms-assets.com/162196/1754472296-pri_residences_hawk-eye_interiors_2024_2.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+        </div>
+    </section>
+
+    <!-- 2) STATEMENT + MARK -->
+    <section class="section" style="padding-top: clamp(34px, 5.6vw, 72px);">
+        <div class="container center stack">
+            <h2 class="intro-statement lead">
+                Meticulously woven into Primland ’s incomparable<br />
+                landscape, a rare collection of estate homesites<br />
+                await. One destined to be yours.
+            </h2>
+
+            <!-- "The Estates at Primland" mark (SVG recreated) -->
+            <div class="mark" aria-label="The Estates at Primland">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 4c2.5 2.1 4.4 3 7 3-1 5-3.7 9.8-7 13C8.7 16.8 6 12 5 7c2.6 0 4.5-.9 7-3Z"
+                        fill="currentColor" opacity=".9" />
+                    <path
+                        d="M12 8c1.3 1.1 2.4 1.6 3.8 1.6-.7 2.8-2 5.7-3.8 7.7-1.8-2-3.1-4.9-3.8-7.7C9.6 9.6 10.7 9.1 12 8Z"
+                        fill="var(--bg)" />
+                </svg>
+                <div class="twrap">
+                    <div class="t1">The Estates</div>
+                    <div class="t2">AT PRIMLAND</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3) GREEN SPLIT: More Beautiful -->
+    <section class="split-green">
+        <div class="container" style="padding-top: 0; padding-bottom: 0;">
+            <div class="wrap">
+                <div class="img-card">
+                    <img alt="More Beautiful"
+                        src="https://www.datocms-assets.com/162196/1758206144-estate-50.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+                </div>
+
+                <div class="stack" style="gap:16px; align-content:center;">
+                    <h3 class="h-serif">More Beautiful Than<br />You Can Imagine</h3>
+                    <p>
+                        Can a home among these 12,000 stunning acres become the place everyone —
+                        friends, family, neighbors and colleagues — can’t wait to return to?
+                        Can a home become a beloved tradition? A place in the world that becomes
+                        a place that lives within us? Yes, it can.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4) DREAM BIG -->
+    <section class="section">
+        <div class="container">
+            <div class="two-col">
+                <div class="copy stack">
+                    <div class="eyebrow">DREAM BIG</div>
+                    <h2 class="h-serif">The Ideal Setting For Custom<br />Mountain Residences</h2>
+                    <p>
+                        Create a mountain escape seamlessly integrated with its surroundings. A luxurious
+                        haven destined to become “the place” — the setting for lifetimes of memories and
+                        treasured traditions immersed in nature and the unforgettable experiences it makes possible.
+                    </p>
+                    <p style="margin-top:12px;">
+                        Under the direction of the award-winning Hart Howerton team, our Architectural &amp; Interiors
+                        Guild crafted a collective “blueprint” for custom mountain homes of exceptional quality
+                        and enduring value.
+                    </p>
+                </div>
+
+                <div>
+                    <img class="img" alt="Pool"
+                        src="https://www.datocms-assets.com/162196/1754472809-pool.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5) ROOM TO BREATHE & BE (with decorative slice like screenshots) -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="two-col" style="align-items:center;">
+                <div class="copy stack">
+                    <h2 class="h-serif" style="margin-top:0;">Room To Breathe &amp; Be</h2>
+                    <p>
+                        The Estates are designed to preserve and protect their treasured landscape — each tailored to
+                        the unique topography and gifts of the Virginia highlands. Drawing from historic village
+                        traditions, The Estates offer both privacy and connection — a community within a community.
+                    </p>
+                </div>
+                <div
+                    style="display:grid; grid-template-columns: 64px 1fr; gap: clamp(14px, 2vw, 26px); align-items:center;">
+                    <div class="slice" aria-hidden="true"></div>
+                    <img class="img" alt="Landscape"
+                        src="https://www.datocms-assets.com/162196/1758267979-estates-img.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6) FEATURES / FACILITIES (accordion + image) -->
+    <section class="section" style="padding-top: clamp(26px, 4vw, 56px);">
+        <div class="container">
+            <div class="two-col" style="align-items:start;">
+                <div>
+                    <h2 class="feature-title h-serif">Features / Facilities</h2>
+
+                    <div class="accordion" data-accordion>
+                        <div class="acc-item" data-open="true">
+                            <button class="acc-btn" type="button">
+                                <span class="label">Room To Breathe &amp; Be</span>
+                                <span class="icon" aria-hidden="true">–</span>
+                            </button>
+                            <div class="acc-panel">
+                                <div class="inner">
+                                    Ranging in size from two acres to just under five acres, The Estates promise room
+                                    for
+                                    exploration, entertaining, and deep connection.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="acc-item" data-open="false">
+                            <button class="acc-btn" type="button">
+                                <span class="label">Exquisite Views</span>
+                                <span class="icon" aria-hidden="true">+</span>
+                            </button>
+                            <div class="acc-panel">
+                                <div class="inner">
+                                    Each of The Estates are sited at overlook locations with spectacular views.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="acc-item" data-open="false">
+                            <button class="acc-btn" type="button">
+                                <span class="label">Valley &amp; Piedmont Vistas</span>
+                                <span class="icon" aria-hidden="true">+</span>
+                            </button>
+                            <div class="acc-panel">
+                                <div class="inner">
+                                    Estates 1 through 12 boast breathtaking long valley views out to the piedmonts.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="acc-item" data-open="false">
+                            <button class="acc-btn" type="button">
+                                <span class="label">Water Views</span>
+                                <span class="icon" aria-hidden="true">+</span>
+                            </button>
+                            <div class="acc-panel">
+                                <div class="inner">
+                                    Estates 13 through 26 maximize awe-inspiring views out to Talbott Reservoir.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="acc-item" data-open="false">
+                            <button class="acc-btn" type="button">
+                                <span class="label">Space For Every Pursuit</span>
+                                <span class="icon" aria-hidden="true">+</span>
+                            </button>
+                            <div class="acc-panel">
+                                <div class="inner">
+                                    Select estates have longer driveways and more even terrain where elements like a
+                                    tennis
+                                    court or swimming pool are beautiful possibilities.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <img class="img" alt="View from patio"
+                        src="https://www.datocms-assets.com/162196/1754240975-custom-estates-4.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7) AVAILABILITY (green split) -->
+    <section class="avail">
+        <div class="grid">
+            <div class="photo">
+                <img alt="Availability"
+                    src="https://www.datocms-assets.com/162196/1754472534-pri_experiences_horseback-riding_2022_3540.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+            </div>
+            <div class="panel">
+                <div class="eyebrow">AVAILABILITY</div>
+                <h3 class="h-serif">Own Your Piece<br />Of The Mountain</h3>
+                <p>Browse our unique collection of Blue Ridge Mountain homes and homesites.</p>
+                <a class="link-underline" href="#" onclick="return false;">VIEW AVAILABLE HOMES &amp; HOMESITES</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8) TURN-KEY (image with cream overlay card right) -->
+    <section class="img-overlay">
+        <img alt="Turn-key residences"
+            src="https://www.datocms-assets.com/162196/1757948409-residences-cta.jpg?auto=format&fit=max&h=2440&q=80&w=2440">
+        <div class="overlay-card">
+            <div class="mark" style="justify-content:flex-start; margin:0 0 18px 0;">
+                <div class="twrap" style="align-items:flex-start;">
+                    <div class="t2" style="color:var(--green); opacity:.75;">AUBERGE RESIDENCES</div>
+                </div>
+            </div>
+
+            <h3 class="h-serif">Turn-Key<br />Residences</h3>
+            <p>Extraordinary residences perfectly appointed, down to the most minute, beautiful detail.</p>
+            <a class="cta" href="#" onclick="return false;">LEARN MORE</a>
+        </div>
+    </section>
+
+    <script>
+        // Accordion behavior (matches + / - style from screenshots)
+        (function () {
+            const root = document.querySelector("[data-accordion]");
+            if (!root) return;
+
+            const items = [...root.querySelectorAll(".acc-item")];
+
+            function setIcon(item) {
+                const open = item.getAttribute("data-open") === "true";
+                item.querySelector(".icon").textContent = open ? "–" : "+";
+            }
+            items.forEach(setIcon);
+
+            root.addEventListener("click", (e) => {
+                const btn = e.target.closest(".acc-btn");
+                if (!btn) return;
+
+                const item = btn.closest(".acc-item");
+                const isOpen = item.getAttribute("data-open") === "true";
+
+                // close others (Primland behaves like single-open)
+                items.forEach(it => it.setAttribute("data-open", "false"));
+                item.setAttribute("data-open", String(!isOpen));
+
+                items.forEach(setIcon);
+            });
+        })();
+    </script>
+</body>
+
+</html>

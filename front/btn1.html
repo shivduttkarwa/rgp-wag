@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Architectural Buttons</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --rg-navy: #102e50;
+            --rg-gold: #f5c45e;
+            --rg-amber: #e78b48;
+            --rg-crimson: #be3d2a;
+            --rg-dark: #0a1a2e;
+            --rg-darker: #071425;
+            --rg-ink: #f0ead6;
+            --rg-ink-2: rgba(240, 234, 214, 0.72);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--rg-darker);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            gap: 80px;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .section-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--rg-gold);
+            opacity: 0.5;
+            margin-bottom: 6px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ═══════════════════════════════════════════
+       BUTTON 1 — THE CORNERSTONE
+       Grand primary CTA with gold shimmer sweep
+    ═══════════════════════════════════════════ */
+        .btn-cornerstone {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 44px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--rg-dark);
+            background: linear-gradient(135deg, var(--rg-gold) 0%, #daa73a 100%);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow:
+                0 4px 20px rgba(245, 196, 94, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.2) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+        }
+
+        .btn-cornerstone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.35) 50%,
+                    transparent 100%);
+            transition: left 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-cornerstone::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--rg-crimson);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-cornerstone:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 35px rgba(245, 196, 94, 0.35),
+                0 1px 0 rgba(255, 255, 255, 0.3) inset;
+        }
+
+        .btn-cornerstone:hover::before {
+            left: 100%;
+        }
+
+        .btn-cornerstone:hover::after {
+            transform: scaleX(1);
+        }
+
+        .btn-cornerstone:active {
+            transform: translateY(0);
+        }
+
+        .btn-cornerstone .btn-icon {
+            display: inline-flex;
+            transition: transform 0.4s ease;
+        }
+
+        .btn-cornerstone:hover .btn-icon {
+            transform: translateX(4px);
+        }
+
+        /* ═══════════════════════════════════════════
+       BUTTON 2 — THE BLUEPRINT
+       Refined outlined button with corner accents
+    ═══════════════════════════════════════════ */
+        .btn-blueprint {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: var(--rg-ink);
+            background: transparent;
+            border: 1px solid var(--rg-ink-2);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* Corner accents */
+        .btn-blueprint::before,
+        .btn-blueprint::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-color: var(--rg-gold);
+            border-style: solid;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-blueprint::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .btn-blueprint::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        .btn-blueprint .corner-tl,
+        .btn-blueprint .corner-br {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-color: var(--rg-gold);
+            border-style: solid;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-blueprint .corner-tl {
+            top: -1px;
+            right: -1px;
+            border-width: 2px 2px 0 0;
+        }
+
+        .btn-blueprint .corner-br {
+            bottom: -1px;
+            left: -1px;
+            border-width: 0 0 2px 2px;
+        }
+
+        .btn-blueprint:hover {
+            border-color: var(--rg-gold);
+            color: var(--rg-gold);
+            background: rgba(245, 196, 94, 0.04);
+        }
+
+        .btn-blueprint:hover::before,
+        .btn-blueprint:hover::after,
+        .btn-blueprint:hover .corner-tl,
+        .btn-blueprint:hover .corner-br {
+            width: 24px;
+            height: 24px;
+        }
+
+        .btn-blueprint:active {
+            background: rgba(245, 196, 94, 0.08);
+        }
+
+        /* ═══════════════════════════════════════════
+       BUTTON 3 — THE FACADE
+       Underline-reveal with sliding fill
+    ═══════════════════════════════════════════ */
+        .btn-facade {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 4px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--rg-ink);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .btn-facade .facade-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--rg-ink-2);
+            overflow: hidden;
+        }
+
+        .btn-facade .facade-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--rg-gold);
+            transform: translateX(-101%);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-facade .facade-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: rgba(245, 196, 94, 0.06);
+            transition: height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: -1;
+        }
+
+        .btn-facade .facade-arrow {
+            display: inline-flex;
+            color: var(--rg-gold);
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.4s ease;
+        }
+
+        .btn-facade:hover {
+            color: var(--rg-gold);
+        }
+
+        .btn-facade:hover .facade-line::after {
+            transform: translateX(0);
+        }
+
+        .btn-facade:hover .facade-fill {
+            height: 100%;
+        }
+
+        .btn-facade:hover .facade-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ═══════════════════════════════════════════
+       BUTTON 4 — THE MONOLITH
+       Bold dark button with amber accent bar
+    ═══════════════════════════════════════════ */
+        .btn-monolith {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 42px 18px 22px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--rg-ink);
+            background: var(--rg-navy);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-monolith .monolith-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--rg-gold) 0%, var(--rg-amber) 100%);
+            transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-monolith .monolith-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--rg-crimson) 0%, #962f20 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .btn-monolith .monolith-text {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-monolith .monolith-icon {
+            display: inline-flex;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-monolith:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-monolith:hover .monolith-bar {
+            width: 100%;
+            background: linear-gradient(180deg, var(--rg-gold) 0%, var(--rg-amber) 100%);
+            opacity: 0.15;
+        }
+
+        .btn-monolith:hover .monolith-icon {
+            transform: translateX(4px);
+        }
+
+        .btn-monolith:active {
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════
+       BUTTON 5 — THE PINNACLE
+       Split-tone luxury button with diagonal
+    ═══════════════════════════════════════════ */
+        .btn-pinnacle {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 48px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--rg-ink);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .btn-pinnacle .pinnacle-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .btn-pinnacle .pinnacle-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--rg-navy);
+            transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .btn-pinnacle .pinnacle-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--rg-crimson);
+            transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Diagonal divider */
+        .btn-pinnacle .pinnacle-diagonal {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            background: var(--rg-gold);
+            transform: translateX(-50%) skewX(-15deg);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        /* Top & bottom gold lines */
+        .btn-pinnacle .pinnacle-line-top,
+        .btn-pinnacle .pinnacle-line-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    var(--rg-gold) 30%,
+                    var(--rg-gold) 70%,
+                    transparent 100%);
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-pinnacle .pinnacle-line-top {
+            top: 0;
+        }
+
+        .btn-pinnacle .pinnacle-line-bottom {
+            bottom: 0;
+        }
+
+        .btn-pinnacle .pinnacle-text {
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .btn-pinnacle:hover .pinnacle-bg::before {
+            width: 55%;
+        }
+
+        .btn-pinnacle:hover .pinnacle-bg::after {
+            width: 55%;
+        }
+
+        .btn-pinnacle:hover .pinnacle-diagonal {
+            opacity: 1;
+            box-shadow: 0 0 10px rgba(245, 196, 94, 0.4);
+        }
+
+        .btn-pinnacle:hover .pinnacle-line-top,
+        .btn-pinnacle:hover .pinnacle-line-bottom {
+            opacity: 0.9;
+        }
+
+        .btn-pinnacle:hover .pinnacle-text {
+            text-shadow: 0 0 20px rgba(245, 196, 94, 0.2);
+        }
+
+        .btn-pinnacle:active {
+            transform: scale(0.98);
+        }
+
+        /* ═══════════════════════════════════════════
+       SIZE VARIANTS
+    ═══════════════════════════════════════════ */
+        .btn-sm {
+            padding: 12px 28px !important;
+            font-size: 11px !important;
+            letter-spacing: 2.5px !important;
+        }
+
+        .btn-lg {
+            padding: 22px 56px !important;
+            font-size: 15px !important;
+        }
+
+        /* ═══════════════════════════════════════════
+       DARK PANEL / LIGHT PANEL DEMO
+    ═══════════════════════════════════════════ */
+        .demo-panel-light {
+            background: var(--rg-ink);
+            padding: 50px 40px;
+            border-radius: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .demo-panel-light .btn-blueprint {
+            color: var(--rg-navy);
+            border-color: rgba(16, 46, 80, 0.3);
+        }
+
+        .demo-panel-light .btn-blueprint::before,
+        .demo-panel-light .btn-blueprint::after,
+        .demo-panel-light .btn-blueprint .corner-tl,
+        .demo-panel-light .btn-blueprint .corner-br {
+            border-color: var(--rg-crimson);
+        }
+
+        .demo-panel-light .btn-blueprint:hover {
+            color: var(--rg-crimson);
+            border-color: var(--rg-crimson);
+        }
+
+        .demo-panel-light .btn-facade {
+            color: var(--rg-navy);
+        }
+
+        .demo-panel-light .btn-facade .facade-line {
+            background: rgba(16, 46, 80, 0.2);
+        }
+
+        .demo-panel-light .btn-facade:hover {
+            color: var(--rg-crimson);
+        }
+
+        .demo-panel-light .btn-facade .facade-line::after {
+            background: var(--rg-crimson);
+        }
+
+        .demo-panel-light .btn-facade .facade-arrow {
+            color: var(--rg-crimson);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════ BUTTON 1: CORNERSTONE ═══════════ -->
+    <div class="section">
+        <span class="section-label">01 — The Cornerstone</span>
+        <div class="btn-row">
+            <button class="btn-cornerstone btn-sm">
+                Get Started
+                <span class="btn-icon">→</span>
+            </button>
+            <button class="btn-cornerstone">
+                Start Your Project
+                <span class="btn-icon">→</span>
+            </button>
+            <button class="btn-cornerstone btn-lg">
+                Request Consultation
+                <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ BUTTON 2: BLUEPRINT ═══════════ -->
+    <div class="section">
+        <span class="section-label">02 — The Blueprint</span>
+        <div class="btn-row">
+            <button class="btn-blueprint btn-sm">
+                <span class="corner-tl"></span>
+                <span class="corner-br"></span>
+                Learn More
+            </button>
+            <button class="btn-blueprint">
+                <span class="corner-tl"></span>
+                <span class="corner-br"></span>
+                View Portfolio
+            </button>
+            <button class="btn-blueprint btn-lg">
+                <span class="corner-tl"></span>
+                <span class="corner-br"></span>
+                Explore Our Work
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ BUTTON 3: FACADE ═══════════ -->
+    <div class="section">
+        <span class="section-label">03 — The Facade</span>
+        <div class="btn-row">
+            <button class="btn-facade">
+                Residential Design
+                <span class="facade-arrow">→</span>
+                <span class="facade-line"></span>
+                <span class="facade-fill"></span>
+            </button>
+            <button class="btn-facade">
+                Commercial Spaces
+                <span class="facade-arrow">→</span>
+                <span class="facade-line"></span>
+                <span class="facade-fill"></span>
+            </button>
+            <button class="btn-facade">
+                Urban Planning
+                <span class="facade-arrow">→</span>
+                <span class="facade-line"></span>
+                <span class="facade-fill"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ BUTTON 4: MONOLITH ═══════════ -->
+    <div class="section">
+        <span class="section-label">04 — The Monolith</span>
+        <div class="btn-row">
+            <button class="btn-monolith btn-sm">
+                <span class="monolith-bar"></span>
+                <span class="monolith-bg"></span>
+                <span class="monolith-text">
+                    Download Brochure
+                    <span class="monolith-icon">↓</span>
+                </span>
+            </button>
+            <button class="btn-monolith">
+                <span class="monolith-bar"></span>
+                <span class="monolith-bg"></span>
+                <span class="monolith-text">
+                    Schedule a Visit
+                    <span class="monolith-icon">→</span>
+                </span>
+            </button>
+            <button class="btn-monolith btn-lg">
+                <span class="monolith-bar"></span>
+                <span class="monolith-bg"></span>
+                <span class="monolith-text">
+                    Book Consultation
+                    <span class="monolith-icon">→</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ BUTTON 5: PINNACLE ═══════════ -->
+    <div class="section">
+        <span class="section-label">05 — The Pinnacle</span>
+        <div class="btn-row">
+            <button class="btn-pinnacle btn-sm">
+                <span class="pinnacle-bg"></span>
+                <span class="pinnacle-diagonal"></span>
+                <span class="pinnacle-line-top"></span>
+                <span class="pinnacle-line-bottom"></span>
+                <span class="pinnacle-text">About Us</span>
+            </button>
+            <button class="btn-pinnacle">
+                <span class="pinnacle-bg"></span>
+                <span class="pinnacle-diagonal"></span>
+                <span class="pinnacle-line-top"></span>
+                <span class="pinnacle-line-bottom"></span>
+                <span class="pinnacle-text">View Masterplan</span>
+            </button>
+            <button class="btn-pinnacle btn-lg">
+                <span class="pinnacle-bg"></span>
+                <span class="pinnacle-diagonal"></span>
+                <span class="pinnacle-line-top"></span>
+                <span class="pinnacle-line-bottom"></span>
+                <span class="pinnacle-text">Begin Your Vision</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════ LIGHT BACKGROUND DEMO ═══════════ -->
+    <div class="section">
+        <span class="section-label">Light Background Variants</span>
+        <div class="demo-panel-light">
+            <button class="btn-cornerstone">
+                Primary Action
+                <span class="btn-icon">→</span>
+            </button>
+            <button class="btn-blueprint">
+                <span class="corner-tl"></span>
+                <span class="corner-br"></span>
+                Secondary Action
+            </button>
+            <button class="btn-facade">
+                Inline Link Style
+                <span class="facade-arrow">→</span>
+                <span class="facade-line"></span>
+                <span class="facade-fill"></span>
+            </button>
+            <button class="btn-monolith">
+                <span class="monolith-bar"></span>
+                <span class="monolith-bg"></span>
+                <span class="monolith-text">
+                    Dark Block CTA
+                    <span class="monolith-icon">→</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
+</body>
+
+</html>
