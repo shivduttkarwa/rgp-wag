@@ -1,7 +1,7 @@
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.static import serve as media_serve
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
@@ -51,8 +51,16 @@ urlpatterns = [
 
 ]
 
-# Serve uploaded media before Wagtail's catch-all page routing.
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve uploaded media in production (DEBUG=False) for demo hosting.
+media_prefix = settings.MEDIA_URL.lstrip("/").rstrip("/")
+if media_prefix:
+    urlpatterns += [
+        re_path(
+            rf"^{media_prefix}/(?P<path>.*)$",
+            media_serve,
+            {"document_root": settings.MEDIA_ROOT},
+        ),
+    ]
 
 # Wagtail page serving (headless previews) must remain last.
 urlpatterns += [
