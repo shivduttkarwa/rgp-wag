@@ -1,4 +1,5 @@
 from .base import *  # noqa: F401, F403
+from pathlib import Path
 from decouple import config
 
 def env_flag(name: str, default: str = "False") -> bool:
@@ -11,6 +12,10 @@ def env_flag(name: str, default: str = "False") -> bool:
 
 
 DEBUG = env_flag("DEBUG", default="False")
+
+# Use a writable runtime path on Render for uploaded media unless explicitly overridden.
+MEDIA_ROOT = Path(config("MEDIA_ROOT", default="/tmp/rgp-media")).resolve()
+MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 
 ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS + [".onrender.com"]))  # noqa: F405
 
