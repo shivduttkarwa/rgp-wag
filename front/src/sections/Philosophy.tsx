@@ -95,6 +95,7 @@ function TestiCard({
     e.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
+    video.currentTime = 0;
     video.muted = false;
     setFullPlay(true);
     setActiveId(t.title);
@@ -336,3 +337,4 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
     </section>
   );
 }
+

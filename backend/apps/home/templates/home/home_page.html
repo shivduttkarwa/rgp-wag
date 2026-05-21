@@ -3,82 +3,359 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ page.title|default:"Home" }}</title>
+  <title>{{ page.title|default:"Real Gold Properties" }}</title>
   <style>
+    :root {
+      --rg-navy: #001f49;
+      --rg-navy-soft: #001a3d;
+      --rg-gold: #f9c307;
+      --rg-gold-soft: #fde68a;
+      --rg-bg: #fffdf6;
+      --rg-paper: rgba(255, 255, 255, 0.86);
+      --rg-text: #001f49;
+      --rg-muted: rgba(15, 24, 112, 0.68);
+      --rg-line: rgba(15, 24, 112, 0.12);
+      --rg-shadow: 0 24px 56px rgba(0, 31, 73, 0.12);
+      --rg-shadow-soft: 0 16px 32px rgba(0, 31, 73, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f7f8fa;
-      color: #0f172a;
-      line-height: 1.5;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--rg-text);
+      background: var(--rg-bg);
     }
-    .wrap {
-      max-width: 760px;
-      margin: 56px auto;
-      padding: 24px;
+
+    .page {
+      width: min(1040px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
     }
-    .card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.06);
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      padding: clamp(22px, 3vw, 36px);
+      color: #fffdf6;
+      background: var(--rg-navy);
+      border: 1px solid rgba(249, 195, 7, 0.2);
+      box-shadow: var(--rg-shadow);
     }
-    h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1.2;
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      gap: 22px;
+      align-items: end;
     }
-    p {
-      margin: 0 0 14px;
-      color: #334155;
-    }
-    .links {
+
+    .brand-row {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(249, 195, 7, 0.34);
+      display: grid;
+      place-items: center;
+      color: var(--rg-gold-soft);
+      background: rgba(255, 255, 255, 0.05);
+      flex: 0 0 auto;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.98rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rg-gold);
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 253, 246, 0.68);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.3rem, 4.2vw, 3.9rem);
+      line-height: 0.98;
+      font-weight: 500;
+      letter-spacing: -0.028em;
+    }
+
+    .lead {
+      margin: 14px 0 0;
+      max-width: 48ch;
+      font-size: clamp(0.95rem, 1.35vw, 1.02rem);
+      line-height: 1.68;
+      color: rgba(255, 253, 246, 0.82);
+    }
+
+    .hero-panel {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(249, 195, 7, 0.16);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-kicker {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rg-gold);
+    }
+
+    .panel-copy {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: rgba(255, 253, 246, 0.84);
+    }
+
+    .panel-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 14px;
     }
-    a {
-      display: inline-block;
-      text-decoration: none;
-      border: 1px solid #cbd5e1;
-      padding: 10px 14px;
-      border-radius: 10px;
-      color: #0f172a;
-      background: #f8fafc;
+
+    .meta-box {
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .meta-label {
+      margin: 0 0 4px;
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 253, 246, 0.58);
+    }
+
+    .meta-value {
+      margin: 0;
+      font-size: 0.92rem;
       font-weight: 600;
-      font-size: 14px;
+      color: #fffdf6;
     }
-    a:hover {
-      background: #eef2ff;
+
+    .actions {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
     }
-    code {
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 2px 6px;
-      font-size: 13px;
+
+    .action {
+      display: block;
+      text-decoration: none;
+      padding: 18px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid rgba(249, 195, 7, 0.18);
+      box-shadow: var(--rg-shadow-soft);
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    }
+
+    .action:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(0, 31, 73, 0.1);
+      border-color: rgba(249, 195, 7, 0.36);
+    }
+
+    .action-kicker {
+      margin: 0 0 8px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #d4a200;
+    }
+
+    .action-title {
+      margin: 0 0 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      font-weight: 500;
+      color: var(--rg-text);
+    }
+
+    .action-copy {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.58;
+      color: var(--rg-muted);
+    }
+
+    .action-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rg-navy);
+    }
+
+    .action-arrow svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--rg-line);
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(0, 31, 73, 0.05);
+      font-size: 0.88rem;
+      line-height: 1.58;
+      color: var(--rg-muted);
+    }
+
+    .note strong {
+      color: var(--rg-text);
+    }
+
+    @media (max-width: 1024px) {
+      .actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 840px) {
+      .page {
+        width: min(100% - 24px, 1040px);
+        padding-top: 16px;
+      }
+
+      .hero-grid,
+      .actions,
+      .panel-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      h1 {
+        max-width: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>{{ page.title|default:"Real Gold Properties" }}</h1>
-      <p>
-        Wagtail backend is running. This placeholder template prevents
-        <code>TemplateDoesNotExist: home/home_page.html</code> on <code>/</code>.
-      </p>
-      <p>
-        For the React frontend, run the Vite app separately.
-      </p>
-      <div class="links">
-        <a href="/cms/">Open Wagtail CMS</a>
-        <a href="/api/pages/home/">Home API</a>
-        <a href="/api/properties/">Properties API</a>
+  <main class="page">
+    <section class="hero" aria-label="Real Gold client portal">
+      <div class="hero-grid">
+        <div>
+          <div class="brand-row">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" width="22" height="22">
+                <path d="M13 31.5 24.5 13 35 31.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.5 31.5h12" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p class="brand-name">Real Gold Properties</p>
+              <p class="brand-subtitle">Private Review Portal</p>
+            </div>
+          </div>
+
+          <h1>{{ page.title|default:"Project Access" }}</h1>
+          <p class="lead">
+            A dedicated access point for content review, property data inspection, and site management across the Real Gold digital experience.
+          </p>
+        </div>
+
+        <aside class="hero-panel">
+          <p class="panel-kicker">Current Access</p>
+          <p class="panel-copy">
+            This portal is configured for streamlined review and content operations, giving your team a clear way to manage updates and preview structured site data.
+          </p>
+          <div class="panel-meta">
+            <div class="meta-box">
+              <p class="meta-label">Platform</p>
+              <p class="meta-value">Wagtail CMS</p>
+            </div>
+            <div class="meta-box">
+              <p class="meta-label">Environment</p>
+              <p class="meta-value">Active</p>
+            </div>
+          </div>
+        </aside>
       </div>
+    </section>
+
+    <section class="actions" aria-label="Portal actions">
+      <a class="action" href="/cms/">
+        <p class="action-kicker">Content Operations</p>
+        <h2 class="action-title">Open CMS</h2>
+        <p class="action-copy">Manage homepage sections, testimonials, property content, and supporting website information in one place.</p>
+        <span class="action-arrow">
+          Enter
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <a class="action" href="/api/pages/home/">
+        <p class="action-kicker">Homepage Feed</p>
+        <h2 class="action-title">Home API</h2>
+        <p class="action-copy">Review the structured homepage response used to power the current frontend presentation and section-level content.</p>
+        <span class="action-arrow">
+          Review
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <a class="action" href="/api/properties/">
+        <p class="action-kicker">Listing Data</p>
+        <h2 class="action-title">Properties API</h2>
+        <p class="action-copy">Inspect live property records, listing payloads, and the data structure supporting the latest Real Gold UI.</p>
+        <span class="action-arrow">
+          Explore
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </section>
+
+    <div class="note">
+      <strong>Access note:</strong> this page is designed as a refined project portal for content review and administration. The public website experience continues through the dedicated frontend application connected to this CMS.
     </div>
-  </div>
+  </main>
 </body>
 </html>
