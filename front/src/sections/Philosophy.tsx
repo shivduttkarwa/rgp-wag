@@ -67,45 +67,54 @@ function TestiCard({
   const [fullPlay, setFullPlay] = useState(false);
 
   useEffect(() => {
-    const isMobile = window.matchMedia(
-      "(hover: none) and (pointer: coarse)",
-    ).matches;
-    if (isMobile && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, []);
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+
+    const startMutedPreview = () => {
+      if (fullPlay) return;
+      video.play().catch(() => {});
+    };
+
+    startMutedPreview();
+    video.addEventListener("canplay", startMutedPreview);
+
+    return () => {
+      video.removeEventListener("canplay", startMutedPreview);
+    };
+  }, [fullPlay, t.video]);
 
   const handleMouseEnter = () => {
     if (fullPlay) return;
     videoRef.current?.play().catch(() => {});
   };
 
-  const handleMouseLeave = () => {
-    if (fullPlay) return;
-    const v = videoRef.current;
-    if (!v) return;
-    v.pause();
-    v.currentTime = 0;
-  };
-
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = false;
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
     setFullPlay(true);
     setActiveId(t.title);
-    v.play().catch(() => {});
+    video.play().catch(() => {});
   };
 
   useEffect(() => {
-    if (activeId === t.title || !fullPlay) return;
-    const v = videoRef.current;
-    if (!v) return;
-    v.pause();
-    v.currentTime = 0;
-    v.muted = true;
-    setFullPlay(false);
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (activeId === t.title) return;
+
+    if (fullPlay) {
+      video.pause();
+      video.currentTime = 0;
+      video.muted = true;
+      setFullPlay(false);
+    }
+
+    video.play().catch(() => {});
   }, [activeId, fullPlay, t.title]);
 
   return (
@@ -113,7 +122,6 @@ function TestiCard({
       className="rg-philo__card"
       data-tint={t.tintVar}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <div className="rg-philo__media">
         <video
@@ -122,9 +130,10 @@ function TestiCard({
           src={t.video}
           poster={t.poster}
           muted
+          autoPlay
           playsInline
           loop
-          preload="none"
+          preload="metadata"
           controls={fullPlay}
         />
       </div>
@@ -193,7 +202,6 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
 
         <div className="rg-philo__divider" role="separator" />
 
-        {/* Desktop: grid up to 3 items, slider beyond that */}
         {useDesktopSlider ? (
           <div className="rg-philo__desktop-swiper">
             <div className="rg-philo__desktop-controls">
@@ -238,7 +246,6 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
               spaceBetween={20}
               slidesPerView={3}
               speed={420}
-              grabCursor
               onSwiper={(swiper) => {
                 desktopSwiperRef.current = swiper;
               }}
@@ -252,7 +259,7 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
               }}
             >
               {testimonials.map((t, i) => (
-                <SwiperSlide key={t.title}>
+                <SwiperSlide key={`${t.title}-${i}`}>
                   <div
                     className="rg-philo__card-wrap"
                     data-gsap="clip-reveal-right"
@@ -277,9 +284,9 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
             data-gsap-delay="0.1"
             className="rg-philo__grid"
           >
-            {testimonials.map((t) => (
+            {testimonials.map((t, i) => (
               <TestiCard
-                key={t.title}
+                key={`${t.title}-${i}`}
                 t={t}
                 activeId={activeId}
                 setActiveId={setActiveId}
@@ -288,19 +295,17 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
           </div>
         )}
 
-        {/* Mobile swiper */}
         <div className="rg-philo__swiper-wrap">
           <Swiper
             modules={[Pagination]}
             spaceBetween={16}
             slidesPerView={1.08}
-            grabCursor
             speed={420}
             pagination={{ clickable: true, dynamicBullets: true }}
             breakpoints={{ 480: { slidesPerView: 1.2, spaceBetween: 20 } }}
           >
             {testimonials.map((t, i) => (
-              <SwiperSlide key={t.title}>
+              <SwiperSlide key={`${t.title}-${i}`}>
                 <div
                   className="rg-philo__card-wrap"
                   data-gsap="clip-reveal-right"
@@ -318,7 +323,6 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
           </Swiper>
         </div>
 
-        {/* CTA */}
         <div className="rg-philo__cta-row">
           <RgButton
             variant="blue"
