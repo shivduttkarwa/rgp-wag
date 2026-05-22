@@ -89,6 +89,8 @@ class ExpressionOfInterestSerializer(serializers.ModelSerializer):
         for field_name, value in legacy_values.items():
             if not attrs.get(field_name):
                 attrs[field_name] = value
+        if legacy_values:
+            attrs["message"] = ""
 
         # Keep summary fields in sync with structured fields.
         if not attrs.get("property_type") and attrs.get("property_address"):

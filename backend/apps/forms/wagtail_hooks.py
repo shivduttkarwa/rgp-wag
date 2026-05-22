@@ -21,6 +21,7 @@ class EoiSubmissionViewSet(SnippetViewSet):
     menu_label = "EOI Submissions"
     menu_name = "eoi_submissions"
     add_to_admin_menu = False
+    exclude_form_fields = ("message",)
     list_display = (
         "first_name",
         "last_name",
