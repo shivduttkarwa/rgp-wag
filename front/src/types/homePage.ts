@@ -78,7 +78,6 @@ export type ServiceCard = {
   title: string;
   subtitle: string;
   description: string;
-  features: string[];
   cta_label: string;
 };
 

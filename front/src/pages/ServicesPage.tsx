@@ -271,11 +271,6 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
               subtitle: "Representation",
               description:
                 "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.",
-              features: [
-                "Off‑market access and shortlists",
-                "Pricing guidance and negotiation",
-                "Contract support and due diligence",
-              ],
               cta: "Start Buying",
               theme: "buy",
             },
@@ -288,11 +283,6 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
               subtitle: "Strategy",
               description:
                 "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.",
-              features: [
-                "Pricing strategy and campaign plan",
-                "Styling, media, and buyer targeting",
-                "Auction or private treaty management",
-              ],
               cta: "Plan My Sale",
               theme: "sell",
             },
@@ -305,11 +295,6 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
               subtitle: "Management",
               description:
                 "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.",
-              features: [
-                "Tenant screening and onboarding",
-                "Rent collection and inspections",
-                "Ongoing management and renewals",
-              ],
               cta: "Lease My Property",
               theme: "rent",
             },

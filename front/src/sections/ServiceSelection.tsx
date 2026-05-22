@@ -24,7 +24,6 @@ type LegacyServiceItem = {
   title: string;
   subtitle: string;
   description: string;
-  features: string[];
   cta: string;
   theme: "buy" | "sell" | "rent";
 };
@@ -59,7 +58,6 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
         title: service.title,
         subtitle: service.subtitle,
         description: service.description,
-        features: service.features,
         cta: service.cta_label,
         theme: service.theme,
       }))).map((service) => ({
@@ -68,7 +66,6 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
         title: service.title,
         subtitle: service.subtitle,
         description: service.description,
-        features: service.features,
         cta_label: service.cta,
       })),
     };

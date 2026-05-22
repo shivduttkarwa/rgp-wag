@@ -129,7 +129,6 @@ class ServiceCardBlock(StructBlock):
     title       = CharBlock(default="Buyer Support")
     subtitle    = CharBlock(default="And Guidance")
     description = TextBlock()
-    features    = ListBlock(CharBlock(), help_text="One feature per row")
     cta_label   = CharBlock(default="Speak With Us")
 
     class Meta:

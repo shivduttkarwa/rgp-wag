@@ -57,7 +57,6 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
         subtitle: "And Guidance",
         description:
           "Clear advice and local insight to help you buy with confidence — pricing, comparables, and negotiation support tailored to your goals.",
-        features: ["Buyer support and advisory", "Residential property sales", "House & land packages"],
         cta_label: "Speak With Us",
       },
       {
@@ -67,7 +66,6 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
         subtitle: "& Market Analysis",
         description:
           "Professional appraisals, transparent pricing strategy, and data-led guidance to help you make the right move at the right time.",
-        features: ["Property appraisals and market analysis", "Honest communication", "Results driven outcomes"],
         cta_label: "Request an Appraisal",
       },
       {
@@ -77,7 +75,6 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
         subtitle: "Property Management",
         description:
           "Reliable tenancy, proactive maintenance, and smooth day-to-day management for landlords and tenants alike.",
-        features: ["Quality tenant selection", "Reliable rent collection", "Routine inspections & maintenance"],
         cta_label: "Get In Touch",
       },
     ],
