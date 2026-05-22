@@ -22,9 +22,11 @@ const toRgpLink = (label: string, href: string) => {
 export default function HomePage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { sections } = useHomePage();
+  const { sections, status } = useHomePage();
 
   useEffect(() => {
+    if (status === "loading") return;
+
     const guards = [
       "clipRevealInit", "clipRevealRtlInit", "clipRevealTopInit",
       "clipRevealLeftInit", "clipRevealRightInit", "wordRevealInit",
@@ -37,7 +39,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
     });
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return cleanup;
-  }, []);
+  }, [status]);
 
   const hero = sections.hero;
   const heroTabs = hero?.search_tabs?.filter((tab) => tab.label && tab.href) ?? [];
