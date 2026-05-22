@@ -331,21 +331,16 @@ export default function ExpressionOfInterestPage({
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const getValue = (name: string) => String(formData.get(name) ?? "").trim();
 
-    const fullName = String(formData.get("buyer_1_full_legal_name") ?? "").trim();
+    const fullName = getValue("buyer_1_full_legal_name");
     const [firstName = "", ...rest] = fullName.split(/\s+/);
     const lastName = rest.join(" ");
-    const email = String(formData.get("email_buyer_1") ?? "").trim();
-    const phone = String(formData.get("phone_buyer_1") ?? "").trim();
-    const propertyType = String(formData.get("property_address") ?? "").trim();
-    const budget = String(formData.get("offer_price") ?? "").trim();
-    const timeline = String(formData.get("finance_if_yes_how_many_days") ?? "").trim();
-
-    const messageEntries = Array.from(formData.entries()).map(([key, value]) => {
-      const raw = String(value ?? "").trim();
-      if (!raw) return null;
-      return `${key}: ${raw}`;
-    }).filter((line): line is string => Boolean(line));
+    const email = getValue("email_buyer_1");
+    const phone = getValue("phone_buyer_1");
+    const propertyType = getValue("property_address");
+    const budget = getValue("offer_price");
+    const timeline = getValue("finance_if_yes_how_many_days");
 
     setSubmitError(null);
     setIsSubmitting(true);
@@ -358,7 +353,28 @@ export default function ExpressionOfInterestPage({
         property_type: propertyType,
         budget,
         timeline,
-        message: messageEntries.join("\n"),
+        message: "",
+        property_address: getValue("property_address"),
+        buyer_1_full_legal_name: getValue("buyer_1_full_legal_name"),
+        address_buyer_1: getValue("address_buyer_1"),
+        phone_buyer_1: getValue("phone_buyer_1"),
+        email_buyer_1: getValue("email_buyer_1"),
+        buyer_2_full_legal_name: getValue("buyer_2_full_legal_name"),
+        address_buyer_2_if_different_to_buyer_1: getValue("address_buyer_2_if_different_to_buyer_1"),
+        phone_buyer_2: getValue("phone_buyer_2"),
+        email_buyer_2: getValue("email_buyer_2"),
+        offer_price: getValue("offer_price"),
+        initial_deposit: getValue("initial_deposit"),
+        balance_deposit: getValue("balance_deposit"),
+        will_your_offer_be_subject_to_finance: getValue("will_your_offer_be_subject_to_finance"),
+        finance_if_yes_how_many_days: getValue("finance_if_yes_how_many_days"),
+        will_your_offer_be_subject_to_building_pest: getValue("will_your_offer_be_subject_to_building_pest"),
+        building_pest_if_yes_how_many_days: getValue("building_pest_if_yes_how_many_days"),
+        do_you_have_any_other_conditions_for_purchase: getValue("do_you_have_any_other_conditions_for_purchase"),
+        if_yes_please_state_brief_details: getValue("if_yes_please_state_brief_details"),
+        solicitor_details: getValue("solicitor_details"),
+        are_you_happy_for_us_to_store_your_information_in_our_database:
+          getValue("are_you_happy_for_us_to_store_your_information_in_our_database"),
       });
       setSuccess(true);
       form.reset();
