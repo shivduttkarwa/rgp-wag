@@ -32,7 +32,6 @@ class HomePage(Page):
 
     # Only allow one home page under the root
     parent_page_types = ["wagtailcore.Page"]
-    subpage_types = ["home.ContactPage", "home.TeamPage"]
     max_count = 1
 
     class Meta:
@@ -120,7 +119,6 @@ class ContactPage(Page):
 
     parent_page_types = ["home.HomePage"]
     subpage_types: list[str] = []
-    max_count = 1
 
     content_panels = Page.content_panels + [
         FieldPanel("hero_content"),
@@ -202,7 +200,6 @@ class TeamPage(Page):
 
     parent_page_types = ["home.HomePage"]
     subpage_types: list[str] = []
-    max_count = 1
 
     content_panels = Page.content_panels + [
         FieldPanel("hero_content"),
