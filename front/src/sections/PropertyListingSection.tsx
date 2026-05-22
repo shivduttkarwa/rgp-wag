@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -363,30 +363,49 @@ const PropertyListingSection = ({ data }: { data?: PropertyListingSectionData })
     }
   }, [activeFilter]);
 
-  useEffect(() => {
-    const cards =
-      gridRef.current?.querySelectorAll<HTMLElement>(".property-card");
-    if (!cards?.length) return;
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
 
+    const cards = grid.querySelectorAll<HTMLElement>(".property-card");
+    if (!cards.length) return;
+
+    gsap.killTweensOf(cards);
     gsap.set(cards, { clipPath: "inset(100% 0 0 0)", willChange: "clip-path" });
 
-    ScrollTrigger.create({
-      trigger: gridRef.current,
+    let played = false;
+    const playReveal = () => {
+      if (played) return;
+      played = true;
+      gsap.to(cards, {
+        clipPath: "inset(0% 0 0 0)",
+        duration: 1.2,
+        ease: "power3.inOut",
+        stagger: 0.12,
+        onComplete: () => {
+          gsap.set(cards, { clearProps: "will-change,clip-path" });
+        },
+      });
+    };
+
+    const trigger = ScrollTrigger.create({
+      trigger: grid,
       start: "top 85%",
       once: true,
-      onEnter: () => {
-        gsap.to(cards, {
-          clipPath: "inset(0% 0 0 0)",
-          duration: 1.2,
-          ease: "power3.inOut",
-          stagger: 0.12,
-          onComplete: () => {
-            gsap.set(cards, { clearProps: "will-change,clip-path" });
-          },
-        });
-      },
+      onEnter: playReveal,
     });
-  }, []);
+
+    // If cards changed after data hydration and section is already in view,
+    // play immediately instead of waiting for another scroll event.
+    const inViewNow = grid.getBoundingClientRect().top <= window.innerHeight * 0.85;
+    if (inViewNow) playReveal();
+
+    return () => {
+      trigger.kill();
+      gsap.killTweensOf(cards);
+      gsap.set(cards, { clearProps: "will-change,clip-path" });
+    };
+  }, [displayedFilter, sectionData.cards]);
 
   const sourceProperties = useMemo<ListingCardProperty[]>(() => {
     const cards = sectionData.cards?.filter((card): card is NonNullable<typeof card> => Boolean(card)) ?? [];
