@@ -187,6 +187,35 @@ class CtaSectionBlock(StructBlock):
     text       = TextBlock(default="Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.")
     primary    = CtaBlock()
     secondary  = CtaBlock()
+    use_video  = BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Enable video background mode. When off, image background is used.",
+    )
+    background_image = ImageChooserBlock(
+        required=False,
+        help_text="Image mode background. Also used as fallback if video is unavailable.",
+    )
+    background_image_url = CharBlock(
+        required=False,
+        default="images/hero1.jpg",
+        help_text="Fallback image path relative to public/ or full URL.",
+    )
+    background_video_url = CharBlock(
+        required=False,
+        default="vids/cta-vid.mp4",
+        help_text="Video path relative to public/ or full URL. Used when video mode is enabled.",
+    )
+    video_poster_image = ImageChooserBlock(
+        required=False,
+        help_text="Poster image shown before video loads. Used only when video mode is enabled.",
+    )
+    video_poster_image_url = CharBlock(
+        required=False,
+        default="images/hero1.jpg",
+        help_text="Fallback poster path relative to public/ or full URL.",
+    )
+    min_height = CharBlock(required=False, default="100vh")
 
     class Meta:
         icon  = "placeholder"

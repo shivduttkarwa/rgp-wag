@@ -101,6 +101,13 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
       "Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.",
     primary: { label: "Talk to an Expert", href: "/contact" },
     secondary: { label: "0450 009 291", href: "tel:+61450009291" },
+    use_video: true,
+    background_image: null,
+    background_image_url: "images/hero1.jpg",
+    background_video_url: "vids/cta-vid.mp4",
+    video_poster_image: null,
+    video_poster_image_url: "images/hero1.jpg",
+    min_height: "100vh",
   },
   video_testimonials: {
     section_label: "Testimonials",

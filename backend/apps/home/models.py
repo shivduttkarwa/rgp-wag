@@ -91,6 +91,13 @@ def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
         "text": legacy_cta["text"] or "Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.",
         "primary": legacy_cta["primary"] or {"label": "", "href": ""},
         "secondary": legacy_cta["secondary"] or {"label": "", "href": ""},
+        "use_video": True,
+        "background_image": None,
+        "background_image_url": "images/hero1.jpg",
+        "background_video_url": "vids/cta-vid.mp4",
+        "video_poster_image": None,
+        "video_poster_image_url": "images/hero1.jpg",
+        "min_height": "100vh",
     }
 
 

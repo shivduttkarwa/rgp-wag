@@ -50,6 +50,15 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const services = sections.services;
   const eoiCta = sections.eoi_cta;
   const ctaSection = sections.cta;
+  const ctaBackgroundImage =
+    ctaSection?.background_image?.url ?? ctaSection?.background_image_url ?? "images/hero1.jpg";
+  const ctaVideoPoster =
+    ctaSection?.video_poster_image?.url ??
+    ctaSection?.video_poster_image_url ??
+    ctaBackgroundImage;
+  const ctaVideo = ctaSection?.use_video
+    ? (ctaSection.background_video_url || undefined)
+    : undefined;
 
   const primaryCta = toRgpLink(
     ctaSection?.primary.label || "Talk to an Expert",
@@ -115,7 +124,10 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           title={ctaSection.title}
           titleEm={ctaSection.title_em}
           text={ctaSection.text}
-          bgVideo="vids/cta-vid.mp4"
+          bgImage={ctaBackgroundImage}
+          bgVideo={ctaVideo}
+          posterImage={ctaVideoPoster}
+          minHeight={ctaSection.min_height}
           primary={primaryCta}
           secondary={secondaryCta}
           stats={[

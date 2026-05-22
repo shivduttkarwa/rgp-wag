@@ -63,6 +63,8 @@ function applyBlockLevelDefaults(sections: HomePageSections): HomePageSections {
       ...sections.cta,
       primary: sections.cta.primary ?? ctaDefaults.primary,
       secondary: sections.cta.secondary ?? ctaDefaults.secondary,
+      background_image: sections.cta.background_image ?? ctaDefaults.background_image,
+      video_poster_image: sections.cta.video_poster_image ?? ctaDefaults.video_poster_image,
     };
   }
 
