@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title|default:"Contact" }} · Real Gold Properties</title>
+  <style>
+    :root {
+      --rg-navy: #001f49;
+      --rg-gold: #f9c307;
+      --rg-bg: #fffdf6;
+      --rg-line: rgba(15, 24, 112, 0.12);
+      --rg-muted: rgba(15, 24, 112, 0.75);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--rg-navy);
+      background: var(--rg-bg);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    .card {
+      width: min(720px, 100%);
+      background: #fff;
+      border: 1px solid var(--rg-line);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 18px 36px rgba(0, 31, 73, 0.08);
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.7rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--rg-navy);
+    }
+    p {
+      margin: 0;
+      line-height: 1.7;
+      color: var(--rg-muted);
+    }
+    .links {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+    a {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--rg-navy);
+      border: 1px solid var(--rg-line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      transition: border-color 180ms ease, transform 180ms ease;
+    }
+    a:hover {
+      border-color: rgba(249, 195, 7, 0.5);
+      transform: translateY(-1px);
+    }
+    .chip {
+      display: inline-flex;
+      margin-bottom: 12px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #4d3a00;
+      background: rgba(249, 195, 7, 0.2);
+      border: 1px solid rgba(249, 195, 7, 0.45);
+      border-radius: 999px;
+      padding: 5px 11px;
+    }
+  </style>
+</head>
+<body>
+  <article class="card">
+    <span class="chip">Wagtail Contact Page</span>
+    <h1>{{ page.title|default:"Contact Page" }}</h1>
+    <p>
+      Contact content is managed in Wagtail and exposed headlessly for the React frontend.
+      Use the links below for quick access.
+    </p>
+    <div class="links">
+      <a href="/cms/pages/">Open Wagtail Pages</a>
+      <a href="/api/pages/contact/">View Contact API Payload</a>
+      <a href="/contact">Open Frontend Contact Route</a>
+    </div>
+  </article>
+</body>
+</html>

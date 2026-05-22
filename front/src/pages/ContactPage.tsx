@@ -1,16 +1,52 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, FileText, Mail, Phone, Send } from "lucide-react";
 import HeroSection from "../sections/HeroSection";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { submitContactForm } from "@/lib/api/forms";
+import { renderHeroAccentTokens } from "@/lib/heroTokens";
+import { useContactPage } from "@/hooks/useContactPage";
 import "./ContactPage.css";
+
+const DEFAULT_INTENTS = ["Buy", "Sell", "Rent", "Invest", "Off-Plan", "Valuation"];
+const DEFAULT_PROPERTY_TYPES = [
+  "Apartment",
+  "Villa / Townhouse",
+  "Penthouse",
+  "Commercial",
+  "Plot / Land",
+];
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const hasHref = (href?: string) => Boolean(href && href.trim());
 
 export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLElement>(null);
   const ptWrapRef = useRef<HTMLDivElement>(null);
+  const { data, status } = useContactPage();
+
+  const intentOptions = data.form.intent_options.length
+    ? data.form.intent_options
+    : DEFAULT_INTENTS;
+  const propertyTypeOptions = data.form.property_type_options.length
+    ? data.form.property_type_options
+    : DEFAULT_PROPERTY_TYPES;
+
+  const budgetMin = Math.max(0, data.form.budget_min || 500_000);
+  const budgetMax = Math.max(budgetMin + 1, data.form.budget_max || 20_000_000);
+  const budgetStep = Math.max(1, data.form.budget_step || 500_000);
+  const budgetDefault = clamp(data.form.budget_default || budgetMin, budgetMin, budgetMax);
+  const contactItems = data.contact_info.items ?? [];
+
+  const intentOptionsKey = useMemo(() => intentOptions.join("||"), [intentOptions]);
+  const propertyTypeOptionsKey = useMemo(
+    () => propertyTypeOptions.join("||"),
+    [propertyTypeOptions],
+  );
 
   useEffect(() => {
+    if (status === "loading") return;
     const guards = [
       "clipRevealInit", "clipRevealRtlInit", "clipRevealTopInit",
       "clipRevealLeftInit", "clipRevealRightInit", "wordRevealInit",
@@ -23,23 +59,30 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
     });
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return cleanup;
-  }, []);
+  }, [status, data.updated_at]);
 
-  const [intent, setIntent] = useState("Buy");
-  const [budget, setBudget] = useState(5_000_000);
+  const [intent, setIntent] = useState(intentOptions[0] || "Buy");
+  const [budget, setBudget] = useState(budgetDefault);
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState<string>("Any type");
   const [ptOpen, setPtOpen] = useState(false);
 
-  const PROPERTY_TYPES = [
-    "Apartment",
-    "Villa / Townhouse",
-    "Penthouse",
-    "Commercial",
-    "Plot / Land",
-  ];
+  useEffect(() => {
+    setIntent((prev) => (intentOptions.includes(prev) ? prev : intentOptions[0] || "Buy"));
+  }, [intentOptionsKey, intentOptions]);
+
+  useEffect(() => {
+    setPropertyType((prev) => {
+      if (prev === "Any type") return prev;
+      return propertyTypeOptions.includes(prev) ? prev : "Any type";
+    });
+  }, [propertyTypeOptionsKey, propertyTypeOptions]);
+
+  useEffect(() => {
+    setBudget(budgetDefault);
+  }, [budgetDefault]);
 
   useEffect(() => {
     const onDocMouseDown = (e: MouseEvent) => {
@@ -62,7 +105,10 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   }, [ptOpen]);
 
   const formatBudget = (value: number) => {
-    if (value >= 20_000_000) return "A$ 20M+";
+    if (value >= budgetMax) {
+      const maxInM = (budgetMax / 1_000_000).toFixed(0);
+      return `A$ ${maxInM}M+`;
+    }
     if (value >= 1_000_000) {
       const v = (value / 1_000_000).toFixed(1).replace(/\.0$/, "");
       return `A$ ${v}M`;
@@ -76,294 +122,298 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
         ready={ready}
         showVideo={false}
         showCta={false}
-        bgImage="images/contact-hero.jpg"
-        titleLine1={
-          <>
-            Get In <span className="rg-gold">Touch</span>
-          </>
-        }
-        titleLine2={
-          <>
-            <span className="rg-amber">We're</span> Here
-          </>
-        }
-        subtitle="Our team is ready to guide you — from first enquiry to final key."
-        panel={
+        bgImage={data.hero.background_image?.url ?? data.hero.background_image_url}
+        titleLine1={renderHeroAccentTokens(data.hero.title_line_1)}
+        titleLine2={renderHeroAccentTokens(data.hero.title_line_2)}
+        subtitle={data.hero.subtitle}
+        panel={(
           <div className="contact-hero-actions">
             <RgButton
-              href="tel:+61450009291"
+              href={data.hero.primary_cta_href}
               variant="gold"
               className="contact-hero-actions__link contact-hero-actions__link--primary"
-              aria-label="Call us"
-              label="Call Us"
+              aria-label={data.hero.primary_cta_label}
+              label={data.hero.primary_cta_label}
               endIcon={<Phone size={18} aria-hidden="true" />}
             />
             <RgButton
-              href="mailto:admin@realgoldproperties.com.au"
+              href={data.hero.secondary_cta_href}
               variant="blue"
               className="contact-hero-actions__link contact-hero-actions__link--secondary"
-              aria-label="Email us"
-              label="Email Us"
+              aria-label={data.hero.secondary_cta_label}
+              label={data.hero.secondary_cta_label}
               endIcon={<Mail size={18} aria-hidden="true" />}
             />
           </div>
-        }
+        )}
       />
 
       <div className="contact-shell">
         <div className="top-rule" />
 
         <div className="page">
-        {/* LEFT */}
-        <section className="left">
-          <div>
-            <h1 className="hero-title" data-gsap="char-reveal" data-gsap-start="top 90%">
-              Let's Talk
-              <em>Appraisal.</em>
-            </h1>
-            <p className="tagline" data-gsap="fade-up" data-gsap-delay="0.15">
-              Whether you're buying, selling, or investing — our advisors are ready to guide
-              you through every step.
-            </p>
-          </div>
-
-          <div>
-            <nav className="c-list">
-              <a href="tel:+61450009291" className="c-item" data-gsap="fade-up" data-gsap-delay="0.1">
-                <div>
-                  <p className="c-key">Phone</p>
-                  <p className="c-val">0450 009 291</p>
-                </div>
-                <svg className="c-arr" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </a>
-              <a href="mailto:admin@realgoldproperties.com.au" className="c-item" data-gsap="fade-up" data-gsap-delay="0.2">
-                <div>
-                  <p className="c-key">Email</p>
-                  <p className="c-val">admin@realgoldproperties.com.au</p>
-                </div>
-                <svg className="c-arr" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </a>
-              <a href="#" className="c-item" data-gsap="fade-up" data-gsap-delay="0.3">
-                <div>
-                  <p className="c-key">Visit</p>
-                  <p className="c-val">Forest Lake, Brisbane QLD 4078</p>
-                </div>
-                <svg className="c-arr" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                </svg>
-              </a>
-
-              <div className="c-item c-item--static" data-gsap="fade-up" data-gsap-delay="0.15">
-                <div>
-                  <p className="c-key">Office Hours</p>
-                  <p className="c-val">All days</p>
-                </div>
-                <p className="c-val c-val--time">09:00 – 18:00</p>
-              </div>
-            </nav>
-
-            <div className="quote" data-gsap="fade-up" data-gsap-delay="0.1">
-              <blockquote>
-                "Real estate is not just a transaction — it is the beginning of a life lived better."
-              </blockquote>
-              <cite>— Our Promise</cite>
+          <section className="left">
+            <div>
+              <h1 className="hero-title" data-gsap="char-reveal" data-gsap-start="top 90%">
+                {data.contact_info.headline}
+                <em>{data.contact_info.headline_em}</em>
+              </h1>
+              <p className="tagline" data-gsap="fade-up" data-gsap-delay="0.15">
+                {data.contact_info.tagline}
+              </p>
             </div>
-          </div>
-        </section>
 
-        {/* RIGHT */}
-        <section className="right">
-          <p className="form-eyebrow" data-gsap="fade-up">Begin your enquiry</p>
-          <h2 className="form-heading" data-gsap="char-reveal" data-gsap-start="top 85%">
-            Tell us what you're
-            <br />
-            <em>looking for.</em>
-          </h2>
-          <p className="form-sub" data-gsap="fade-up" data-gsap-delay="0.15">
-            Fill in the details and a specialist will respond within one business day.
-          </p>
+            <div>
+              <nav className="c-list">
+                {contactItems.map((item, index) => {
+                  const delay = `${0.1 + index * 0.1}`;
+                  if (!hasHref(item.href)) {
+                    return (
+                      <div
+                        key={`${item.label}-${item.value}-${index}`}
+                        className="c-item c-item--static"
+                        data-gsap="fade-up"
+                        data-gsap-delay={delay}
+                      >
+                        <div>
+                          <p className="c-key">{item.label}</p>
+                          <p className="c-val">{item.value}</p>
+                        </div>
+                      </div>
+                    );
+                  }
 
-          <div className="intents" data-gsap="fade-up" data-gsap-delay="0.2">
-            {["Buy", "Sell", "Rent", "Invest", "Off-Plan", "Valuation"].map((label) => (
-              <button
-                key={label}
-                type="button"
-                className={`ip${intent === label ? " on" : ""}`}
-                onClick={() => setIntent(label)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+                  return (
+                    <a
+                      key={`${item.label}-${item.value}-${index}`}
+                      href={item.href}
+                      className="c-item"
+                      data-gsap="fade-up"
+                      data-gsap-delay={delay}
+                    >
+                      <div>
+                        <p className="c-key">{item.label}</p>
+                        <p className="c-val">{item.value}</p>
+                      </div>
+                      <svg
+                        className="c-arr"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+                        />
+                      </svg>
+                    </a>
+                  );
+                })}
 
-          <form
-            data-gsap="clip-smooth-down"
-            data-gsap-delay="0.25"
-            data-gsap-start="top 85%"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const form = e.currentTarget;
-              const formData = new FormData(form);
-              const firstName = String(formData.get("first_name") ?? "").trim();
-              const lastName = String(formData.get("last_name") ?? "").trim();
-              const email = String(formData.get("email") ?? "").trim();
-              const phone = String(formData.get("phone") ?? "").trim();
-              const message = String(formData.get("message") ?? "").trim();
-              const fullName = `${firstName} ${lastName}`.trim();
+                <div className="c-item c-item--static" data-gsap="fade-up" data-gsap-delay="0.15">
+                  <div>
+                    <p className="c-key">{data.contact_info.office_label}</p>
+                    <p className="c-val">{data.contact_info.office_days}</p>
+                  </div>
+                  <p className="c-val c-val--time">{data.contact_info.office_time}</p>
+                </div>
+              </nav>
 
-              setSubmitError(null);
-              setIsSubmitting(true);
-              try {
-                await submitContactForm({
-                  name: fullName || "Website enquiry",
-                  email,
-                  phone,
-                  subject: `${intent} enquiry (${propertyType})`,
-                  message:
-                    `${message || "No additional message provided."}\n\n` +
-                    `Intent: ${intent}\n` +
-                    `Property type: ${propertyType}\n` +
-                    `Budget: ${formatBudget(budget)}`,
-                });
-                setSuccess(true);
-                form.reset();
-                setPropertyType("Any type");
-                setBudget(5_000_000);
-              } catch {
-                setSubmitError("Could not submit right now. Please try again.");
-              } finally {
-                setIsSubmitting(false);
-              }
-            }}
-          >
-            <div className="fgrid">
-              <div className="fg">
-                <label htmlFor="fn">First Name</label>
-                <input id="fn" name="first_name" type="text" placeholder="James" required />
+              <div className="quote" data-gsap="fade-up" data-gsap-delay="0.1">
+                <blockquote>{data.contact_info.quote_text}</blockquote>
+                <cite>{data.contact_info.quote_author}</cite>
               </div>
-              <div className="fg">
-                <label htmlFor="ln">Last Name</label>
-                <input id="ln" name="last_name" type="text" placeholder="Crawford" required />
-              </div>
-              <div className="fg">
-                <label htmlFor="em">Email</label>
-                <input id="em" name="email" type="email" placeholder="james@example.com" required />
-              </div>
-              <div className="fg">
-                <label htmlFor="ph">Phone</label>
-                <input id="ph" name="phone" type="tel" placeholder="+61 4 0000 0000" />
-              </div>
-              <div
-                className={`fg full fg--select${ptOpen ? " is-open" : ""}`}
-                ref={ptWrapRef}
-              >
-                <label htmlFor="pt">Property Type</label>
+            </div>
+          </section>
+
+          <section className="right">
+            <p className="form-eyebrow" data-gsap="fade-up">{data.form.eyebrow}</p>
+            <h2 className="form-heading" data-gsap="char-reveal" data-gsap-start="top 85%">
+              {data.form.heading_line_1}
+              <br />
+              <em>{data.form.heading_line_2}</em>
+            </h2>
+            <p className="form-sub" data-gsap="fade-up" data-gsap-delay="0.15">
+              {data.form.subtitle}
+            </p>
+
+            <div className="intents" data-gsap="fade-up" data-gsap-delay="0.2">
+              {intentOptions.map((label) => (
                 <button
-                  id="pt"
+                  key={label}
                   type="button"
-                  className="fg__select"
-                  aria-haspopup="listbox"
-                  aria-expanded={ptOpen}
-                  aria-controls="pt-listbox"
-                  onClick={() => setPtOpen((v) => !v)}
+                  className={`ip${intent === label ? " on" : ""}`}
+                  onClick={() => setIntent(label)}
                 >
-                  <span className="fg__select-val">{propertyType}</span>
-                  <ChevronDown size={18} className="fg__chev" aria-hidden="true" />
+                  {label}
                 </button>
+              ))}
+            </div>
 
+            <form
+              data-gsap="clip-smooth-down"
+              data-gsap-delay="0.25"
+              data-gsap-start="top 85%"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const formData = new FormData(form);
+                const firstName = String(formData.get("first_name") ?? "").trim();
+                const lastName = String(formData.get("last_name") ?? "").trim();
+                const email = String(formData.get("email") ?? "").trim();
+                const phone = String(formData.get("phone") ?? "").trim();
+                const message = String(formData.get("message") ?? "").trim();
+                const fullName = `${firstName} ${lastName}`.trim();
+
+                setSubmitError(null);
+                setIsSubmitting(true);
+                try {
+                  await submitContactForm({
+                    name: fullName || "Website enquiry",
+                    email,
+                    phone,
+                    subject: `${intent} enquiry (${propertyType})`,
+                    message:
+                      `${message || "No additional message provided."}\n\n` +
+                      `Intent: ${intent}\n` +
+                      `Property type: ${propertyType}\n` +
+                      `Budget: ${formatBudget(budget)}`,
+                  });
+                  setSuccess(true);
+                  form.reset();
+                  setPropertyType("Any type");
+                  setBudget(budgetDefault);
+                } catch {
+                  setSubmitError("Could not submit right now. Please try again.");
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+            >
+              <div className="fgrid">
+                <div className="fg">
+                  <label htmlFor="fn">First Name</label>
+                  <input id="fn" name="first_name" type="text" placeholder="James" required />
+                </div>
+                <div className="fg">
+                  <label htmlFor="ln">Last Name</label>
+                  <input id="ln" name="last_name" type="text" placeholder="Crawford" required />
+                </div>
+                <div className="fg">
+                  <label htmlFor="em">Email</label>
+                  <input id="em" name="email" type="email" placeholder="james@example.com" required />
+                </div>
+                <div className="fg">
+                  <label htmlFor="ph">Phone</label>
+                  <input id="ph" name="phone" type="tel" placeholder="+61 4 0000 0000" />
+                </div>
                 <div
-                  id="pt-listbox"
-                  className="fg__menu"
-                  role="listbox"
-                  aria-label="Property type options"
+                  className={`fg full fg--select${ptOpen ? " is-open" : ""}`}
+                  ref={ptWrapRef}
                 >
+                  <label htmlFor="pt">Property Type</label>
                   <button
+                    id="pt"
                     type="button"
-                    role="option"
-                    aria-selected={propertyType === "Any type"}
-                    className={`fg__opt${propertyType === "Any type" ? " is-active" : ""}`}
-                    onClick={() => {
-                      setPropertyType("Any type");
-                      setPtOpen(false);
-                    }}
+                    className="fg__select"
+                    aria-haspopup="listbox"
+                    aria-expanded={ptOpen}
+                    aria-controls="pt-listbox"
+                    onClick={() => setPtOpen((v) => !v)}
                   >
-                    Any type
+                    <span className="fg__select-val">{propertyType}</span>
+                    <ChevronDown size={18} className="fg__chev" aria-hidden="true" />
                   </button>
-                  {PROPERTY_TYPES.map((t) => (
+
+                  <div
+                    id="pt-listbox"
+                    className="fg__menu"
+                    role="listbox"
+                    aria-label="Property type options"
+                  >
                     <button
-                      key={t}
                       type="button"
                       role="option"
-                      aria-selected={propertyType === t}
-                      className={`fg__opt${propertyType === t ? " is-active" : ""}`}
+                      aria-selected={propertyType === "Any type"}
+                      className={`fg__opt${propertyType === "Any type" ? " is-active" : ""}`}
                       onClick={() => {
-                        setPropertyType(t);
+                        setPropertyType("Any type");
                         setPtOpen(false);
                       }}
                     >
-                      {t}
+                      Any type
                     </button>
-                  ))}
+                    {propertyTypeOptions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        role="option"
+                        aria-selected={propertyType === option}
+                        className={`fg__opt${propertyType === option ? " is-active" : ""}`}
+                        onClick={() => {
+                          setPropertyType(option);
+                          setPtOpen(false);
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="budget">
-              <div className="b-head">
-                <span className="b-lbl">Budget</span>
-                <span className="b-val">{formatBudget(budget)}</span>
+              <div className="budget">
+                <div className="b-head">
+                  <span className="b-lbl">Budget</span>
+                  <span className="b-val">{formatBudget(budget)}</span>
+                </div>
+                <div className="b-track">
+                  <div
+                    className="b-fill"
+                    style={{ width: `${((budget - budgetMin) / (budgetMax - budgetMin)) * 100}%` }}
+                  />
+                  <div
+                    className="b-knob"
+                    style={{ left: `${((budget - budgetMin) / (budgetMax - budgetMin)) * 100}%` }}
+                  />
+                  <input
+                    className="b-input"
+                    type="range"
+                    min={budgetMin}
+                    max={budgetMax}
+                    step={budgetStep}
+                    value={budget}
+                    onChange={(e) => setBudget(Number(e.target.value))}
+                  />
+                </div>
+                <div className="b-ends">
+                  <span>{formatBudget(budgetMin)}</span>
+                  <span>{formatBudget(budgetMax)}</span>
+                </div>
               </div>
-              <div className="b-track">
-                <div
-                  className="b-fill"
-                  style={{ width: `${((budget - 500_000) / (20_000_000 - 500_000)) * 100}%` }}
-                />
-                <div
-                  className="b-knob"
-                  style={{ left: `${((budget - 500_000) / (20_000_000 - 500_000)) * 100}%` }}
-                />
-                <input
-                  className="b-input"
-                  type="range"
-                  min={500_000}
-                  max={20_000_000}
-                  step={500_000}
-                  value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
-                />
-              </div>
-              <div className="b-ends">
-                <span>A$ 500K</span>
-                <span>A$ 20M+</span>
-              </div>
-            </div>
 
-            <div className="fgrid fgrid--last">
-              <div className="fg full">
-                <label htmlFor="msg">Message</label>
-                <textarea id="msg" name="message" placeholder="Preferred location, size, lifestyle needs…" />
+              <div className="fgrid fgrid--last">
+                <div className="fg full">
+                  <label htmlFor="msg">Message</label>
+                  <textarea id="msg" name="message" placeholder="Preferred location, size, lifestyle needs…" />
+                </div>
               </div>
-            </div>
 
-            <div className="srow">
-              <RgButton
-                variant="gold"
-                type="submit"
-                label={isSubmitting ? "Sending..." : "Send Enquiry"}
-                endIcon={<Send size={18} aria-hidden="true" />}
-                disabled={isSubmitting}
-              />
-              <p className="s-note">
-                We respond within
-                <br />
-                one business day.
-              </p>
-            </div>
-            {submitError ? <p className="s-note">{submitError}</p> : null}
+              <div className="srow">
+                <RgButton
+                  variant="gold"
+                  type="submit"
+                  label={isSubmitting ? "Sending..." : "Send Enquiry"}
+                  endIcon={<Send size={18} aria-hidden="true" />}
+                  disabled={isSubmitting}
+                />
+                <p className="s-note">{data.form.submit_note}</p>
+              </div>
+              {submitError ? <p className="s-note">{submitError}</p> : null}
             </form>
           </section>
         </div>

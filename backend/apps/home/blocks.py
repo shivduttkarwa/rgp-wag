@@ -289,6 +289,58 @@ class PortfolioSectionBlock(StructBlock):
         label = "Portfolio Showcase Section"
 
 
+class ContactInfoItemBlock(StructBlock):
+    label = CharBlock(help_text="e.g. Phone")
+    value = CharBlock(help_text="e.g. 0450 009 291")
+    href = CharBlock(
+        required=False,
+        help_text="Optional link: tel:, mailto:, /contact, or full URL",
+    )
+
+    class Meta:
+        icon = "link"
+        label = "Contact Info Item"
+
+
+class ContactInfoBlock(StructBlock):
+    headline = CharBlock(default="Let's Talk")
+    headline_em = CharBlock(default="Appraisal.")
+    tagline = TextBlock(
+        default=(
+            "Whether you're buying, selling, or investing — our advisors are ready "
+            "to guide you through every step."
+        ),
+    )
+    items = ListBlock(
+        ContactInfoItemBlock(),
+        required=False,
+        help_text="Phone, email, address, or any custom contact rows.",
+    )
+    office_label = CharBlock(default="Office Hours")
+    office_days = CharBlock(default="All days")
+    office_time = CharBlock(default="09:00 – 18:00")
+    quote_text = TextBlock(
+        default=(
+            '"Real estate is not just a transaction — it is the beginning of a life '
+            'lived better."'
+        ),
+    )
+    quote_author = CharBlock(default="— Our Promise")
+
+    class Meta:
+        icon = "user"
+        label = "Contact Info"
+
+
+class ContactPageContentStreamBlock(StreamBlock):
+    contact_info = ContactInfoBlock()
+
+    class Meta:
+        block_counts = {
+            "contact_info": {"min_num": 0, "max_num": 1},
+        }
+
+
 # ─── Home page stream ────────────────────────────────────────────────────────
 
 class HomePageStreamBlock(StreamBlock):
