@@ -8,9 +8,11 @@ import PropertyListingSection from "@/sections/PropertyListingSection";
 import ServiceSelection from "@/sections/ServiceSelection";
 import PhilosophyPillars from "@/sections/Philosophy";
 import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useHomePage } from "@/hooks/useHomePage";
+import { Building2 } from "lucide-react";
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
 
@@ -46,6 +48,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const legacyCta = hero?.cta;
   const showLegacyCta = heroTabs.length === 0 && Boolean(legacyCta?.label);
   const services = sections.services;
+  const eoiCta = sections.eoi_cta;
   const ctaSection = sections.cta;
 
   const primaryCta = toRgpLink(
@@ -84,6 +87,23 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
       {sections.intro ? <Intro data={sections.intro} /> : null}
 
       {sections.property_listing ? <PropertyListingSection data={sections.property_listing} /> : null}
+
+      {eoiCta ? (
+        <EoiCta
+          badgeIcon={<Building2 size={20} />}
+          badgeText={eoiCta.badge_text}
+          title={eoiCta.title}
+          text={eoiCta.text}
+          buttonLabel={eoiCta.button_label}
+          buttonTo={eoiCta.button_href}
+          bgImage={eoiCta.background_image?.url ?? eoiCta.background_image_url}
+          mobileBgImage={
+            eoiCta.mobile_background_image?.url ?? eoiCta.mobile_background_image_url
+          }
+          minHeight={eoiCta.min_height}
+          mobileMinHeight={eoiCta.mobile_min_height}
+        />
+      ) : null}
 
       {services ? (
         <ServiceSelection data={services} />

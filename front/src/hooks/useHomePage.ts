@@ -7,6 +7,7 @@ let cachedSections: HomePageSections | null = null;
 const heroDefaults = DEFAULT_HOME_PAGE_SECTIONS.hero!;
 const introDefaults = DEFAULT_HOME_PAGE_SECTIONS.intro!;
 const propertyListingDefaults = DEFAULT_HOME_PAGE_SECTIONS.property_listing!;
+const eoiCtaDefaults = DEFAULT_HOME_PAGE_SECTIONS.eoi_cta!;
 const servicesDefaults = DEFAULT_HOME_PAGE_SECTIONS.services!;
 const ctaDefaults = DEFAULT_HOME_PAGE_SECTIONS.cta!;
 const videoTestimonialsDefaults = DEFAULT_HOME_PAGE_SECTIONS.video_testimonials!;
@@ -35,6 +36,16 @@ function applyBlockLevelDefaults(sections: HomePageSections): HomePageSections {
       ...propertyListingDefaults,
       ...sections.property_listing,
       cards: sections.property_listing.cards ?? propertyListingDefaults.cards,
+    };
+  }
+
+  if (sections.eoi_cta) {
+    merged.eoi_cta = {
+      ...eoiCtaDefaults,
+      ...sections.eoi_cta,
+      background_image: sections.eoi_cta.background_image ?? eoiCtaDefaults.background_image,
+      mobile_background_image:
+        sections.eoi_cta.mobile_background_image ?? eoiCtaDefaults.mobile_background_image,
     };
   }
 

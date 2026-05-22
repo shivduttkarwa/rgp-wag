@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import EoiCta from "@/components/reusable/eoi-cta";
 import type { PropertyListingSection as PropertyListingSectionData } from "@/types/homePage";
 import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
 import assetUrl from "@/lib/assetUrl";
@@ -595,16 +594,6 @@ const PropertyListingSection = ({ data }: { data?: PropertyListingSectionData })
           </Link>
         </div>
 
-        <EoiCta
-          badgeIcon={<Building2 size={20} />}
-          badgeText="Expression of Interest"
-          title="Ready to make an offer on a property you love?"
-          text="Complete our full Expression of Interest form with the exact buyer, offer, condition, and solicitor details needed for a clean review."
-          buttonLabel="Open the Form"
-          buttonTo="/expressions-of-interest"
-          minHeight="100vh"
-          mobileMinHeight="70vh"
-        />
       </div>
     </section>
   );

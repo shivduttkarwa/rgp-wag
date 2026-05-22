@@ -123,6 +123,38 @@ class PropertyListingSectionBlock(StructBlock):
         label = "Property Listing Section"
 
 
+class EoiCtaSectionBlock(StructBlock):
+    badge_text = CharBlock(default="Expression of Interest")
+    title = CharBlock(default="Ready to make an offer on a property you love?")
+    text = TextBlock(default="Complete our full Expression of Interest form with the exact buyer, offer, condition, and solicitor details needed for a clean review.")
+    button_label = CharBlock(default="Open the Form")
+    button_href = CharBlock(default="/expressions-of-interest", help_text="Relative path (e.g. /expressions-of-interest) or full URL")
+    background_image = ImageChooserBlock(
+        required=False,
+        help_text="Desktop background image. Takes priority over URL fallback.",
+    )
+    background_image_url = CharBlock(
+        required=False,
+        default="images/eoi-cta.jpg",
+        help_text="Fallback desktop image path relative to public/ or full URL.",
+    )
+    mobile_background_image = ImageChooserBlock(
+        required=False,
+        help_text="Mobile background image. Takes priority over URL fallback.",
+    )
+    mobile_background_image_url = CharBlock(
+        required=False,
+        default="images/eoi-cta-mob.jpg",
+        help_text="Fallback mobile image path relative to public/ or full URL.",
+    )
+    min_height = CharBlock(required=False, default="100vh")
+    mobile_min_height = CharBlock(required=False, default="70vh")
+
+    class Meta:
+        icon = "placeholder"
+        label = "EOI CTA Block"
+
+
 class ServiceCardBlock(StructBlock):
     theme       = ChoiceBlock(choices=[("buy", "Buy"), ("sell", "Sell"), ("rent", "Rent")], default="buy")
     headline    = CharBlock(default="Advisory")
@@ -234,6 +266,7 @@ class HomePageStreamBlock(StreamBlock):
     hero               = HeroBlock()
     intro              = IntroBlock()
     property_listing   = PropertyListingSectionBlock()
+    eoi_cta            = EoiCtaSectionBlock()
     services           = ServiceSectionBlock()
     cta                = CtaSectionBlock()
     video_testimonials = VideoTestimonialsSectionBlock()
@@ -244,6 +277,7 @@ class HomePageStreamBlock(StreamBlock):
             "hero":               {"min_num": 0, "max_num": 1},
             "intro":              {"min_num": 0, "max_num": 1},
             "property_listing":   {"min_num": 0, "max_num": 1},
+            "eoi_cta":            {"min_num": 0, "max_num": 1},
             "services":           {"min_num": 0, "max_num": 1},
             "cta":                {"min_num": 0, "max_num": 1},
             "video_testimonials": {"min_num": 0, "max_num": 1},

@@ -43,6 +43,20 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
     subtitle: "Explore our current listings across South-East Queensland.",
     cards: [],
   },
+  eoi_cta: {
+    badge_text: "Expression of Interest",
+    title: "Ready to make an offer on a property you love?",
+    text:
+      "Complete our full Expression of Interest form with the exact buyer, offer, condition, and solicitor details needed for a clean review.",
+    button_label: "Open the Form",
+    button_href: "/expressions-of-interest",
+    background_image: null,
+    background_image_url: "images/eoi-cta.jpg",
+    mobile_background_image: null,
+    mobile_background_image_url: "images/eoi-cta-mob.jpg",
+    min_height: "100vh",
+    mobile_min_height: "70vh",
+  },
   services: {
     header_eyebrow: "How Can We Help You?",
     header_title: "What Are You",
