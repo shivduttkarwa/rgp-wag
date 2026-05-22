@@ -18,7 +18,6 @@ function mergeContactData(data: ContactPageData): ContactPageData {
     contact_info: {
       ...defaults.contact_info,
       ...data.contact_info,
-      items: data.contact_info?.items?.length ? data.contact_info.items : defaults.contact_info.items,
     },
     form: {
       ...defaults.form,

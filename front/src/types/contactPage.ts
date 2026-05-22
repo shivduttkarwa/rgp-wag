@@ -2,20 +2,13 @@ import type { InternalPageHeroData } from "@/types/internalPageHero";
 
 export type ContactHero = InternalPageHeroData;
 
-export type ContactInfoItem = {
-  label: string;
-  value: string;
-  href?: string;
-};
-
 export type ContactInfoSection = {
-  headline: string;
-  headline_em: string;
+  title: string;
   tagline: string;
-  items: ContactInfoItem[];
-  office_label: string;
-  office_days: string;
-  office_time: string;
+  contact_number: string;
+  email: string;
+  address: string;
+  working_hours: string;
   quote_text: string;
   quote_author: string;
 };

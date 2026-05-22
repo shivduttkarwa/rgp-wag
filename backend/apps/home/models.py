@@ -88,9 +88,10 @@ class ContactPage(Page):
 
     contact_content = StreamField(
         ContactPageContentStreamBlock(),
+        verbose_name="Contact Info",
         blank=True,
         use_json_field=True,
-        help_text="Left-side contact information block.",
+        help_text="Fixed contact information fields shown on the left side.",
     )
 
     form_eyebrow = models.CharField(max_length=120, default="Begin your enquiry")
@@ -123,7 +124,7 @@ class ContactPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("hero_content"),
-        FieldPanel("contact_content"),
+        FieldPanel("contact_content", heading="Contact Info"),
         FieldPanel("form_eyebrow"),
         FieldPanel("form_heading_line_1"),
         FieldPanel("form_heading_line_2"),
@@ -370,26 +371,68 @@ def _extract_internal_page_hero_block(hero_content) -> dict[str, Any] | None:
 def _extract_contact_info_block(contact_content) -> dict[str, Any]:
     for block in contact_content:
         if block.block_type == "contact_info":
-            return _serialise_block_value(block.value)
+            raw = _serialise_block_value(block.value)
+            if not isinstance(raw, dict):
+                break
+
+            # Backward compatibility: map legacy flexible rows into fixed fields.
+            legacy_items = raw.get("items") or []
+            legacy_map: dict[str, str] = {}
+            if isinstance(legacy_items, list):
+                for item in legacy_items:
+                    if not isinstance(item, dict):
+                        continue
+                    label = str(item.get("label", "")).strip().lower()
+                    value = str(item.get("value", "")).strip()
+                    if not label or not value:
+                        continue
+                    legacy_map[label] = value
+
+            return {
+                "title": raw.get("title") or f"{raw.get('headline', '')} {raw.get('headline_em', '')}".strip() or "Let's Talk Appraisal.",
+                "tagline": raw.get("tagline")
+                or (
+                    "Whether you're buying, selling, or investing — our advisors are ready "
+                    "to guide you through every step."
+                ),
+                "contact_number": raw.get("contact_number")
+                or legacy_map.get("contact number")
+                or legacy_map.get("phone")
+                or "0450 009 291",
+                "email": raw.get("email")
+                or legacy_map.get("email")
+                or "admin@realgoldproperties.com.au",
+                "address": raw.get("address")
+                or legacy_map.get("address")
+                or legacy_map.get("visit")
+                or "Forest Lake, Brisbane QLD 4078",
+                "working_hours": raw.get("working_hours")
+                or " · ".join(
+                    part
+                    for part in [
+                        str(raw.get("office_days", "")).strip(),
+                        str(raw.get("office_time", "")).strip(),
+                    ]
+                    if part
+                )
+                or "All days · 09:00 – 18:00",
+                "quote_text": raw.get("quote_text")
+                or (
+                    '"Real estate is not just a transaction — it is the beginning of a life '
+                    'lived better."'
+                ),
+                "quote_author": raw.get("quote_author") or "— Our Promise",
+            }
     return {
-        "headline": "Let's Talk",
-        "headline_em": "Appraisal.",
+        "title": "Let's Talk Appraisal.",
         "tagline": (
             "Whether you're buying, selling, or investing — our advisors are ready "
             "to guide you through every step."
         ),
-        "items": [
-            {"label": "Phone", "value": "0450 009 291", "href": "tel:+61450009291"},
-            {
-                "label": "Email",
-                "value": "admin@realgoldproperties.com.au",
-                "href": "mailto:admin@realgoldproperties.com.au",
-            },
-            {"label": "Visit", "value": "Forest Lake, Brisbane QLD 4078", "href": ""},
-        ],
-        "office_label": "Office Hours",
-        "office_days": "All days",
-        "office_time": "09:00 – 18:00",
+        "contact_number": "0450 009 291",
+        "email": "admin@realgoldproperties.com.au",
+        "address": "Forest Lake, Brisbane QLD 4078",
+        "working_hours": "All days · 09:00 – 18:00",
         "quote_text": (
             '"Real estate is not just a transaction — it is the beginning of a life '
             'lived better."'

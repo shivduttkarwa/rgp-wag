@@ -37,22 +37,13 @@ export const DEFAULT_CONTACT_PAGE_DATA: ContactPageData = {
     stats: [],
   },
   contact_info: {
-    headline: "Let's Talk",
-    headline_em: "Appraisal.",
+    title: "Let's Talk Appraisal.",
     tagline:
       "Whether you're buying, selling, or investing — our advisors are ready to guide you through every step.",
-    items: [
-      { label: "Phone", value: "0450 009 291", href: "tel:+61450009291" },
-      {
-        label: "Email",
-        value: "admin@realgoldproperties.com.au",
-        href: "mailto:admin@realgoldproperties.com.au",
-      },
-      { label: "Visit", value: "Forest Lake, Brisbane QLD 4078" },
-    ],
-    office_label: "Office Hours",
-    office_days: "All days",
-    office_time: "09:00 – 18:00",
+    contact_number: "0450 009 291",
+    email: "admin@realgoldproperties.com.au",
+    address: "Forest Lake, Brisbane QLD 4078",
+    working_hours: "All days · 09:00 – 18:00",
     quote_text:
       '"Real estate is not just a transaction — it is the beginning of a life lived better."',
     quote_author: "— Our Promise",

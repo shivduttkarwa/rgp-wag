@@ -18,8 +18,6 @@ const DEFAULT_PROPERTY_TYPES = [
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-const hasHref = (href?: string) => Boolean(href && href.trim());
-
 export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLElement>(null);
   const ptWrapRef = useRef<HTMLDivElement>(null);
@@ -36,7 +34,38 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const budgetMax = Math.max(budgetMin + 1, data.form.budget_max || 20_000_000);
   const budgetStep = Math.max(1, data.form.budget_step || 500_000);
   const budgetDefault = clamp(data.form.budget_default || budgetMin, budgetMin, budgetMax);
-  const contactItems = data.contact_info.items ?? [];
+  const contactItems = useMemo(
+    () => [
+      {
+        label: "Contact Number",
+        value: data.contact_info.contact_number,
+        href: data.contact_info.contact_number
+          ? `tel:${data.contact_info.contact_number.replace(/\s+/g, "")}`
+          : "",
+      },
+      {
+        label: "Email",
+        value: data.contact_info.email,
+        href: data.contact_info.email ? `mailto:${data.contact_info.email}` : "",
+      },
+      {
+        label: "Address",
+        value: data.contact_info.address,
+        href: "",
+      },
+      {
+        label: "Working Hours",
+        value: data.contact_info.working_hours,
+        href: "",
+      },
+    ],
+    [
+      data.contact_info.contact_number,
+      data.contact_info.email,
+      data.contact_info.address,
+      data.contact_info.working_hours,
+    ],
+  );
 
   const intentOptionsKey = useMemo(() => intentOptions.join("||"), [intentOptions]);
   const propertyTypeOptionsKey = useMemo(
@@ -126,8 +155,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
           <section className="left">
             <div>
               <h1 className="hero-title" data-gsap="char-reveal" data-gsap-start="top 90%">
-                {data.contact_info.headline}
-                <em>{data.contact_info.headline_em}</em>
+                {data.contact_info.title}
               </h1>
               <p className="tagline" data-gsap="fade-up" data-gsap-delay="0.15">
                 {data.contact_info.tagline}
@@ -138,7 +166,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
               <nav className="c-list">
                 {contactItems.map((item, index) => {
                   const delay = `${0.1 + index * 0.1}`;
-                  if (!hasHref(item.href)) {
+                  if (!item.href) {
                     return (
                       <div
                         key={`${item.label}-${item.value}-${index}`}
@@ -184,14 +212,6 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                     </a>
                   );
                 })}
-
-                <div className="c-item c-item--static" data-gsap="fade-up" data-gsap-delay="0.15">
-                  <div>
-                    <p className="c-key">{data.contact_info.office_label}</p>
-                    <p className="c-val">{data.contact_info.office_days}</p>
-                  </div>
-                  <p className="c-val c-val--time">{data.contact_info.office_time}</p>
-                </div>
               </nav>
 
               <div className="quote" data-gsap="fade-up" data-gsap-delay="0.1">
