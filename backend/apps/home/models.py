@@ -32,7 +32,7 @@ class HomePage(Page):
 
     # Only allow one home page under the root
     parent_page_types = ["wagtailcore.Page"]
-    subpage_types = ["home.ContactPage"]
+    subpage_types = ["home.ContactPage", "home.TeamPage"]
     max_count = 1
 
     class Meta:
@@ -178,6 +178,68 @@ class ContactPage(Page):
         }
 
 
+class TeamPage(Page):
+    """
+    CMS-managed team page for the headless frontend.
+    Uses reusable internal hero block and Team Member sidebar app records.
+    """
+
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Reusable internal page hero block (buttons or stats mode).",
+    )
+    team_section_eyebrow = models.CharField(max_length=120, default="Our People")
+    team_section_title_line_1 = models.CharField(max_length=255, default="The Minds")
+    team_section_title_line_2 = models.CharField(max_length=255, default="[gold]Behind[/gold] Every Deal")
+    team_section_subtitle = models.TextField(
+        default=(
+            "A curated ensemble of creative minds and industry veterans — each "
+            "bringing unmatched expertise to every client engagement."
+        )
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+    max_count = 1
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        FieldPanel("team_section_eyebrow"),
+        FieldPanel("team_section_title_line_1"),
+        FieldPanel("team_section_title_line_2"),
+        FieldPanel("team_section_subtitle"),
+    ]
+
+    promote_panels = Page.promote_panels + [
+        PublishingPanel(),
+    ]
+
+    class Meta:
+        verbose_name = "Team Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero_payload = _extract_internal_page_hero_block(self.hero_content)
+        if not hero_payload:
+            hero_payload = _default_team_hero_payload()
+
+        return {
+            "id": self.pk,
+            "title": self.title,
+            "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero_payload,
+            "team_section": {
+                "eyebrow": self.team_section_eyebrow,
+                "title_line_1": self.team_section_title_line_1,
+                "title_line_2": self.team_section_title_line_2,
+                "subtitle": self.team_section_subtitle,
+            },
+            "members": _get_active_team_member_items(),
+        }
+
+
 def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
     """
     Split legacy embedded CTA fields out of the `services` section into a
@@ -236,6 +298,48 @@ def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
     cms_items = _get_active_video_testimonial_items()
     if cms_items:
         video_section["items"] = cms_items
+
+
+def _default_team_hero_payload() -> dict[str, Any]:
+    return {
+        "title_line_1": "Meet Our",
+        "title_line_2": "Expert [gold]Team[/gold]",
+        "subtitle": (
+            "A curated ensemble of creative minds and industry veterans shaping "
+            "the future of luxury real estate."
+        ),
+        "background_image": None,
+        "background_image_url": "images/about-hero.jpg",
+        "show_video": False,
+        "background_video_url": "",
+        "mode": "buttons",
+        "buttons": [
+            {
+                "label": "Book a Consultation",
+                "href": "/contact",
+                "style": "gold",
+                "open_in_new_tab": False,
+            }
+        ],
+        "stats": [],
+    }
+
+
+def _get_active_team_member_items() -> list[dict[str, Any]]:
+    try:
+        from apps.team.models import TeamMember
+    except Exception:
+        return []
+
+    try:
+        queryset = (
+            TeamMember.objects.filter(is_active=True)
+            .select_related("portrait_image")
+            .order_by("order", "id")
+        )
+        return [member.to_api_item() for member in queryset]
+    except DatabaseError:
+        return []
 
 
 def _get_active_video_testimonial_items() -> list[dict[str, Any]]:

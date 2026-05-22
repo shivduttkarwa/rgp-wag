@@ -3,6 +3,8 @@ import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
 import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
+import { useTeamPage } from "@/hooks/useTeamPage";
+import assetUrl from "@/lib/assetUrl";
 import "./TeamPage.css";
 
 
@@ -62,8 +64,10 @@ const VALUES = [
 
 export default function TeamPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
+  const { data, status } = useTeamPage();
 
   useEffect(() => {
+    if (status === "loading") return;
     const guards = [
       "clipRevealInit", "clipRevealRtlInit", "clipRevealTopInit",
       "clipRevealLeftInit", "clipRevealRightInit", "wordRevealInit",
@@ -79,37 +83,18 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
 
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return () => cleanup?.();
-  }, []);
+  }, [status, data.updated_at]);
 
   return (
     <>
       <InternalPageHero
         ready={ready}
-        hero={{
-          title_line_1: "Meet Our",
-          title_line_2: "Expert [gold]Team[/gold]",
-          subtitle:
-            "A curated ensemble of creative minds and industry veterans shaping the future of luxury real estate.",
-          background_image: null,
-          background_image_url: "images/about-hero.jpg",
-          show_video: false,
-          background_video_url: "",
-          mode: "buttons",
-          buttons: [
-            {
-              label: "Book a Consultation",
-              href: "/contact",
-              style: "gold",
-              open_in_new_tab: false,
-            },
-          ],
-          stats: [],
-        }}
+        hero={data.hero}
       />
 
       <main className="team-page" ref={pageRef}>
         {/* ── Expanding cards ── */}
-        <Team />
+        <Team section={data.team_section} members={data.members} />
        
 
         {/* ── Values ── */}
@@ -219,7 +204,7 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
                   data-gsap-start="top 75%"
                 >
                   <img
-                    src={`${import.meta.env.BASE_URL}images/about-hero.jpg`}
+                    src={assetUrl("images/about-hero.jpg")}
                     alt="Our office environment"
                     loading="lazy"
                   />
