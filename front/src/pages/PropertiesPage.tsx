@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, useMemo, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import InternalPageHero from "@/sections/InternalPageHero";
 import gsap from "gsap";
 import {
@@ -15,9 +15,10 @@ import {
   type Property,
   type Category,
 } from "../components/reusable/PropertyCard";
-import { allProperties } from "../data/listingProperties";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import Cta2 from "@/components/reusable/cta-2";
+import PropertyMarqee from "@/components/reusable/PropertyMarqee";
+import { usePropertiesPage } from "@/hooks/usePropertiesPage";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -48,17 +49,6 @@ const categoryTabs = [
   { id: "for-rent", label: "For Rent", icon: Key },
 ];
 
-const PAGE_CTA = {
-  eyebrow: "Need Help Choosing?",
-  title: "Let’s Find Your",
-  titleEm: "Perfect Home",
-  text: "Tell us what you’re looking for and we’ll shortlist the best options, arrange inspections, and guide you through every step.",
-  primaryLabel: "Talk to an Expert",
-  primaryHref: "/contact",
-  secondaryLabel: "0450 009 291",
-  secondaryHref: "tel:+61450009291",
-};
-
 const applyFilters = (items: Property[], f: Filters) =>
   items.filter((p) => {
     if (f.cat !== "all" && p.category !== f.cat) return false;
@@ -88,12 +78,12 @@ const applyFilters = (items: Property[], f: Filters) =>
   });
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default function PropertiesPage() {
-  const navigate = useNavigate();
+export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const [searchParams] = useSearchParams();
   const pageRef = useRef<HTMLDivElement>(null);
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
+  const { data, status } = usePropertiesPage();
   const pendingScrollRef = useRef<{
     mode: ScrollAction;
     scrollY: number;
@@ -127,6 +117,7 @@ export default function PropertiesPage() {
   };
 
   useEffect(() => {
+    if (status === "loading") return;
     const guards = [
       "clipRevealInit",
       "clipRevealRtlInit",
@@ -148,7 +139,7 @@ export default function PropertiesPage() {
     });
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return cleanup;
-  }, []);
+  }, [status, data.updated_at]);
 
   // Seed initial filters from URL params (set by HeroSearchPanel)
   const VALID_CATS: Category[] = ["for-sale", "sold", "for-rent"];
@@ -268,15 +259,17 @@ export default function PropertiesPage() {
   };
 
   // ── Data ─────────────────────────────────────────────────────────────────
+  const sourceProperties = data.listings;
+
   // filtered/displayed are from displayedFilters (what the grid actually shows)
   const filtered = useMemo(
-    () => applyFilters(allProperties, displayedFilters),
-    [displayedFilters],
+    () => applyFilters(sourceProperties, displayedFilters),
+    [sourceProperties, displayedFilters],
   );
   // activeFiltered is for the result count badge (updates immediately)
   const activeFiltered = useMemo(
-    () => applyFilters(allProperties, activeFilters),
-    [activeFilters],
+    () => applyFilters(sourceProperties, activeFilters),
+    [sourceProperties, activeFilters],
   );
 
   const displayed = displayedFilters.showAll
@@ -329,28 +322,7 @@ export default function PropertiesPage() {
 
   return (
     <div className="ap-page" ref={pageRef}>
-      <InternalPageHero
-        ready
-        hero={{
-          title_line_1: "Our [gold]Premium[/gold]",
-          title_line_2: "[amber]Properties[/amber]",
-          subtitle:
-            "Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland.",
-          background_image: null,
-          background_image_url: "images/prop-hero.jpg",
-          show_video: false,
-          background_video_url: "",
-          mode: "buttons",
-          buttons: [
-            {
-              label: "Talk to an Expert",
-              style: "gold",
-              onClick: () => navigate("/contact"),
-            },
-          ],
-          stats: [],
-        }}
-      />
+      <InternalPageHero ready={ready} hero={data.hero} />
 
       {/* ── Filter Slab ───────────────────────────────────────────────── */}
       <div className="ap-filter-slab">
@@ -359,6 +331,12 @@ export default function PropertiesPage() {
           data-gsap="fade-up"
           data-gsap-start="top 95%"
         >
+          <div className="ap-filter-head">
+            <span className="ap-filter-head__eyebrow">{data.property_section.eyebrow}</span>
+            <h2 className="ap-filter-head__title">{data.property_section.heading}</h2>
+            <p className="ap-filter-head__subtitle">{data.property_section.subtitle}</p>
+          </div>
+
           <div className="ap-filter-row">
             <div className="ap-filter-wrapper">
               <div ref={filterTabsRef} className="ap-filter-tabs">
@@ -518,22 +496,52 @@ export default function PropertiesPage() {
         </div>
       </div>
 
+      <PropertyMarqee
+        properties={sourceProperties}
+        eyebrow={data.marquee.eyebrow}
+        title={data.marquee.title}
+        titleEm={data.marquee.title_em}
+        subtitle={data.marquee.subtitle}
+        ctaLabel={data.marquee.cta_label}
+      />
+
       {/* ── CTA ───────────────────────────────────────────────────────── */}
       <Cta2
-        eyebrow={PAGE_CTA.eyebrow}
-        title={PAGE_CTA.title}
-        titleEm={PAGE_CTA.titleEm}
-        text={PAGE_CTA.text}
-        primary={{ label: PAGE_CTA.primaryLabel, to: PAGE_CTA.primaryHref }}
-        secondary={{ label: PAGE_CTA.secondaryLabel, href: PAGE_CTA.secondaryHref }}
-        commitments={[
-          { title: "Data‑backed guidance" },
-          { title: "Inspection‑ready planning" },
-          { title: "Negotiation that protects" },
-        ]}
-        bgImage="images/int.jpg"
-        bgVideo="vids/cta-2-vid.mp4"
-        minHeight="100vh"
+        eyebrow={data.property_cta.eyebrow}
+        title={data.property_cta.title}
+        titleEm={data.property_cta.title_em}
+        text={data.property_cta.text}
+        primary={{
+          label: data.property_cta.primary.label,
+          to: data.property_cta.primary.href.startsWith("/")
+            ? data.property_cta.primary.href
+            : undefined,
+          href: data.property_cta.primary.href.startsWith("/")
+            ? undefined
+            : data.property_cta.primary.href,
+        }}
+        secondary={{
+          label: data.property_cta.secondary.label,
+          to: data.property_cta.secondary.href.startsWith("/")
+            ? data.property_cta.secondary.href
+            : undefined,
+          href: data.property_cta.secondary.href.startsWith("/")
+            ? undefined
+            : data.property_cta.secondary.href,
+        }}
+        commitments={data.property_cta.commitments}
+        bgImage={
+          data.property_cta.background_image?.url ?? data.property_cta.background_image_url
+        }
+        bgVideo={
+          data.property_cta.use_video
+            ? (data.property_cta.background_video_url || undefined)
+            : undefined
+        }
+        posterImage={
+          data.property_cta.video_poster_image?.url ?? data.property_cta.video_poster_image_url
+        }
+        minHeight={data.property_cta.min_height}
       />
     </div>
   );

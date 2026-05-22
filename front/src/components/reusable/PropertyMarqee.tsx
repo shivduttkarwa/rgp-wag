@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { PropertyCard } from "./PropertyCard";
 import { allProperties } from "../../data/listingProperties";
+import type { Property } from "./PropertyCard";
 import RgButton from "@/components/reusable/RgButton";
 import "../../sections/PropertyListingsection.css";
 import "./PropertyMarqee.css";
@@ -9,16 +10,36 @@ function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
 }
 
-export default function PropertyMarquee() {
+type PropertyMarqueeProps = {
+  properties?: Property[];
+  eyebrow?: string;
+  title?: string;
+  titleEm?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+};
+
+export default function PropertyMarquee({
+  properties,
+  eyebrow = "Featured Portfolio",
+  title = "Explore",
+  titleEm = "Premium Homes",
+  subtitle = "A curated selection of standout residences from across our portfolio — updated regularly.",
+  ctaLabel = "View All Properties",
+}: PropertyMarqueeProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const cursorRef = useRef<HTMLDivElement | null>(null);
 
   const SPEED_PX_PER_SEC = 42;
   const GAP_PX_FALLBACK = 18;
+  const sourceProperties = properties?.length ? properties : allProperties;
 
   // Duplicate for seamless loop
-  const doubled = useMemo(() => [...allProperties, ...allProperties], []);
+  const doubled = useMemo(
+    () => [...sourceProperties, ...sourceProperties],
+    [sourceProperties],
+  );
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -33,7 +54,7 @@ export default function PropertyMarquee() {
 
     const getSetWidth = () => {
       const children = Array.from(track.children) as HTMLElement[];
-      const count = allProperties.length;
+      const count = sourceProperties.length;
       const gap = getGap();
       let w = 0;
       for (let i = 0; i < count; i++) {
@@ -186,7 +207,7 @@ export default function PropertyMarquee() {
       window.removeEventListener("touchend", onUp);
       window.removeEventListener("resize", onResize);
     };
-  }, [GAP_PX_FALLBACK, SPEED_PX_PER_SEC]);
+  }, [GAP_PX_FALLBACK, SPEED_PX_PER_SEC, sourceProperties]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -235,22 +256,21 @@ export default function PropertyMarquee() {
       <div className="wrap">
         <header className="section-header">
           <div data-gsap="fade-up" className="section-badge">
-            <span>Featured Portfolio</span>
+            <span>{eyebrow}</span>
           </div>
           <h2
             className="section-title"
             data-gsap="char-reveal"
             data-gsap-start="top 85%"
           >
-            Explore <em>Premium Homes</em>
+            {title} <em>{titleEm}</em>
           </h2>
           <p
             className="section-subtitle"
             data-gsap="fade-up"
             data-gsap-delay="0.2"
           >
-            A curated selection of standout residences from across our portfolio
-            — updated regularly.
+            {subtitle}
           </p>
         </header>
       </div>
@@ -283,7 +303,7 @@ export default function PropertyMarquee() {
         <RgButton
           to="/properties"
           variant="blue"
-          label="View All Properties"
+          label={ctaLabel}
           data-gsap="btn-clip-reveal"
         />
       </div>

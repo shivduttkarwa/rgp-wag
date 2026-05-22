@@ -304,6 +304,66 @@ class CtaSectionBlock(StructBlock):
         label = "CTA Block"
 
 
+class PropertyCtaCommitmentBlock(StructBlock):
+    title = CharBlock(default="Data-backed guidance")
+
+    class Meta:
+        icon = "doc-full"
+        label = "Property CTA Commitment"
+
+
+class PropertyCtaBlock(StructBlock):
+    eyebrow = CharBlock(default="Need Help Choosing?")
+    title = CharBlock(default="Let's Find Your")
+    title_em = CharBlock(default="Perfect Home")
+    text = TextBlock(
+        default=(
+            "Tell us what you're looking for and we'll shortlist the best "
+            "options, arrange inspections, and guide you through every step."
+        ),
+    )
+    primary = CtaBlock()
+    secondary = CtaBlock(required=False)
+    commitments = ListBlock(
+        PropertyCtaCommitmentBlock(),
+        required=False,
+        help_text="Optional right-column commitments.",
+    )
+    use_video = BooleanBlock(
+        required=False,
+        default=True,
+        help_text="Enable video background mode. When off, image background is used.",
+    )
+    background_image = ImageChooserBlock(
+        required=False,
+        help_text="Image mode background. Also used as fallback if video is unavailable.",
+    )
+    background_image_url = CharBlock(
+        required=False,
+        default="images/int.jpg",
+        help_text="Fallback image path relative to public/ or full URL.",
+    )
+    background_video_url = CharBlock(
+        required=False,
+        default="vids/cta-2-vid.mp4",
+        help_text="Video path relative to public/ or full URL. Used when video mode is enabled.",
+    )
+    video_poster_image = ImageChooserBlock(
+        required=False,
+        help_text="Poster image shown before video loads. Used only when video mode is enabled.",
+    )
+    video_poster_image_url = CharBlock(
+        required=False,
+        default="images/int.jpg",
+        help_text="Fallback poster path relative to public/ or full URL.",
+    )
+    min_height = CharBlock(required=False, default="100vh")
+
+    class Meta:
+        icon = "placeholder"
+        label = "Property CTA Block"
+
+
 class VideoTestimonialItemBlock(StructBlock):
     kicker    = CharBlock(help_text="e.g. SUNNYBANK · SOLD")
     name      = CharBlock(help_text="Client name shown on the card")
@@ -411,6 +471,15 @@ class ContactPageHeroStreamBlock(StreamBlock):
     class Meta:
         block_counts = {
             "internal_page_hero": {"min_num": 0, "max_num": 1},
+        }
+
+
+class PropertiesPageContentStreamBlock(StreamBlock):
+    property_cta = PropertyCtaBlock()
+
+    class Meta:
+        block_counts = {
+            "property_cta": {"min_num": 0, "max_num": 1},
         }
 
 

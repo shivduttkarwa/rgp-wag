@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import ContactPage, HomePage, TeamPage
+from .models import ContactPage, HomePage, PropertiesPage, TeamPage
 
 
 class HomePageAPIView(APIView):
@@ -48,4 +48,19 @@ class TeamPageAPIView(APIView):
         page = TeamPage.objects.live().first()
         if page is None:
             return Response({"detail": "Team page not yet published."}, status=404)
+        return Response(page.get_api_representation())
+
+
+class PropertiesPageAPIView(APIView):
+    """
+    GET /api/pages/properties/
+    Returns CMS-managed properties page content.
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        page = PropertiesPage.objects.live().first()
+        if page is None:
+            return Response({"detail": "Properties page not yet published."}, status=404)
         return Response(page.get_api_representation())

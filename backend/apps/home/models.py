@@ -6,7 +6,12 @@ from wagtail.fields import StreamField
 from wagtail.images import get_image_model_string
 from wagtail.models import Page
 
-from .blocks import ContactPageContentStreamBlock, ContactPageHeroStreamBlock, HomePageStreamBlock
+from .blocks import (
+    ContactPageContentStreamBlock,
+    ContactPageHeroStreamBlock,
+    HomePageStreamBlock,
+    PropertiesPageContentStreamBlock,
+)
 
 
 class HomePage(Page):
@@ -237,6 +242,102 @@ class TeamPage(Page):
         }
 
 
+class PropertiesPage(Page):
+    """
+    CMS-managed properties page for the headless frontend.
+    Uses reusable internal hero and property CTA blocks, while listing cards
+    are sourced directly from the Listings snippet app.
+    """
+
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Reusable internal page hero block (buttons or stats mode).",
+    )
+
+    property_section_eyebrow = models.CharField(max_length=120, default="Browse Listings")
+    property_section_heading = models.CharField(max_length=255, default="Discover Your Next Property")
+    property_section_subtitle = models.TextField(
+        default=(
+            "Filter by sale, rent, or sold status and explore our complete listing"
+            " portfolio in one place."
+        )
+    )
+
+    marquee_eyebrow = models.CharField(max_length=120, default="Featured Portfolio")
+    marquee_title = models.CharField(max_length=255, default="Explore")
+    marquee_title_em = models.CharField(max_length=255, default="Premium Homes")
+    marquee_subtitle = models.TextField(
+        default=(
+            "A curated selection of standout residences from across our portfolio"
+            " — updated regularly."
+        )
+    )
+    marquee_cta_label = models.CharField(max_length=120, default="View All Properties")
+
+    content = StreamField(
+        PropertiesPageContentStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Add reusable content blocks for this page.",
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        FieldPanel("property_section_eyebrow"),
+        FieldPanel("property_section_heading"),
+        FieldPanel("property_section_subtitle"),
+        FieldPanel("marquee_eyebrow"),
+        FieldPanel("marquee_title"),
+        FieldPanel("marquee_title_em"),
+        FieldPanel("marquee_subtitle"),
+        FieldPanel("marquee_cta_label"),
+        FieldPanel("content"),
+    ]
+
+    promote_panels = Page.promote_panels + [
+        PublishingPanel(),
+    ]
+
+    class Meta:
+        verbose_name = "Properties Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero_payload = _extract_internal_page_hero_block(self.hero_content)
+        if not hero_payload:
+            hero_payload = _default_properties_hero_payload()
+
+        property_cta = _extract_property_cta_block(self.content)
+        if not property_cta:
+            property_cta = _default_property_cta_payload()
+
+        return {
+            "id": self.pk,
+            "title": self.title,
+            "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero_payload,
+            "property_section": {
+                "eyebrow": self.property_section_eyebrow,
+                "heading": self.property_section_heading,
+                "subtitle": self.property_section_subtitle,
+            },
+            "marquee": {
+                "eyebrow": self.marquee_eyebrow,
+                "title": self.marquee_title,
+                "title_em": self.marquee_title_em,
+                "subtitle": self.marquee_subtitle,
+                "cta_label": self.marquee_cta_label,
+            },
+            "property_cta": property_cta,
+            "listings": _get_properties_page_listing_items(),
+        }
+
+
 def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
     """
     Split legacy embedded CTA fields out of the `services` section into a
@@ -322,6 +423,57 @@ def _default_team_hero_payload() -> dict[str, Any]:
     }
 
 
+def _default_properties_hero_payload() -> dict[str, Any]:
+    return {
+        "title_line_1": "Our [gold]Premium[/gold]",
+        "title_line_2": "[amber]Properties[/amber]",
+        "subtitle": (
+            "Browse our curated portfolio of for-sale, sold and rental "
+            "properties across South-East Queensland."
+        ),
+        "background_image": None,
+        "background_image_url": "images/prop-hero.jpg",
+        "show_video": False,
+        "background_video_url": "",
+        "mode": "buttons",
+        "buttons": [
+            {
+                "label": "Talk to an Expert",
+                "href": "/contact",
+                "style": "gold",
+                "open_in_new_tab": False,
+            }
+        ],
+        "stats": [],
+    }
+
+
+def _default_property_cta_payload() -> dict[str, Any]:
+    return {
+        "eyebrow": "Need Help Choosing?",
+        "title": "Let's Find Your",
+        "title_em": "Perfect Home",
+        "text": (
+            "Tell us what you're looking for and we'll shortlist the best options, "
+            "arrange inspections, and guide you through every step."
+        ),
+        "primary": {"label": "Talk to an Expert", "href": "/contact"},
+        "secondary": {"label": "0450 009 291", "href": "tel:+61450009291"},
+        "commitments": [
+            {"title": "Data-backed guidance"},
+            {"title": "Inspection-ready planning"},
+            {"title": "Negotiation that protects"},
+        ],
+        "use_video": True,
+        "background_image": None,
+        "background_image_url": "images/int.jpg",
+        "background_video_url": "vids/cta-2-vid.mp4",
+        "video_poster_image": None,
+        "video_poster_image_url": "images/int.jpg",
+        "min_height": "100vh",
+    }
+
+
 def _get_active_team_member_items() -> list[dict[str, Any]]:
     try:
         from apps.team.models import TeamMember
@@ -335,6 +487,24 @@ def _get_active_team_member_items() -> list[dict[str, Any]]:
             .order_by("order", "id")
         )
         return [member.to_api_item() for member in queryset]
+    except DatabaseError:
+        return []
+
+
+def _get_properties_page_listing_items() -> list[dict[str, Any]]:
+    try:
+        from apps.properties.models import Property
+        from apps.properties.serializers import PropertyListSerializer
+    except Exception:
+        return []
+
+    try:
+        queryset = (
+            Property.objects.select_related("card_image", "agent")
+            .prefetch_related("features")
+            .all()
+        )
+        return list(PropertyListSerializer(queryset, many=True).data)
     except DatabaseError:
         return []
 
@@ -466,6 +636,26 @@ def _extract_internal_page_hero_block(hero_content) -> dict[str, Any] | None:
                 hero["buttons"] = hero.get("buttons") or []
                 hero["stats"] = hero.get("stats") or []
             return hero if isinstance(hero, dict) else None
+    return None
+
+
+def _extract_property_cta_block(content) -> dict[str, Any] | None:
+    for block in content:
+        if block.block_type == "property_cta":
+            cta = _serialise_block_value(block.value)
+            if not isinstance(cta, dict):
+                return None
+            cta.setdefault("primary", {"label": "", "href": ""})
+            cta.setdefault("secondary", {"label": "", "href": ""})
+            cta.setdefault("commitments", [])
+            cta.setdefault("use_video", True)
+            cta.setdefault("background_image", None)
+            cta.setdefault("background_image_url", "images/int.jpg")
+            cta.setdefault("background_video_url", "vids/cta-2-vid.mp4")
+            cta.setdefault("video_poster_image", None)
+            cta.setdefault("video_poster_image_url", cta.get("background_image_url") or "images/int.jpg")
+            cta.setdefault("min_height", "100vh")
+            return cta
     return None
 
 

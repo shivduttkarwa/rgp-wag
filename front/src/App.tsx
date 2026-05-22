@@ -41,7 +41,7 @@ function App() {
               element={<TestimonialsPage ready={loaded} />}
             />
             <Route path="/contact" element={<ContactPage ready={loaded} />} />
-            <Route path="/properties" element={<PropertiesPage />} />
+            <Route path="/properties" element={<PropertiesPage ready={loaded} />} />
             <Route path="/properties/:id" element={<PropertyPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<CollectionNoticePage />} />
