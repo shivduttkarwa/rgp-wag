@@ -46,14 +46,15 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const legacyCta = hero?.cta;
   const showLegacyCta = heroTabs.length === 0 && Boolean(legacyCta?.label);
   const services = sections.services;
+  const ctaSection = sections.cta;
 
   const primaryCta = toRgpLink(
-    services?.cta_primary.label || "Talk to an Expert",
-    services?.cta_primary.href || "/contact",
+    ctaSection?.primary.label || "Talk to an Expert",
+    ctaSection?.primary.href || "/contact",
   );
   const secondaryCta = toRgpLink(
-    services?.cta_secondary.label || "0450 009 291",
-    services?.cta_secondary.href || "tel:+61450009291",
+    ctaSection?.secondary.label || "0450 009 291",
+    ctaSection?.secondary.href || "tel:+61450009291",
   );
 
   return (
@@ -85,23 +86,24 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
       {sections.property_listing ? <PropertyListingSection data={sections.property_listing} /> : null}
 
       {services ? (
-        <>
-          <ServiceSelection data={services} />
-          <RgpCta
-            eyebrow={services.cta_eyebrow}
-            title={services.cta_title}
-            titleEm={services.cta_title_em}
-            text={services.cta_text}
-            bgVideo="vids/cta-vid.mp4"
-            primary={primaryCta}
-            secondary={secondaryCta}
-            stats={[
-              { value: "5+", label: "Years Experience" },
-              { value: "100+", label: "Happy Clients" },
-              { value: "24/7", label: "Support Available" },
-            ]}
-          />
-        </>
+        <ServiceSelection data={services} />
+      ) : null}
+
+      {ctaSection ? (
+        <RgpCta
+          eyebrow={ctaSection.eyebrow}
+          title={ctaSection.title}
+          titleEm={ctaSection.title_em}
+          text={ctaSection.text}
+          bgVideo="vids/cta-vid.mp4"
+          primary={primaryCta}
+          secondary={secondaryCta}
+          stats={[
+            { value: "5+", label: "Years Experience" },
+            { value: "100+", label: "Happy Clients" },
+            { value: "24/7", label: "Support Available" },
+          ]}
+        />
       ) : null}
 
       {sections.video_testimonials ? <PhilosophyPillars data={sections.video_testimonials} /> : null}

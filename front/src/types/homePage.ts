@@ -88,12 +88,15 @@ export type ServicesSection = {
   header_title_em: string;
   header_subtitle: string;
   services: ServiceCard[];
-  cta_eyebrow: string;
-  cta_title: string;
-  cta_title_em: string;
-  cta_text: string;
-  cta_primary: CtaData;
-  cta_secondary: CtaData;
+};
+
+export type CtaSection = {
+  eyebrow: string;
+  title: string;
+  title_em: string;
+  text: string;
+  primary: CtaData;
+  secondary: CtaData;
 };
 
 export type VideoTestimonialItem = {
@@ -138,6 +141,7 @@ export type HomePageSections = {
   intro?: IntroSection;
   property_listing?: PropertyListingSection;
   services?: ServicesSection;
+  cta?: CtaSection;
   video_testimonials?: VideoTestimonialsSection;
   portfolio?: PortfolioSection;
 };

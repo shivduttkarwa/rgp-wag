@@ -81,13 +81,15 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
         cta_label: "Get In Touch",
       },
     ],
-    cta_eyebrow: "Need Guidance?",
-    cta_title: "Not Sure Where to",
-    cta_title_em: "Start?",
-    cta_text:
+  },
+  cta: {
+    eyebrow: "Need Guidance?",
+    title: "Not Sure Where to",
+    title_em: "Start?",
+    text:
       "Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.",
-    cta_primary: { label: "Talk to an Expert", href: "/contact" },
-    cta_secondary: { label: "0450 009 291", href: "tel:+61450009291" },
+    primary: { label: "Talk to an Expert", href: "/contact" },
+    secondary: { label: "0450 009 291", href: "tel:+61450009291" },
   },
   video_testimonials: {
     section_label: "Testimonials",

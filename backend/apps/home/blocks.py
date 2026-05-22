@@ -10,7 +10,6 @@ from wagtail.blocks import (
     StreamBlock,
     StructBlock,
     TextBlock,
-    URLBlock,
 )
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
@@ -145,16 +144,22 @@ class ServiceSectionBlock(StructBlock):
     header_subtitle  = TextBlock(default="Whether you're buying, selling, or renting — we're here to make your real estate journey seamless and rewarding.")
     services         = ListBlock(ServiceCardBlock())
 
-    cta_eyebrow         = CharBlock(default="Need Guidance?")
-    cta_title           = CharBlock(default="Not Sure Where to")
-    cta_title_em        = CharBlock(default="Start?")
-    cta_text            = TextBlock(default="Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.")
-    cta_primary         = CtaBlock()
-    cta_secondary       = CtaBlock()
-
     class Meta:
         icon  = "list-ul"
-        label = "Services Section"
+        label = "Service Selection Block"
+
+
+class CtaSectionBlock(StructBlock):
+    eyebrow    = CharBlock(default="Need Guidance?")
+    title      = CharBlock(default="Not Sure Where to")
+    title_em   = CharBlock(default="Start?")
+    text       = TextBlock(default="Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.")
+    primary    = CtaBlock()
+    secondary  = CtaBlock()
+
+    class Meta:
+        icon  = "placeholder"
+        label = "CTA Block"
 
 
 class VideoTestimonialItemBlock(StructBlock):
@@ -231,6 +236,7 @@ class HomePageStreamBlock(StreamBlock):
     intro              = IntroBlock()
     property_listing   = PropertyListingSectionBlock()
     services           = ServiceSectionBlock()
+    cta                = CtaSectionBlock()
     video_testimonials = VideoTestimonialsSectionBlock()
     portfolio          = PortfolioSectionBlock()
 
@@ -240,6 +246,7 @@ class HomePageStreamBlock(StreamBlock):
             "intro":              {"min_num": 0, "max_num": 1},
             "property_listing":   {"min_num": 0, "max_num": 1},
             "services":           {"min_num": 0, "max_num": 1},
+            "cta":                {"min_num": 0, "max_num": 1},
             "video_testimonials": {"min_num": 0, "max_num": 1},
             "portfolio":          {"min_num": 0, "max_num": 1},
         }

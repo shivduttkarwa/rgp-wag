@@ -43,6 +43,7 @@ class HomePage(Page):
         for block in self.body:
             sections[block.block_type] = _serialise_block_value(block.value)
 
+        _normalise_services_and_cta_sections(sections)
         _inject_cms_video_testimonials(sections)
 
         return {
@@ -52,6 +53,45 @@ class HomePage(Page):
             "sections":   sections,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
         }
+
+
+def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
+    """
+    Split legacy embedded CTA fields out of the `services` section into a
+    dedicated `cta` section payload for frontend compatibility.
+    """
+    services_section = sections.get("services")
+    if not isinstance(services_section, dict):
+        return
+
+    legacy_cta = {
+        "eyebrow": services_section.pop("cta_eyebrow", None),
+        "title": services_section.pop("cta_title", None),
+        "title_em": services_section.pop("cta_title_em", None),
+        "text": services_section.pop("cta_text", None),
+        "primary": services_section.pop("cta_primary", None),
+        "secondary": services_section.pop("cta_secondary", None),
+    }
+
+    existing_cta = sections.get("cta")
+    if isinstance(existing_cta, dict):
+        return
+
+    has_legacy_cta = any(
+        value not in (None, "", {}, [])
+        for value in legacy_cta.values()
+    )
+    if not has_legacy_cta:
+        return
+
+    sections["cta"] = {
+        "eyebrow": legacy_cta["eyebrow"] or "Need Guidance?",
+        "title": legacy_cta["title"] or "Not Sure Where to",
+        "title_em": legacy_cta["title_em"] or "Start?",
+        "text": legacy_cta["text"] or "Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.",
+        "primary": legacy_cta["primary"] or {"label": "", "href": ""},
+        "secondary": legacy_cta["secondary"] or {"label": "", "href": ""},
+    }
 
 
 def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
