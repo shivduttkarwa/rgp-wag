@@ -9,8 +9,9 @@
   --footer-bg-light: #001f49;;
   --footer-text: #ffffff;
   --footer-text-muted: rgba(255, 255, 255, 0.6);
-  --footer-gold: #f9c307;
+  --footer-gold: var(--rg-gold);
   --footer-gold-light: #fad840;
+  --footer-gold-rgb: 249, 194, 6;
   --footer-border: rgba(249, 195, 7, 0.2);
 
   background: var(--footer-bg);
@@ -407,8 +408,8 @@ a.rg-footer__contact-item:hover svg {
 .rg-footer__watermark .rg-footer__watermark-letter {
   display: inline-block;
   color: transparent;
-  -webkit-text-stroke: 2px rgba(249, 195, 7, 0.45);
-  filter: drop-shadow(0 0 10px rgba(249, 195, 7, 0.22));
+  -webkit-text-stroke: 2px rgba(var(--footer-gold-rgb), 0.45);
+  filter: drop-shadow(0 0 10px rgba(var(--footer-gold-rgb), 0.22));
   position: relative;
   cursor: default;
   transition:
@@ -438,17 +439,17 @@ a.rg-footer__contact-item:hover svg {
   0% {
     clip-path: inset(0 100% 0 0);
     opacity: 1;
-    filter: brightness(1.8) blur(0px);
+    filter: brightness(1) blur(0px);
   }
   45% {
     clip-path: inset(0 0 0 0);
     opacity: 1;
-    filter: brightness(2) blur(0px);
+    filter: brightness(1.05) blur(0px);
   }
   70% {
     clip-path: inset(0 0 0 0);
     opacity: 0.7;
-    filter: brightness(1.4) blur(1px);
+    filter: brightness(1.02) blur(0.4px);
   }
   100% {
     clip-path: inset(0 0 0 0);
@@ -461,7 +462,7 @@ a.rg-footer__contact-item:hover svg {
 .rg-footer__watermark-text:hover .rg-footer__watermark-letter {
   color: var(--footer-gold);
   -webkit-text-stroke: 1.5px var(--footer-gold);
-  filter: drop-shadow(0 0 20px rgba(249, 195, 7, 0.6));
+  filter: drop-shadow(0 0 20px rgba(var(--footer-gold-rgb), 0.6));
 }
 
 .rg-footer__watermark-text:hover .rg-footer__watermark-letter::before {
