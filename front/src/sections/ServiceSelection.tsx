@@ -1,7 +1,4 @@
 import {
-  Home,
-  Key,
-  Building,
   TrendingUp,
   Search,
   CalendarCheck,
@@ -17,18 +14,12 @@ const THEME_ICON_MAP = {
   rent: CalendarCheck,
 };
 
-const THEME_SECONDARY_ICON_MAP = {
-  buy: Key,
-  sell: Home,
-  rent: Building,
-};
-
 const FALLBACK_DATA: ServicesSection = DEFAULT_HOME_PAGE_SECTIONS.services!;
 
 type LegacyServiceItem = {
   id: string;
   icon: typeof Search;
-  secondaryIcon: typeof Key;
+  secondaryIcon?: typeof Search;
   headline: string;
   title: string;
   subtitle: string;
@@ -64,7 +55,6 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
       services: (services && services.length ? services : FALLBACK_DATA.services.map((service) => ({
         id: service.theme,
         icon: Search,
-        secondaryIcon: Key,
         headline: service.headline,
         title: service.title,
         subtitle: service.subtitle,
@@ -112,7 +102,6 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
         <div className="svc__grid">
           {section.services.map((service, i) => {
             const Icon = THEME_ICON_MAP[service.theme] ?? Search;
-            const SecondaryIcon = THEME_SECONDARY_ICON_MAP[service.theme] ?? Key;
 
             return (
               <article
@@ -125,9 +114,6 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
                 <div className="svc-card__top" aria-hidden="true">
                   <span className="svc-card__icon">
                     <Icon size={18} />
-                  </span>
-                  <span className="svc-card__icon svc-card__icon--secondary">
-                    <SecondaryIcon size={14} />
                   </span>
                 </div>
 
