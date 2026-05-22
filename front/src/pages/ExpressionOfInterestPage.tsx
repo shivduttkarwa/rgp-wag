@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import HeroSection from "../sections/HeroSection";
+import InternalPageHero from "@/sections/InternalPageHero";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -387,26 +387,31 @@ export default function ExpressionOfInterestPage({
 
   return (
     <main className="eoi-page" ref={pageRef}>
-      <HeroSection
+      <InternalPageHero
         ready={ready}
-        showVideo={false}
-        showCta
-        ctaLabel="Complete the Form"
-        ctaOnClick={() =>
-          formTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-        bgImage="images/hero1.jpg"
-        titleLine1={
-          <>
-            Expression <span className="rg-gold">of</span>
-          </>
-        }
-        titleLine2={
-          <>
-            Interest <span className="rg-amber">Form</span>
-          </>
-        }
-        subtitle="Use this form to submit your offer, purchaser details, and purchase conditions for the property you wish to secure."
+        hero={{
+          title_line_1: "Expression [gold]of[/gold]",
+          title_line_2: "Interest [amber]Form[/amber]",
+          subtitle:
+            "Use this form to submit your offer, purchaser details, and purchase conditions for the property you wish to secure.",
+          background_image: null,
+          background_image_url: "images/hero1.jpg",
+          show_video: false,
+          background_video_url: "",
+          mode: "buttons",
+          buttons: [
+            {
+              label: "Complete the Form",
+              style: "gold",
+              onClick: () =>
+                formTopRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                }),
+            },
+          ],
+          stats: [],
+        }}
       />
 
       <section className="eoi-shell">

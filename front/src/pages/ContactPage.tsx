@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, FileText, Mail, Phone, Send } from "lucide-react";
-import HeroSection from "../sections/HeroSection";
+import { ChevronDown, FileText, Send } from "lucide-react";
+import InternalPageHero from "@/sections/InternalPageHero";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { submitContactForm } from "@/lib/api/forms";
-import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useContactPage } from "@/hooks/useContactPage";
 import "./ContactPage.css";
 
@@ -118,35 +117,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <main className="contact-page" ref={pageRef}>
-      <HeroSection
-        ready={ready}
-        showVideo={false}
-        showCta={false}
-        bgImage={data.hero.background_image?.url ?? data.hero.background_image_url}
-        titleLine1={renderHeroAccentTokens(data.hero.title_line_1)}
-        titleLine2={renderHeroAccentTokens(data.hero.title_line_2)}
-        subtitle={data.hero.subtitle}
-        panel={(
-          <div className="contact-hero-actions">
-            <RgButton
-              href={data.hero.primary_cta_href}
-              variant="gold"
-              className="contact-hero-actions__link contact-hero-actions__link--primary"
-              aria-label={data.hero.primary_cta_label}
-              label={data.hero.primary_cta_label}
-              endIcon={<Phone size={18} aria-hidden="true" />}
-            />
-            <RgButton
-              href={data.hero.secondary_cta_href}
-              variant="blue"
-              className="contact-hero-actions__link contact-hero-actions__link--secondary"
-              aria-label={data.hero.secondary_cta_label}
-              label={data.hero.secondary_cta_label}
-              endIcon={<Mail size={18} aria-hidden="true" />}
-            />
-          </div>
-        )}
-      />
+      <InternalPageHero ready={ready} hero={data.hero} />
 
       <div className="contact-shell">
         <div className="top-rule" />

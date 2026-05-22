@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import HeroSection from "../sections/HeroSection";
+import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
 import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -83,21 +83,28 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <HeroSection
+      <InternalPageHero
         ready={ready}
-        showVideo={false}
-        showCta={false}
-        panel={
-          <RgButton variant="gold" to="/contact" label="Book a Consultation" arrowSize={16} />
-        }
-        bgImage="images/about-hero.jpg"
-        titleLine1={<>Meet Our</>}
-        titleLine2={
-          <>
-            Expert <span className="rg-gold">Team</span>
-          </>
-        }
-        subtitle="A curated ensemble of creative minds and industry veterans shaping the future of luxury real estate."
+        hero={{
+          title_line_1: "Meet Our",
+          title_line_2: "Expert [gold]Team[/gold]",
+          subtitle:
+            "A curated ensemble of creative minds and industry veterans shaping the future of luxury real estate.",
+          background_image: null,
+          background_image_url: "images/about-hero.jpg",
+          show_video: false,
+          background_video_url: "",
+          mode: "buttons",
+          buttons: [
+            {
+              label: "Book a Consultation",
+              href: "/contact",
+              style: "gold",
+              open_in_new_tab: false,
+            },
+          ],
+          stats: [],
+        }}
       />
 
       <main className="team-page" ref={pageRef}>

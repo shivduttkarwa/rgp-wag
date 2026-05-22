@@ -17,10 +17,24 @@ export const DEFAULT_CONTACT_PAGE_DATA: ContactPageData = {
     subtitle: "Our team is ready to guide you — from first enquiry to final key.",
     background_image: null,
     background_image_url: "images/contact-hero.jpg",
-    primary_cta_label: "Call Us",
-    primary_cta_href: "tel:+61450009291",
-    secondary_cta_label: "Email Us",
-    secondary_cta_href: "mailto:admin@realgoldproperties.com.au",
+    show_video: false,
+    background_video_url: "",
+    mode: "buttons",
+    buttons: [
+      {
+        label: "Call Us",
+        href: "tel:+61450009291",
+        style: "gold",
+        open_in_new_tab: false,
+      },
+      {
+        label: "Email Us",
+        href: "mailto:admin@realgoldproperties.com.au",
+        style: "blue",
+        open_in_new_tab: false,
+      },
+    ],
+    stats: [],
   },
   contact_info: {
     headline: "Let's Talk",

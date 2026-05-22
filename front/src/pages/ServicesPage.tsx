@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import HeroSection from "../sections/HeroSection";
+import InternalPageHero from "@/sections/InternalPageHero";
 import PropertyMarqee from "../components/reusable/PropertyMarqee";
 import ServiceSelection from "../sections/ServiceSelection";
 import RgpCta from "@/components/reusable/RgpCta";
@@ -162,22 +162,21 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <HeroSection
+      <InternalPageHero
         ready={ready}
-        showVideo={false}
-        showCta={false}
-        bgImage="images/hero1.jpg"
-        titleLine1={
-          <>
-            Services For <span className="rg-gold">Buyers</span>
-          </>
-        }
-        titleLine2={
-          <>
-            Sellers & <span className="rg-amber">Renters</span>
-          </>
-        }
-        subtitle="We handle the full journey — buying, selling, and leasing — with strategy, precision, and a calm, boutique approach."
+        hero={{
+          title_line_1: "Services For [gold]Buyers[/gold]",
+          title_line_2: "Sellers & [amber]Renters[/amber]",
+          subtitle:
+            "We handle the full journey — buying, selling, and leasing — with strategy, precision, and a calm, boutique approach.",
+          background_image: null,
+          background_image_url: "images/hero1.jpg",
+          show_video: false,
+          background_video_url: "",
+          mode: "none",
+          buttons: [],
+          stats: [],
+        }}
       />
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}

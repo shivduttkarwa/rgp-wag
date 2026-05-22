@@ -1,8 +1,7 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
-import HeroSection from "../sections/HeroSection";
+import React, { useEffect, useRef } from "react";
+import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
-import gsap from "gsap";
 import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
 
@@ -831,44 +830,6 @@ const FinalCTA: React.FC = () => (
 ───────────────────────────────────────────────────────────────────────────── */
 const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   const pageRef = useRef<HTMLDivElement>(null);
-  const slabRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (!ready || !slabRef.current) return;
-
-    const slab = slabRef.current;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReducedMotion) {
-      gsap.set(slab, {
-        autoAlpha: 1,
-        clipPath: "inset(0 0 0% 0)",
-        webkitClipPath: "inset(0 0 0% 0)",
-      });
-      return;
-    }
-
-    gsap.set(slab, {
-      autoAlpha: 1,
-      clipPath: "inset(0 0 100% 0)",
-      webkitClipPath: "inset(0 0 100% 0)",
-      willChange: "clip-path",
-    });
-
-    const tl = gsap.timeline();
-
-    // Match the home hero panel reveal: top-to-bottom clip, starting right after subtitle.
-    tl.to(slab, {
-      clipPath: "inset(0 0 0% 0)",
-      webkitClipPath: "inset(0 0 0% 0)",
-      duration: 1.0,
-      ease: "power3.inOut",
-    }, 1);
-
-    return () => {
-      tl.kill();
-    };
-  }, [ready]);
 
   useEffect(() => {
     const guards = [
@@ -898,48 +859,24 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   return (
     <div ref={pageRef}>
       <main className="testimonial-page">
-        <HeroSection
+        <InternalPageHero
           ready={ready}
-          showVideo={false}
-          showCta={false}
-          bgImage="images/testi-hero.jpg"
-          titleLine1={
-            <>
-              Client <span className="rg-gold">Stories</span>
-            </>
-          }
-          titleLine2={
-            <>
-              Words That <span className="rg-amber">Inspire</span>
-            </>
-          }
-          subtitle={`${testimonials.length} verified experiences — refined, discreet service from start to finish.`}
-          footer={
-            <div className="t-hero__stats-slab" ref={slabRef}>
-              <div className="t-hero__stats">
-                <div className="t-hero__stat">
-                  <span className="t-hero__stat-value">
-                    5<span className="t-hero__stat-star">★</span>
-                  </span>
-                  <span className="t-hero__stat-label">Avg. Rating</span>
-                </div>
-                <div className="t-hero__stat-divider" />
-                <div className="t-hero__stat">
-                  <span className="t-hero__stat-value">100%</span>
-                  <span className="t-hero__stat-label">
-                    Client Satisfaction
-                  </span>
-                </div>
-                <div className="t-hero__stat-divider" />
-                <div className="t-hero__stat">
-                  <span className="t-hero__stat-value">
-                    {testimonials.length}
-                  </span>
-                  <span className="t-hero__stat-label">Total Reviews</span>
-                </div>
-              </div>
-            </div>
-          }
+          hero={{
+            title_line_1: "Client [gold]Stories[/gold]",
+            title_line_2: "Words That [amber]Inspire[/amber]",
+            subtitle: `${testimonials.length} verified experiences — refined, discreet service from start to finish.`,
+            background_image: null,
+            background_image_url: "images/testi-hero.jpg",
+            show_video: false,
+            background_video_url: "",
+            mode: "stats",
+            buttons: [],
+            stats: [
+              { value: "5★", label: "Avg. Rating" },
+              { value: "100%", label: "Client Satisfaction" },
+              { value: `${testimonials.length}`, label: "Total Reviews" },
+            ],
+          }}
         />
         <div className="t-section-heading">
           <header className="t-section-heading__header">

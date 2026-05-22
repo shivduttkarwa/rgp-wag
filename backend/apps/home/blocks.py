@@ -26,6 +26,88 @@ class CtaBlock(StructBlock):
         label = "Call to action"
 
 
+class InternalHeroButtonBlock(StructBlock):
+    label = CharBlock(required=True)
+    href = CharBlock(
+        required=False,
+        help_text="Relative path (e.g. /contact), tel:/mailto:, or full URL",
+    )
+    style = ChoiceBlock(
+        choices=[
+            ("gold", "Gold"),
+            ("blue", "Blue"),
+            ("outline", "Outline"),
+        ],
+        default="gold",
+        required=False,
+    )
+    open_in_new_tab = BooleanBlock(required=False, default=False)
+
+    class Meta:
+        icon = "link"
+        label = "Hero Button"
+
+
+class InternalHeroStatBlock(StructBlock):
+    value = CharBlock(required=True, help_text="e.g. 5, 100%, 350+")
+    label = CharBlock(required=True, help_text="e.g. Avg. Rating")
+
+    class Meta:
+        icon = "pick"
+        label = "Hero Stat"
+
+
+class InternalPageHeroBlock(StructBlock):
+    title_line_1 = CharBlock(default="Get In [gold]Touch[/gold]")
+    title_line_2 = CharBlock(default="[amber]We're[/amber] Here")
+    subtitle = TextBlock(
+        default="Our team is ready to guide you — from first enquiry to final key.",
+    )
+    background_image = ImageChooserBlock(
+        required=False,
+        help_text="Pick hero background image from media library.",
+    )
+    background_image_url = CharBlock(
+        required=False,
+        default="images/contact-hero.jpg",
+        help_text="Fallback image path relative to public/ or full URL.",
+    )
+    show_video = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Enable to use the optional hero background video.",
+    )
+    background_video_url = CharBlock(
+        required=False,
+        default="",
+        help_text="Video path relative to public/ or full URL (used when video is enabled).",
+    )
+    mode = ChoiceBlock(
+        choices=[
+            ("none", "No panel"),
+            ("buttons", "Buttons panel"),
+            ("stats", "Stats slab"),
+        ],
+        default="buttons",
+        required=False,
+        help_text="Choose whether the hero shows buttons, stats, or no panel.",
+    )
+    buttons = ListBlock(
+        InternalHeroButtonBlock(),
+        required=False,
+        help_text="Used when mode is Buttons panel.",
+    )
+    stats = ListBlock(
+        InternalHeroStatBlock(),
+        required=False,
+        help_text="Used when mode is Stats slab.",
+    )
+
+    class Meta:
+        icon = "image"
+        label = "Internal Page Hero"
+
+
 class SearchTabBlock(StructBlock):
     label = CharBlock(help_text="Tab label, e.g. Buy")
     icon  = ChoiceBlock(
@@ -338,6 +420,15 @@ class ContactPageContentStreamBlock(StreamBlock):
     class Meta:
         block_counts = {
             "contact_info": {"min_num": 0, "max_num": 1},
+        }
+
+
+class ContactPageHeroStreamBlock(StreamBlock):
+    internal_page_hero = InternalPageHeroBlock()
+
+    class Meta:
+        block_counts = {
+            "internal_page_hero": {"min_num": 0, "max_num": 1},
         }
 
 

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import HeroSection from "../sections/HeroSection";
+import InternalPageHero from "@/sections/InternalPageHero";
 import gsap from "gsap";
 import {
   Tag,
@@ -329,24 +329,27 @@ export default function PropertiesPage() {
 
   return (
     <div className="ap-page" ref={pageRef}>
-      <HeroSection
-        ready={true}
-        showVideo={false}
-        bgImage="images/prop-hero.jpg"
-        titleLine1={
-          <>
-            Our <span className="rg-gold">Premium</span>
-          </>
-        }
-        titleLine2={
-          <>
-            <span className="rg-amber">Properties</span>
-          </>
-        }
-        subtitle="Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland."
-        showCta
-        ctaLabel="Talk to an Expert"
-        ctaOnClick={() => navigate("/contact")}
+      <InternalPageHero
+        ready
+        hero={{
+          title_line_1: "Our [gold]Premium[/gold]",
+          title_line_2: "[amber]Properties[/amber]",
+          subtitle:
+            "Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland.",
+          background_image: null,
+          background_image_url: "images/prop-hero.jpg",
+          show_video: false,
+          background_video_url: "",
+          mode: "buttons",
+          buttons: [
+            {
+              label: "Talk to an Expert",
+              style: "gold",
+              onClick: () => navigate("/contact"),
+            },
+          ],
+          stats: [],
+        }}
       />
 
       {/* ── Filter Slab ───────────────────────────────────────────────── */}

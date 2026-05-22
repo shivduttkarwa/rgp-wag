@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import HeroSection from "../sections/HeroSection";
+import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
 
 import "./AboutPage.css";
@@ -141,30 +141,28 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <HeroSection
+      <InternalPageHero
         ready={ready}
-        showVideo={false}
-        showCta={false}
-        panel={
-          <RgButton
-            variant="gold"
-            to="/contact"
-            label="Book a Free Appraisal"
-            arrowSize={16}
-          />
-        }
-        bgImage="images/hero4.jpg"
-        titleLine1={
-          <>
-            Meet <span className="rg-gold">Rahul</span> Singh
-          </>
-        }
-        titleLine2={
-          <>
-            Appraisal-First <span className="rg-amber">Agent</span>
-          </>
-        }
-        subtitle="Brisbane’s calm, data-backed appraisal specialist. Clear pricing, honest advice, and a plan that helps your property stand out."
+        hero={{
+          title_line_1: "Meet [gold]Rahul[/gold] Singh",
+          title_line_2: "Appraisal-First [amber]Agent[/amber]",
+          subtitle:
+            "Brisbane’s calm, data-backed appraisal specialist. Clear pricing, honest advice, and a plan that helps your property stand out.",
+          background_image: null,
+          background_image_url: "images/hero4.jpg",
+          show_video: false,
+          background_video_url: "",
+          mode: "buttons",
+          buttons: [
+            {
+              label: "Book a Free Appraisal",
+              href: "/contact",
+              style: "gold",
+              open_in_new_tab: false,
+            },
+          ],
+          stats: [],
+        }}
       />
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}

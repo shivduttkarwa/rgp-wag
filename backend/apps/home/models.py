@@ -6,7 +6,7 @@ from wagtail.fields import StreamField
 from wagtail.images import get_image_model_string
 from wagtail.models import Page
 
-from .blocks import ContactPageContentStreamBlock, HomePageStreamBlock
+from .blocks import ContactPageContentStreamBlock, ContactPageHeroStreamBlock, HomePageStreamBlock
 
 
 class HomePage(Page):
@@ -79,6 +79,12 @@ class ContactPage(Page):
     hero_primary_cta_href = models.CharField(max_length=255, default="tel:+61450009291")
     hero_secondary_cta_label = models.CharField(max_length=100, default="Email Us")
     hero_secondary_cta_href = models.CharField(max_length=255, default="mailto:admin@realgoldproperties.com.au")
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Reusable internal page hero block (buttons or stats mode).",
+    )
 
     contact_content = StreamField(
         ContactPageContentStreamBlock(),
@@ -116,15 +122,7 @@ class ContactPage(Page):
     max_count = 1
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_title_line_1"),
-        FieldPanel("hero_title_line_2"),
-        FieldPanel("hero_subtitle"),
-        FieldPanel("hero_background_image"),
-        FieldPanel("hero_background_image_url"),
-        FieldPanel("hero_primary_cta_label"),
-        FieldPanel("hero_primary_cta_href"),
-        FieldPanel("hero_secondary_cta_label"),
-        FieldPanel("hero_secondary_cta_href"),
+        FieldPanel("hero_content"),
         FieldPanel("contact_content"),
         FieldPanel("form_eyebrow"),
         FieldPanel("form_heading_line_1"),
@@ -148,6 +146,9 @@ class ContactPage(Page):
 
     def get_api_representation(self) -> dict[str, Any]:
         contact_info = _extract_contact_info_block(self.contact_content)
+        hero_payload = _extract_internal_page_hero_block(self.hero_content)
+        if not hero_payload:
+            hero_payload = _legacy_contact_hero_payload(self)
         budget_min = self.form_budget_min
         budget_max = max(self.form_budget_max, budget_min + 1)
         budget_step = max(self.form_budget_step, 1)
@@ -158,17 +159,7 @@ class ContactPage(Page):
             "title": self.title,
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": {
-                "title_line_1": self.hero_title_line_1,
-                "title_line_2": self.hero_title_line_2,
-                "subtitle": self.hero_subtitle,
-                "background_image": _serialise_block_value(self.hero_background_image),
-                "background_image_url": self.hero_background_image_url,
-                "primary_cta_label": self.hero_primary_cta_label,
-                "primary_cta_href": self.hero_primary_cta_href,
-                "secondary_cta_label": self.hero_secondary_cta_label,
-                "secondary_cta_href": self.hero_secondary_cta_href,
-            },
+            "hero": hero_payload,
             "contact_info": contact_info,
             "form": {
                 "eyebrow": self.form_eyebrow,
@@ -324,6 +315,56 @@ def _serialise_block_value(value):
 
 def _parse_csv_options(raw: str) -> list[str]:
     return [item.strip() for item in (raw or "").split(",") if item.strip()]
+
+
+def _legacy_contact_hero_payload(page: ContactPage) -> dict[str, Any]:
+    buttons: list[dict[str, Any]] = []
+    if page.hero_primary_cta_label.strip():
+        buttons.append(
+            {
+                "label": page.hero_primary_cta_label,
+                "href": page.hero_primary_cta_href,
+                "style": "gold",
+                "open_in_new_tab": False,
+            }
+        )
+    if page.hero_secondary_cta_label.strip():
+        buttons.append(
+            {
+                "label": page.hero_secondary_cta_label,
+                "href": page.hero_secondary_cta_href,
+                "style": "blue",
+                "open_in_new_tab": False,
+            }
+        )
+
+    return {
+        "title_line_1": page.hero_title_line_1,
+        "title_line_2": page.hero_title_line_2,
+        "subtitle": page.hero_subtitle,
+        "background_image": _serialise_block_value(page.hero_background_image),
+        "background_image_url": page.hero_background_image_url,
+        "show_video": False,
+        "background_video_url": "",
+        "mode": "buttons" if buttons else "none",
+        "buttons": buttons,
+        "stats": [],
+    }
+
+
+def _extract_internal_page_hero_block(hero_content) -> dict[str, Any] | None:
+    for block in hero_content:
+        if block.block_type == "internal_page_hero":
+            hero = _serialise_block_value(block.value)
+            mode = hero.get("mode") if isinstance(hero, dict) else "none"
+            if mode not in {"none", "buttons", "stats"}:
+                mode = "none"
+            if isinstance(hero, dict):
+                hero["mode"] = mode
+                hero["buttons"] = hero.get("buttons") or []
+                hero["stats"] = hero.get("stats") or []
+            return hero if isinstance(hero, dict) else None
+    return None
 
 
 def _extract_contact_info_block(contact_content) -> dict[str, Any]:

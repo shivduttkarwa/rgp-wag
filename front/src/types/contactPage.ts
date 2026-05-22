@@ -1,16 +1,6 @@
-import type { WagtailImage } from "@/types/homePage";
+import type { InternalPageHeroData } from "@/types/internalPageHero";
 
-export type ContactHero = {
-  title_line_1: string;
-  title_line_2: string;
-  subtitle: string;
-  background_image: WagtailImage | null;
-  background_image_url: string;
-  primary_cta_label: string;
-  primary_cta_href: string;
-  secondary_cta_label: string;
-  secondary_cta_href: string;
-};
+export type ContactHero = InternalPageHeroData;
 
 export type ContactInfoItem = {
   label: string;

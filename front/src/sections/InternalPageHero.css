@@ -1,0 +1,111 @@
+.internal-page-hero__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.internal-page-hero__action.rg-btn {
+  justify-content: center;
+  text-decoration: none;
+  pointer-events: auto;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.internal-page-hero__action.rg-btn--blue:hover {
+  transform: translateY(0);
+}
+
+.internal-page-hero__stats-slab {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 2rem 0;
+}
+
+.internal-page-hero__stats {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: #001f49;
+  border: 1px solid rgba(249, 195, 7, 0.2);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 20px 45px rgba(0, 3, 46, 0.25);
+}
+
+.internal-page-hero__stat-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.internal-page-hero__stat {
+  min-width: 8rem;
+  text-align: center;
+}
+
+.internal-page-hero__stat-value {
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--rg-gold);
+}
+
+.internal-page-hero__stat-label {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.internal-page-hero__stat-divider {
+  width: 1px;
+  height: 3rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--rg-gold),
+    transparent
+  );
+}
+
+@media (max-width: 767px) {
+  .internal-page-hero__stats-slab {
+    padding: 1.4rem 1rem 0;
+  }
+
+  .internal-page-hero__stats {
+    width: min(100%, 28rem);
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+  }
+
+  .internal-page-hero__stat-wrap {
+    gap: 1rem;
+  }
+
+  .internal-page-hero__stat {
+    min-width: 0;
+  }
+
+  .internal-page-hero__stat-value {
+    font-size: 1.6rem;
+  }
+
+  .internal-page-hero__stat-label {
+    letter-spacing: 0.05em;
+    font-size: 0.68rem;
+  }
+
+  .internal-page-hero__stat-divider {
+    height: 2.2rem;
+  }
+}
