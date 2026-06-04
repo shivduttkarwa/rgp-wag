@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import ContactPage, HomePage, PropertiesPage, TeamPage
+from .models import AboutPage, ContactPage, EoiPage, HomePage, PropertiesPage, ServicesPage, TeamPage, TestimonialsPage
 
 
 class HomePageAPIView(APIView):
@@ -63,4 +63,48 @@ class PropertiesPageAPIView(APIView):
         page = PropertiesPage.objects.live().first()
         if page is None:
             return Response({"detail": "Properties page not yet published."}, status=404)
+        return Response(page.get_api_representation())
+
+
+class AboutPageAPIView(APIView):
+    """GET /api/pages/about/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        page = AboutPage.objects.live().first()
+        if page is None:
+            return Response({"detail": "About page not yet published."}, status=404)
+        return Response(page.get_api_representation())
+
+
+class ServicesPageAPIView(APIView):
+    """GET /api/pages/services/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        page = ServicesPage.objects.live().first()
+        if page is None:
+            return Response({"detail": "Services page not yet published."}, status=404)
+        return Response(page.get_api_representation())
+
+
+class TestimonialsPageAPIView(APIView):
+    """GET /api/pages/testimonials/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        page = TestimonialsPage.objects.live().first()
+        if page is None:
+            return Response({"detail": "Testimonials page not yet published."}, status=404)
+        return Response(page.get_api_representation())
+
+
+class EoiPageAPIView(APIView):
+    """GET /api/pages/eoi/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        page = EoiPage.objects.live().first()
+        if page is None:
+            return Response({"detail": "EOI page not yet published."}, status=404)
         return Response(page.get_api_representation())

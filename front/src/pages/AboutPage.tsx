@@ -7,6 +7,8 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PropertyMarquee from "@/components/reusable/PropertyMarqee";
+import { useAboutPage } from "@/hooks/useAboutPage";
+import assetUrl from "@/lib/assetUrl";
 
 const base = import.meta.env.BASE_URL?.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -15,6 +17,7 @@ const base = import.meta.env.BASE_URL?.endsWith("/")
 const img = (name: string) => `${base}images/${name}`;
 
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
+  const { data } = useAboutPage();
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
   const splitVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -141,40 +144,13 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <InternalPageHero
-        ready={ready}
-        hero={{
-          title_line_1: "Meet [gold]Rahul[/gold] Singh",
-          title_line_2: "Appraisal-First [amber]Agent[/amber]",
-          subtitle:
-            "Brisbane’s calm, data-backed appraisal specialist. Clear pricing, honest advice, and a plan that helps your property stand out.",
-          background_image: null,
-          background_image_url: "images/hero4.jpg",
-          show_video: false,
-          background_video_url: "",
-          mode: "buttons",
-          buttons: [
-            {
-              label: "Book a Free Appraisal",
-              href: "/contact",
-              style: "gold",
-              open_in_new_tab: false,
-            },
-          ],
-          stats: [],
-        }}
-      />
+      <InternalPageHero ready={ready} hero={data.hero} />
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}
         <section className="section section-spacious">
           <div className="container center stack">
             <h2 className="intro-statement lead" ref={introRef}>
-              Rahul Singh is the appraisal-first agent behind Real Gold
-              Properties — bringing{" "}
-              <span className="gold-word">local clarity</span>,{" "}
-              <span className="gold-word">data-backed pricing</span>, and{" "}
-              <span className="gold-word">calm negotiation</span> to every
-              homeowner.
+              {data.intro.statement}
             </h2>
           </div>
         </section>
@@ -195,7 +171,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                   <video
                     ref={splitVideoRef}
                     className="split-video"
-                    src={`${base}vids/rgp-video.mp4`}
+                    src={assetUrl(data.split.video_url)}
                     muted
                     playsInline
                     loop={!splitFullPlay}
@@ -224,57 +200,25 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                 </div>
               </div>
               <div className="stack">
-                <h3
-                  className="h-serif"
-                  data-gsap="char-reveal"
-                  data-gsap-start="top 90%"
-                >
-                  Why Sellers
-                  <br />
-                  Choose Rahul
+                <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 90%">
+                  {data.split.heading}
                 </h3>
-                <p
-                  className="split-desc"
-                  data-gsap="fade-up"
-                  data-gsap-start="top 90%"
-                  data-gsap-delay="0.15"
-                >
-                  He translates market noise into a clear, confident price
-                  position — with a strategy that attracts buyers and protects
-                  your upside.
+                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.15">
+                  {data.split.p1}
                 </p>
-                <p
-                  className="split-desc"
-                  data-gsap="fade-up"
-                  data-gsap-start="top 90%"
-                  data-gsap-delay="0.25"
-                >
-                  You get straight answers, a staged plan, and weekly feedback
-                  so the appraisal never sits still.
+                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.25">
+                  {data.split.p2}
                 </p>
-                <ul
-                  className="rahul-points"
-                  data-gsap="fade-up"
-                  data-gsap-delay="0.32"
-                >
-                  <li>
-                    <strong>Street-level pricing:</strong> recent sales, buyer
-                    demand, and suburb momentum.
-                  </li>
-                  <li>
-                    <strong>Launch strategy:</strong> presentation, timing, and
-                    campaign plan that drives competition.
-                  </li>
-                  <li>
-                    <strong>Calm guidance:</strong> no pressure, just clarity
-                    and next steps.
-                  </li>
+                <ul className="rahul-points" data-gsap="fade-up" data-gsap-delay="0.32">
+                  {data.split.bullets.map((bullet, i) => (
+                    <li key={i}>{bullet}</li>
+                  ))}
                 </ul>
                 <div className="split-cta">
                   <RgButton
-                    to="/contact"
+                    to={data.split.cta_href}
                     variant="outline"
-                    label="Book Your Appraisal"
+                    label={data.split.cta_label}
                     data-gsap="btn-clip-reveal"
                     data-gsap-delay="0.2"
                   />
@@ -286,29 +230,14 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
         {/* 4) TURN-KEY */}
         <section className="img-overlay">
-          <img alt="Modern home exterior" src={img("int.jpg")} />
+          <img alt="Modern home exterior" src={assetUrl(data.overlay.image_url) || img("int.jpg")} />
           <div className="overlay-card" data-gsap="clip-reveal-left">
-            <h3 className="h-serif">
-              The Appraisal
-              <br />
-              Strategy
-            </h3>
-            <p>
-              Rahul’s appraisals are more than a number. Each one is built to
-              attract the right buyers and set a confident path to sale.
-            </p>
+            <h3 className="h-serif">{data.overlay.heading}</h3>
+            <p>{data.overlay.text}</p>
             <ul className="overlay-list">
-              <li>
-                <span className="step">01</span> On-site walk-through + market
-                scan
-              </li>
-              <li>
-                <span className="step">02</span> Pricing range + demand
-                positioning
-              </li>
-              <li>
-                <span className="step">03</span> Launch plan + feedback loop
-              </li>
+              {data.overlay.steps.map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
             </ul>
           </div>
         </section>
@@ -321,28 +250,19 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               data-gsap="clip-reveal-left"
               data-gsap-mobile="clip-smooth-down"
             >
-              <img alt="Rahul Singh" src={img("rahul-singh.jpg")} />
+              <img alt="Rahul Singh" src={assetUrl(data.avail.image_url) || img("rahul-singh.jpg")} />
             </div>
             <div className="panel">
-              <div className="eyebrow">APPRAISAL</div>
-              <h3
-                className="h-serif"
-                data-gsap="char-reveal"
-                data-gsap-start="top 85%"
-              >
-                Ready For Your
-                <br />
-                Appraisal?
+              <div className="eyebrow">{data.avail.eyebrow}</div>
+              <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 85%">
+                {data.avail.heading}
               </h3>
-              <p data-gsap="fade-up" data-gsap-delay="0.15">
-                Book a free, no-pressure appraisal with Rahul Singh. You’ll get
-                a clear price range, honest advice, and a next-step plan.
-              </p>
+              <p data-gsap="fade-up" data-gsap-delay="0.15">{data.avail.text}</p>
               <div className="avail-cta">
                 <RgButton
-                  to="/contact"
+                  to={data.avail.cta_href}
                   variant="outline"
-                  label="Book Your Appraisal"
+                  label={data.avail.cta_label}
                   className="avail-cta__btn"
                   data-gsap="btn-clip-reveal"
                   data-gsap-delay="0.2"

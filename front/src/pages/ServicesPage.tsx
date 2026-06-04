@@ -16,6 +16,8 @@ import {
   Search,
   TrendingUp,
 } from "lucide-react";
+import { useServicesPage } from "@/hooks/useServicesPage";
+import assetUrl from "@/lib/assetUrl";
 
 const base = import.meta.env.BASE_URL?.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -24,6 +26,7 @@ const base = import.meta.env.BASE_URL?.endsWith("/")
 const img = (name: string) => `${base}images/${name}`;
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
+  const { data } = useServicesPage();
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
   const introMaxProgressRef = useRef(0);
@@ -162,76 +165,38 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <InternalPageHero
-        ready={ready}
-        hero={{
-          title_line_1: "Services For [gold]Buyers[/gold]",
-          title_line_2: "Sellers & [amber]Renters[/amber]",
-          subtitle:
-            "We handle the full journey — buying, selling, and leasing — with strategy, precision, and a calm, boutique approach.",
-          background_image: null,
-          background_image_url: "images/hero1.jpg",
-          show_video: false,
-          background_video_url: "",
-          mode: "none",
-          buttons: [],
-          stats: [],
-        }}
-      />
+      <InternalPageHero ready={ready} hero={data.hero} />
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}
         <section className="section section-spacious">
           <div className="container center stack">
             <h2 className="intro-statement lead" ref={introRef}>
-              A <span className="gold-word">full-service</span> partner for{" "}
-              <span className="gold-word">buying</span>,{" "}
-              <span className="gold-word">selling</span>, and{" "}
-              <span className="gold-word">renting</span> — with clarity in the
-              plan and confidence in the outcome.
+              {data.intro.statement}
             </h2>
           </div>
         </section>
 
-        {/* 3) GREEN SPLIT */}
+        {/* 3) GREEN SPLIT — Buy */}
         <section className="split-green">
           <div className="container">
             <div className="wrap">
               <div className="stack">
-                <h3
-                  className="h-serif"
-                  data-gsap="char-reveal"
-                  data-gsap-start="top 90%"
-                >
-                  Buy With Confidence
-                  <br />
-                  From Day One
+                <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 90%">
+                  {data.buy.heading}
                 </h3>
-                <p
-                  className="split-desc"
-                  data-gsap="fade-up"
-                  data-gsap-start="top 90%"
-                  data-gsap-delay="0.15"
-                >
-                  We narrow the field quickly, secure the right property, and
-                  negotiate from strength — so you buy well without noise or
-                  pressure.
+                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.15">
+                  {data.buy.p1}
                 </p>
-                <p
-                  className="split-desc"
-                  data-gsap="fade-up"
-                  data-gsap-start="top 90%"
-                  data-gsap-delay="0.25"
-                >
-                  From off‑market access to finance coordination, we manage the
-                  details so you can focus on the decision that matters.
+                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.25">
+                  {data.buy.p2}
                 </p>
                 <div className="split-cta">
                   <RgButton
                     data-gsap="btn-clip-reveal"
                     data-gsap-delay="0.2"
                     variant="outline"
-                    to="/properties"
-                    label="Explore Our Homes"
+                    to={data.buy.cta_href}
+                    label={data.buy.cta_label}
                   />
                 </div>
               </div>
@@ -244,7 +209,7 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
                     data-gsap-mobile="clip-smooth-down"
                     data-gsap-mobile-cards-start="top 90%"
                     alt="Buyer guidance"
-                    src={img("ps1 (6).jpg")}
+                    src={assetUrl(data.buy.image_url) || img("ps1 (6).jpg")}
                   />
                 </div>
               </div>
@@ -253,118 +218,55 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
         </section>
 
         <ServiceSelection
-          header={{
-            eyebrow: "Our Services",
-            title: "Buy, Sell &",
-            titleEm: "Rent",
-            subtitle:
-              "One team, three core services — handled with clarity, speed, and market‑ready execution.",
-          }}
+          header={{ eyebrow: "Our Services", title: "Buy, Sell &", titleEm: "Rent",
+            subtitle: "One team, three core services — handled with clarity, speed, and market‑ready execution." }}
           services={[
-            {
-              id: "buy",
-              icon: Search,
-              secondaryIcon: Key,
-              headline: "Buy",
-              title: "Buyer",
-              subtitle: "Representation",
-              description:
-                "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.",
-              cta: "Start Buying",
-              theme: "buy",
-            },
-            {
-              id: "sell",
-              icon: TrendingUp,
-              secondaryIcon: Home,
-              headline: "Sell",
-              title: "Sales",
-              subtitle: "Strategy",
-              description:
-                "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.",
-              cta: "Plan My Sale",
-              theme: "sell",
-            },
-            {
-              id: "rent",
-              icon: CalendarCheck,
-              secondaryIcon: Building,
-              headline: "Rent",
-              title: "Leasing",
-              subtitle: "Management",
-              description:
-                "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.",
-              cta: "Lease My Property",
-              theme: "rent",
-            },
-          ]}
-        />
-        <RgpCta
-          eyebrow="Ready to Move?"
-          title="Get a"
-          titleEm="Tailored Plan"
-          text="Tell us your goal and timeline — we’ll map the smartest path and execute with precision."
-          bgVideo="vids/cta-vid.mp4"
-          primary={{ label: "Book a Consultation", to: "/contact" }}
-          secondary={{ label: "0450 009 291", href: "tel:+61450009291" }}
-          stats={[
-            { value: "5+", label: "Years Experience" },
-            { value: "100+", label: "Happy Clients" },
-            { value: "24/7", label: "Support Available" },
+            { id: "buy", icon: Search, secondaryIcon: Key, headline: "Buy", title: "Buyer",
+              subtitle: "Representation", description: "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.", cta: "Start Buying", theme: "buy" },
+            { id: "sell", icon: TrendingUp, secondaryIcon: Home, headline: "Sell", title: "Sales",
+              subtitle: "Strategy", description: "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.", cta: "Plan My Sale", theme: "sell" },
+            { id: "rent", icon: CalendarCheck, secondaryIcon: Building, headline: "Rent", title: "Leasing",
+              subtitle: "Management", description: "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.", cta: "Lease My Property", theme: "rent" },
           ]}
         />
 
-        {/* 4) TURN-KEY */}
+        <RgpCta
+          eyebrow={data.cta.eyebrow}
+          title={data.cta.title}
+          titleEm={data.cta.title_em}
+          text={data.cta.text}
+          bgVideo="vids/cta-vid.mp4"
+          primary={{ label: data.cta.primary.label, to: data.cta.primary.href }}
+          secondary={{ label: data.cta.secondary.label, href: data.cta.secondary.href }}
+          stats={data.cta.stats}
+        />
+
+        {/* 4) OVERLAY — Sell */}
         <section className="img-overlay">
-          <img alt="Selling strategy" src={img("ps1 (5).jpg")} />
+          <img alt="Selling strategy" src={assetUrl(data.sell.image_url) || img("ps1 (5).jpg")} />
           <div className="overlay-card" data-gsap="clip-reveal-left">
-            <h3 className="h-serif">
-              Sell With
-              <br />
-              Clear Strategy
-            </h3>
-            <p>
-              Pricing, positioning, staging, and marketing — engineered to drive
-              competition and protect your final result.
-            </p>
+            <h3 className="h-serif">{data.sell.heading}</h3>
+            <p>{data.sell.text}</p>
             <div className="overlay-cta">
-              <RgButton
-                variant="gold"
-                to="/contact"
-                label="Request a Valuation"
-              />
+              <RgButton variant="gold" to={data.sell.cta_href} label={data.sell.cta_label} />
             </div>
           </div>
         </section>
 
-        {/* 5) AVAILABILITY */}
+        {/* 5) AVAILABILITY — Rent */}
         <section className="avail">
           <div className="grid">
             <div className="photo">
-              <img alt="Rental service" src={img("ps1 (1).jpg")} />
+              <img alt="Rental service" src={assetUrl(data.rent.image_url) || img("ps1 (1).jpg")} />
             </div>
             <div className="panel">
               <div className="eyebrow">RENT</div>
-              <h3
-                className="h-serif"
-                data-gsap="char-reveal"
-                data-gsap-start="top 85%"
-              >
-                Lease With
-                <br />
-                Confidence
+              <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 85%">
+                {data.rent.heading}
               </h3>
-              <p data-gsap="fade-up" data-gsap-delay="0.15">
-                Premium leasing, tenant screening, and ongoing care that keeps
-                your property protected and performing.
-              </p>
+              <p data-gsap="fade-up" data-gsap-delay="0.15">{data.rent.text}</p>
               <div className="avail-cta">
-                <RgButton
-                  variant="outline"
-                  to="/properties"
-                  label="View Available Rentals"
-                  className="avail-cta__btn"
-                />
+                <RgButton variant="outline" to={data.rent.cta_href} label={data.rent.cta_label} className="avail-cta__btn" />
               </div>
             </div>
           </div>

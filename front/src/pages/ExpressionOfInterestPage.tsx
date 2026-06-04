@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
+import { useEoiPage } from "@/hooks/useEoiPage";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -295,6 +296,7 @@ export default function ExpressionOfInterestPage({
 }: {
   ready?: boolean;
 }) {
+  const { data: eoiData } = useEoiPage();
   const pageRef = useRef<HTMLElement>(null);
   const formTopRef = useRef<HTMLDivElement>(null);
   const [success, setSuccess] = useState(false);
@@ -390,18 +392,10 @@ export default function ExpressionOfInterestPage({
       <InternalPageHero
         ready={ready}
         hero={{
-          title_line_1: "Expression [gold]of[/gold]",
-          title_line_2: "Interest [amber]Form[/amber]",
-          subtitle:
-            "Use this form to submit your offer, purchaser details, and purchase conditions for the property you wish to secure.",
-          background_image: null,
-          background_image_url: "images/hero1.jpg",
-          show_video: false,
-          background_video_url: "",
-          mode: "buttons",
+          ...eoiData.hero,
           buttons: [
             {
-              label: "Complete the Form",
+              label: eoiData.hero.buttons?.[0]?.label ?? "Complete the Form",
               style: "gold",
               onClick: () =>
                 formTopRef.current?.scrollIntoView({
@@ -410,7 +404,6 @@ export default function ExpressionOfInterestPage({
                 }),
             },
           ],
-          stats: [],
         }}
       />
 
@@ -423,13 +416,7 @@ export default function ExpressionOfInterestPage({
                 Expression of Interest Form
               </h2>
               <p className="eoi-heading__body" data-gsap="fade-up" data-gsap-delay="0.14">
-                I/We acknowledge that if this offer is accepted, I/We will be
-                required to enter into and execute a contract of sale on these
-                terms. I/We acknowledge that we may be one of several parties
-                making offers to the seller for their consideration. Both
-                purchaser and seller must sign a contract of sale before this
-                offer becomes legally binding. An offer may be withdrawn at any
-                time before signing a contract of sale.
+                {eoiData.legal_text}
               </p>
             </div>
 

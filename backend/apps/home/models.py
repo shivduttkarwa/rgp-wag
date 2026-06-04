@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.db import DatabaseError, models
-from wagtail.admin.panels import FieldPanel, PublishingPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel, PublishingPanel
 from wagtail.fields import StreamField
 from wagtail.images import get_image_model_string
 from wagtail.models import Page
@@ -730,3 +730,422 @@ def _extract_contact_info_block(contact_content) -> dict[str, Any]:
         ),
         "quote_author": "— Our Promise",
     }
+
+
+# ─── About Page ──────────────────────────────────────────────────────────────
+
+class AboutPage(Page):
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
+        help_text="Internal page hero block.",
+    )
+
+    # Intro statement
+    intro_statement = models.TextField(
+        default="Rahul Singh is the appraisal-first agent behind Real Gold Properties — bringing local clarity, data-backed pricing, and calm negotiation to every homeowner.",
+    )
+
+    # Split section
+    split_heading = models.CharField(max_length=255, default="Why Sellers Choose Rahul")
+    split_p1 = models.TextField(default="He translates market noise into a clear, confident price position — with a strategy that attracts buyers and protects your upside.")
+    split_p2 = models.TextField(default="You get straight answers, a staged plan, and weekly feedback so the appraisal never sits still.")
+    split_bullet_1 = models.TextField(default="Street-level pricing: recent sales, buyer demand, and suburb momentum.")
+    split_bullet_2 = models.TextField(default="Launch strategy: presentation, timing, and campaign plan that drives competition.")
+    split_bullet_3 = models.TextField(default="Calm guidance: no pressure, just clarity and next steps.")
+    split_video_url = models.CharField(max_length=500, default="vids/rgp-video.mp4", blank=True)
+    split_cta_label = models.CharField(max_length=120, default="Book Your Appraisal")
+    split_cta_href = models.CharField(max_length=255, default="/contact")
+
+    # Overlay section
+    overlay_heading = models.CharField(max_length=255, default="The Appraisal Strategy")
+    overlay_text = models.TextField(default="Rahul's appraisals are more than a number. Each one is built to attract the right buyers and set a confident path to sale.")
+    overlay_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    overlay_image_url = models.CharField(max_length=500, default="images/int.jpg", blank=True)
+    overlay_step_1 = models.CharField(max_length=255, default="01 On-site walk-through + market scan")
+    overlay_step_2 = models.CharField(max_length=255, default="02 Pricing range + demand positioning")
+    overlay_step_3 = models.CharField(max_length=255, default="03 Launch plan + feedback loop")
+
+    # Availability section
+    avail_eyebrow = models.CharField(max_length=120, default="APPRAISAL")
+    avail_heading = models.CharField(max_length=255, default="Ready For Your Appraisal?")
+    avail_text = models.TextField(default="Book a free, no-pressure appraisal with Rahul Singh. You'll get a clear price range, honest advice, and a next-step plan.")
+    avail_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    avail_image_url = models.CharField(max_length=500, default="images/rahul-singh.jpg", blank=True)
+    avail_cta_label = models.CharField(max_length=120, default="Book Your Appraisal")
+    avail_cta_href = models.CharField(max_length=255, default="/contact")
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        MultiFieldPanel([FieldPanel("intro_statement")], heading="Intro Statement"),
+        MultiFieldPanel([
+            FieldPanel("split_heading"),
+            FieldPanel("split_p1"),
+            FieldPanel("split_p2"),
+            FieldPanel("split_bullet_1"),
+            FieldPanel("split_bullet_2"),
+            FieldPanel("split_bullet_3"),
+            FieldPanel("split_video_url"),
+            FieldRowPanel([FieldPanel("split_cta_label"), FieldPanel("split_cta_href")]),
+        ], heading="Why Sellers Choose Section"),
+        MultiFieldPanel([
+            FieldPanel("overlay_heading"),
+            FieldPanel("overlay_text"),
+            FieldPanel("overlay_image"),
+            FieldPanel("overlay_image_url"),
+            FieldPanel("overlay_step_1"),
+            FieldPanel("overlay_step_2"),
+            FieldPanel("overlay_step_3"),
+        ], heading="Appraisal Strategy Overlay"),
+        MultiFieldPanel([
+            FieldPanel("avail_eyebrow"),
+            FieldPanel("avail_heading"),
+            FieldPanel("avail_text"),
+            FieldPanel("avail_image"),
+            FieldPanel("avail_image_url"),
+            FieldRowPanel([FieldPanel("avail_cta_label"), FieldPanel("avail_cta_href")]),
+        ], heading="Availability / Appraisal CTA"),
+    ]
+
+    promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    class Meta:
+        verbose_name = "About Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero = _extract_internal_page_hero_block(self.hero_content)
+        if not hero:
+            hero = {
+                "title_line_1": "Meet [gold]Rahul[/gold] Singh",
+                "title_line_2": "Appraisal-First [amber]Agent[/amber]",
+                "subtitle": "Brisbane's calm, data-backed appraisal specialist. Clear pricing, honest advice, and a plan that helps your property stand out.",
+                "background_image": None,
+                "background_image_url": "images/hero4.jpg",
+                "show_video": False,
+                "background_video_url": "",
+                "mode": "buttons",
+                "buttons": [{"label": "Book a Free Appraisal", "href": "/contact", "style": "gold", "open_in_new_tab": False}],
+                "stats": [],
+            }
+        overlay_image_url = self.overlay_image.file.url if self.overlay_image and getattr(self.overlay_image, "file", None) else self.overlay_image_url
+        avail_image_url = self.avail_image.file.url if self.avail_image and getattr(self.avail_image, "file", None) else self.avail_image_url
+        return {
+            "id": self.pk,
+            "title": self.title,
+            "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero,
+            "intro": {"statement": self.intro_statement},
+            "split": {
+                "heading": self.split_heading,
+                "p1": self.split_p1,
+                "p2": self.split_p2,
+                "bullets": [self.split_bullet_1, self.split_bullet_2, self.split_bullet_3],
+                "video_url": self.split_video_url,
+                "cta_label": self.split_cta_label,
+                "cta_href": self.split_cta_href,
+            },
+            "overlay": {
+                "heading": self.overlay_heading,
+                "text": self.overlay_text,
+                "image_url": overlay_image_url,
+                "steps": [self.overlay_step_1, self.overlay_step_2, self.overlay_step_3],
+            },
+            "avail": {
+                "eyebrow": self.avail_eyebrow,
+                "heading": self.avail_heading,
+                "text": self.avail_text,
+                "image_url": avail_image_url,
+                "cta_label": self.avail_cta_label,
+                "cta_href": self.avail_cta_href,
+            },
+        }
+
+
+# ─── Services Page ────────────────────────────────────────────────────────────
+
+class ServicesPage(Page):
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
+        help_text="Internal page hero block.",
+    )
+
+    intro_statement = models.TextField(
+        default="A full-service partner for buying, selling, and renting — one team, three core services, zero guesswork.",
+    )
+
+    # Buy section
+    buy_heading = models.CharField(max_length=255, default="Buy With Confidence From Day One")
+    buy_p1 = models.TextField(default="We narrow the field quickly, secure the right property at the right price, and guide you through every step of the purchase process.")
+    buy_p2 = models.TextField(default="From off-market access to finance coordination and settlement support — you're never navigating alone.")
+    buy_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    buy_image_url = models.CharField(max_length=500, default="images/ps1 (6).jpg", blank=True)
+    buy_cta_label = models.CharField(max_length=120, default="Explore Our Homes")
+    buy_cta_href = models.CharField(max_length=255, default="/properties")
+
+    # CTA section
+    cta_eyebrow = models.CharField(max_length=120, default="Ready to Move?")
+    cta_title = models.CharField(max_length=255, default="Get a")
+    cta_title_em = models.CharField(max_length=255, default="Tailored Plan")
+    cta_text = models.TextField(default="Tell us your goal and timeline — we'll map out a strategy built around your situation.")
+    cta_primary_label = models.CharField(max_length=120, default="Book a Consultation")
+    cta_primary_href = models.CharField(max_length=255, default="/contact")
+    cta_secondary_label = models.CharField(max_length=120, default="0450 009 291")
+    cta_secondary_href = models.CharField(max_length=255, default="tel:+61450009291")
+    cta_stat_1_value = models.CharField(max_length=50, default="5+")
+    cta_stat_1_label = models.CharField(max_length=100, default="Years Experience")
+    cta_stat_2_value = models.CharField(max_length=50, default="100+")
+    cta_stat_2_label = models.CharField(max_length=100, default="Happy Clients")
+    cta_stat_3_value = models.CharField(max_length=50, default="24/7")
+    cta_stat_3_label = models.CharField(max_length=100, default="Support Available")
+
+    # Sell section
+    sell_heading = models.CharField(max_length=255, default="Sell With Clear Strategy")
+    sell_text = models.TextField(default="Pricing, positioning, staging, and marketing — all aligned to attract the right buyers and deliver a result you're confident in.")
+    sell_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    sell_image_url = models.CharField(max_length=500, default="images/ps1 (5).jpg", blank=True)
+    sell_cta_label = models.CharField(max_length=120, default="Request a Valuation")
+    sell_cta_href = models.CharField(max_length=255, default="/contact")
+
+    # Rent section
+    rent_heading = models.CharField(max_length=255, default="Lease With Confidence")
+    rent_text = models.TextField(default="Premium leasing, tenant screening, and ongoing property care — so your investment performs without the stress.")
+    rent_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    rent_image_url = models.CharField(max_length=500, default="images/ps1 (1).jpg", blank=True)
+    rent_cta_label = models.CharField(max_length=120, default="View Available Rentals")
+    rent_cta_href = models.CharField(max_length=255, default="/properties")
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        MultiFieldPanel([FieldPanel("intro_statement")], heading="Intro Statement"),
+        MultiFieldPanel([
+            FieldPanel("buy_heading"), FieldPanel("buy_p1"), FieldPanel("buy_p2"),
+            FieldPanel("buy_image"), FieldPanel("buy_image_url"),
+            FieldRowPanel([FieldPanel("buy_cta_label"), FieldPanel("buy_cta_href")]),
+        ], heading="Buy Section"),
+        MultiFieldPanel([
+            FieldPanel("cta_eyebrow"), FieldPanel("cta_title"), FieldPanel("cta_title_em"),
+            FieldPanel("cta_text"),
+            FieldRowPanel([FieldPanel("cta_primary_label"), FieldPanel("cta_primary_href")]),
+            FieldRowPanel([FieldPanel("cta_secondary_label"), FieldPanel("cta_secondary_href")]),
+            FieldRowPanel([FieldPanel("cta_stat_1_value"), FieldPanel("cta_stat_1_label")]),
+            FieldRowPanel([FieldPanel("cta_stat_2_value"), FieldPanel("cta_stat_2_label")]),
+            FieldRowPanel([FieldPanel("cta_stat_3_value"), FieldPanel("cta_stat_3_label")]),
+        ], heading="Mid-Page CTA"),
+        MultiFieldPanel([
+            FieldPanel("sell_heading"), FieldPanel("sell_text"),
+            FieldPanel("sell_image"), FieldPanel("sell_image_url"),
+            FieldRowPanel([FieldPanel("sell_cta_label"), FieldPanel("sell_cta_href")]),
+        ], heading="Sell Section"),
+        MultiFieldPanel([
+            FieldPanel("rent_heading"), FieldPanel("rent_text"),
+            FieldPanel("rent_image"), FieldPanel("rent_image_url"),
+            FieldRowPanel([FieldPanel("rent_cta_label"), FieldPanel("rent_cta_href")]),
+        ], heading="Rent Section"),
+    ]
+
+    promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    class Meta:
+        verbose_name = "Services Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero = _extract_internal_page_hero_block(self.hero_content)
+        if not hero:
+            hero = {
+                "title_line_1": "Services For [gold]Buyers[/gold]",
+                "title_line_2": "Sellers & [amber]Renters[/amber]",
+                "subtitle": "We handle the full journey — buying, selling, and leasing across South-East Queensland.",
+                "background_image": None, "background_image_url": "images/hero1.jpg",
+                "show_video": False, "background_video_url": "",
+                "mode": "none", "buttons": [], "stats": [],
+            }
+
+        def _img(fk, url):
+            return fk.file.url if fk and getattr(fk, "file", None) else url
+
+        return {
+            "id": self.pk, "title": self.title, "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero,
+            "intro": {"statement": self.intro_statement},
+            "buy": {
+                "heading": self.buy_heading, "p1": self.buy_p1, "p2": self.buy_p2,
+                "image_url": _img(self.buy_image, self.buy_image_url),
+                "cta_label": self.buy_cta_label, "cta_href": self.buy_cta_href,
+            },
+            "cta": {
+                "eyebrow": self.cta_eyebrow, "title": self.cta_title, "title_em": self.cta_title_em,
+                "text": self.cta_text,
+                "primary": {"label": self.cta_primary_label, "href": self.cta_primary_href},
+                "secondary": {"label": self.cta_secondary_label, "href": self.cta_secondary_href},
+                "stats": [
+                    {"value": self.cta_stat_1_value, "label": self.cta_stat_1_label},
+                    {"value": self.cta_stat_2_value, "label": self.cta_stat_2_label},
+                    {"value": self.cta_stat_3_value, "label": self.cta_stat_3_label},
+                ],
+            },
+            "sell": {
+                "heading": self.sell_heading, "text": self.sell_text,
+                "image_url": _img(self.sell_image, self.sell_image_url),
+                "cta_label": self.sell_cta_label, "cta_href": self.sell_cta_href,
+            },
+            "rent": {
+                "heading": self.rent_heading, "text": self.rent_text,
+                "image_url": _img(self.rent_image, self.rent_image_url),
+                "cta_label": self.rent_cta_label, "cta_href": self.rent_cta_href,
+            },
+        }
+
+
+# ─── Testimonials Page ────────────────────────────────────────────────────────
+
+class TestimonialsPage(Page):
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
+        help_text="Internal page hero block.",
+    )
+
+    section_eyebrow = models.CharField(max_length=120, default="Client Voices")
+    section_heading = models.CharField(max_length=255, default="What Our Clients Say")
+    section_subtitle = models.TextField(
+        default="Real experiences from real clients — every word earned, never scripted.",
+    )
+
+    final_cta_heading = models.CharField(max_length=255, default="Book a Free Appraisal")
+    final_cta_body = models.TextField(
+        default="Get a clear price range, honest advice, and a plan that positions your property for a confident sale.",
+    )
+    final_cta_primary_label = models.CharField(max_length=120, default="Book Your Appraisal")
+    final_cta_primary_href = models.CharField(max_length=255, default="/contact")
+    final_cta_secondary_label = models.CharField(max_length=120, default="Talk to Rahul")
+    final_cta_secondary_href = models.CharField(max_length=255, default="/contact")
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        MultiFieldPanel([
+            FieldPanel("section_eyebrow"),
+            FieldPanel("section_heading"),
+            FieldPanel("section_subtitle"),
+        ], heading="Section Heading"),
+        MultiFieldPanel([
+            FieldPanel("final_cta_heading"),
+            FieldPanel("final_cta_body"),
+            FieldRowPanel([FieldPanel("final_cta_primary_label"), FieldPanel("final_cta_primary_href")]),
+            FieldRowPanel([FieldPanel("final_cta_secondary_label"), FieldPanel("final_cta_secondary_href")]),
+        ], heading="Final CTA"),
+    ]
+
+    promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    class Meta:
+        verbose_name = "Testimonials Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero = _extract_internal_page_hero_block(self.hero_content)
+        testimonials = _get_active_text_testimonial_items()
+        count = len(testimonials)
+        if not hero:
+            hero = {
+                "title_line_1": "Client [gold]Stories[/gold]",
+                "title_line_2": "Words That [amber]Inspire[/amber]",
+                "subtitle": f"{count} verified experiences — refined, discreet service across South-East Queensland.",
+                "background_image": None, "background_image_url": "images/testi-hero.jpg",
+                "show_video": False, "background_video_url": "",
+                "mode": "stats",
+                "buttons": [],
+                "stats": [
+                    {"value": "5★", "label": "Avg. Rating"},
+                    {"value": "100%", "label": "Client Satisfaction"},
+                    {"value": str(count), "label": "Total Reviews"},
+                ],
+            }
+        return {
+            "id": self.pk, "title": self.title, "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero,
+            "section": {
+                "eyebrow": self.section_eyebrow,
+                "heading": self.section_heading,
+                "subtitle": self.section_subtitle,
+            },
+            "testimonials": testimonials,
+            "final_cta": {
+                "heading": self.final_cta_heading,
+                "body": self.final_cta_body,
+                "primary": {"label": self.final_cta_primary_label, "href": self.final_cta_primary_href},
+                "secondary": {"label": self.final_cta_secondary_label, "href": self.final_cta_secondary_href},
+            },
+        }
+
+
+# ─── Expression of Interest Page ─────────────────────────────────────────────
+
+class EoiPage(Page):
+    hero_content = StreamField(
+        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
+        help_text="Internal page hero block.",
+    )
+
+    legal_text = models.TextField(
+        default=(
+            "I/We acknowledge that if this offer is accepted, I/We will be required to enter into "
+            "and execute a contract of sale on these terms. I/We acknowledge that we may be one of "
+            "several parties making offers to the seller for their consideration. Both purchaser and "
+            "seller must sign a contract of sale before this offer becomes legally binding. An offer "
+            "may be withdrawn at any time before signing a contract of sale."
+        ),
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("hero_content"),
+        FieldPanel("legal_text"),
+    ]
+
+    promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    class Meta:
+        verbose_name = "Expression of Interest Page"
+
+    def get_api_representation(self) -> dict[str, Any]:
+        hero = _extract_internal_page_hero_block(self.hero_content)
+        if not hero:
+            hero = {
+                "title_line_1": "Expression [gold]of[/gold]",
+                "title_line_2": "Interest [amber]Form[/amber]",
+                "subtitle": "Use this form to submit your offer, purchaser details, and conditions for a property you wish to purchase.",
+                "background_image": None, "background_image_url": "images/hero1.jpg",
+                "show_video": False, "background_video_url": "",
+                "mode": "buttons",
+                "buttons": [{"label": "Complete the Form", "href": "", "style": "gold", "open_in_new_tab": False}],
+                "stats": [],
+            }
+        return {
+            "id": self.pk, "title": self.title, "slug": self.slug,
+            "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
+            "hero": hero,
+            "legal_text": self.legal_text,
+        }
+
+
+def _get_active_text_testimonial_items() -> list[dict[str, Any]]:
+    try:
+        from apps.testimonials.models import TextTestimonial
+    except Exception:
+        return []
+    try:
+        qs = TextTestimonial.objects.filter(is_active=True).select_related("client_image").order_by("order", "id")
+        return [t.to_api_item() for t in qs]
+    except DatabaseError:
+        return []

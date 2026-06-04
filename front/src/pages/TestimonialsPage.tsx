@@ -4,6 +4,8 @@ import RGPSplitSlider from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
+import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
+import type { CmsTestimonial } from "@/types/testimonialsPage";
 
 interface Testimonial {
   id: number;
@@ -591,6 +593,19 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+function cmsToTestimonial(t: CmsTestimonial): Testimonial {
+  return {
+    id: t.id,
+    name: t.client_name,
+    role: "Homeowner",
+    company: t.location.split(",")[0]?.trim() ?? t.location,
+    avatar: t.avatar_image?.url ?? t.avatar_url ?? `https://i.pravatar.cc/150?img=${t.id}`,
+    content: t.quote,
+    rating: t.rating,
+    location: t.location,
+  };
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    3. VOICE MOSAIC — Bento grid
 ───────────────────────────────────────────────────────────────────────────── */
@@ -606,19 +621,11 @@ const MOSAIC_COLORS = [
   "var(--rg-gold)",
 ];
 
-const MOSAIC_PICKS = [
-  testimonials[2],
-  testimonials[5],
-  testimonials[8],
-  testimonials[11],
-  testimonials[14],
-  testimonials[17],
-  testimonials[20],
-  testimonials[23],
-  testimonials[26],
-];
+const MOSAIC_INDICES = [2, 5, 8, 11, 14, 17, 20, 23, 26];
 
-const VoiceMosaic: React.FC = () => (
+const VoiceMosaic: React.FC<{ items: Testimonial[] }> = ({ items }) => {
+  const picks = MOSAIC_INDICES.map((i) => items[i]).filter(Boolean);
+  return (
   <section className="tp-mosaic">
     <div className="tp-mosaic__header">
       <span
@@ -638,7 +645,7 @@ const VoiceMosaic: React.FC = () => (
     </div>
 
     <div className="tp-mosaic__grid">
-      {MOSAIC_PICKS.map((item, i) => (
+      {picks.map((item, i) => (
         <article
           key={item.id}
           className={`tp-mosaic__card tp-mosaic__card--${i + 1}`}
@@ -660,7 +667,8 @@ const VoiceMosaic: React.FC = () => (
       ))}
     </div>
   </section>
-);
+  );
+};
 
 /* ─────────────────────────────────────────────────────────────────────────────
    5. TICKER WALL — 3-column infinite auto-scroll
@@ -713,30 +721,21 @@ const TickerCol: React.FC<TickerColProps> = ({ items, speed, reversed }) => (
   </div>
 );
 
-const TickerWall: React.FC = () => (
+const TickerWall: React.FC<{ items: Testimonial[] }> = ({ items }) => (
   <section className="tp-ticker">
     <div className="tp-ticker__header">
-      <span
-        className="tp-ticker__kicker"
-        data-gsap="fade-in"
-        data-gsap-start="top 85%"
-      >
+      <span className="tp-ticker__kicker" data-gsap="fade-in" data-gsap-start="top 85%">
         All Reviews
       </span>
-      <h2
-        className="tp-ticker__title"
-        data-gsap="char-reveal"
-        data-gsap-start="top 85%"
-      >
+      <h2 className="tp-ticker__title" data-gsap="char-reveal" data-gsap-start="top 85%">
         The Full <em>Chorus</em>
       </h2>
     </div>
-
     <div className="tp-ticker__container">
       <div className="tp-ticker__wall">
-        <TickerCol items={testimonials.slice(15, 24)} speed={32} />
-        <TickerCol items={testimonials.slice(24, 33)} speed={44} reversed />
-        <TickerCol items={testimonials.slice(33, 42)} speed={38} />
+        <TickerCol items={items.slice(15, 24)} speed={32} />
+        <TickerCol items={items.slice(24, 33)} speed={44} reversed />
+        <TickerCol items={items.slice(33, 42)} speed={38} />
       </div>
       <div className="tp-ticker__fade-top" />
       <div className="tp-ticker__fade-bottom" />
@@ -747,37 +746,32 @@ const TickerWall: React.FC = () => (
 /* ─────────────────────────────────────────────────────────────────────────────
    6. FINAL CTA
 ───────────────────────────────────────────────────────────────────────────── */
-const FinalCTA: React.FC = () => (
+interface FinalCTAProps {
+  heading: string;
+  body: string;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+  items: Testimonial[];
+}
+
+const FinalCTA: React.FC<FinalCTAProps> = ({ heading, body, primaryLabel, primaryHref, secondaryLabel, secondaryHref, items }) => (
   <section className="tp-cta">
     <div className="tp-cta__inner">
       <div className="tp-cta__panel">
-        <span className="tp-cta__kicker" data-gsap="fade-up">
-          Next Step
-        </span>
-        <h2
-          className="tp-cta__heading"
-          data-gsap="char-reveal"
-          data-gsap-start="top 85%"
-        >
-          Book a Free
-          <br />
-          <em>Appraisal</em>
+        <span className="tp-cta__kicker" data-gsap="fade-up">Next Step</span>
+        <h2 className="tp-cta__heading" data-gsap="char-reveal" data-gsap-start="top 85%">
+          {heading}
         </h2>
-        <p className="tp-cta__body" data-gsap="fade-up" data-gsap-delay="0.15">
-          Get a clear price range, honest advice, and a plan that positions your
-          property for a confident sale.
-        </p>
-        <div
-          className="tp-cta__meta"
-          data-gsap="zoom-in"
-          data-gsap-stagger="0.3"
-        >
+        <p className="tp-cta__body" data-gsap="fade-up" data-gsap-delay="0.15">{body}</p>
+        <div className="tp-cta__meta" data-gsap="zoom-in" data-gsap-stagger="0.3">
           <div className="tp-cta__meta-item">
             <span className="tp-cta__meta-value">5</span>
             <span className="tp-cta__meta-label">Avg Rating</span>
           </div>
           <div className="tp-cta__meta-item">
-            <span className="tp-cta__meta-value">{testimonials.length}+</span>
+            <span className="tp-cta__meta-value">{items.length}+</span>
             <span className="tp-cta__meta-label">Reviews</span>
           </div>
           <div className="tp-cta__meta-item">
@@ -786,36 +780,18 @@ const FinalCTA: React.FC = () => (
           </div>
         </div>
         <div className="tp-cta__actions">
-          <RgButton
-            href="/contact"
-            variant="gold"
-            label="Book Your Appraisal"
-            data-gsap="btn-clip-reveal"
-            data-gsap-delay="0.2"
-          />
-          <RgButton
-            href="/contact"
-            variant="outline"
-            label="Talk to Rahul"
-            data-gsap="btn-clip-reveal"
-            data-gsap-delay="0.32"
-          />
+          <RgButton href={primaryHref} variant="gold" label={primaryLabel} data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
+          <RgButton href={secondaryHref} variant="outline" label={secondaryLabel} data-gsap="btn-clip-reveal" data-gsap-delay="0.32" />
         </div>
       </div>
-
-      <div
-        className="tp-cta__visual"
-        data-gsap="clip-smooth-down"
-        data-gsap-delay="0.15"
-        data-gsap-start="top 85%"
-      >
+      <div className="tp-cta__visual" data-gsap="clip-smooth-down" data-gsap-delay="0.15" data-gsap-start="top 85%">
         <div className="tp-cta__medallion">
           <span className="tp-cta__medallion-rot" aria-hidden="true" />
-          <span className="tp-cta__medallion-num">{testimonials.length}+</span>
+          <span className="tp-cta__medallion-num">{items.length}+</span>
           <span className="tp-cta__medallion-label">Verified Reviews</span>
         </div>
         <div className="tp-cta__avatar-fan">
-          {testimonials.slice(0, 8).map((t) => (
+          {items.slice(0, 8).map((t) => (
             <img key={t.id} src={t.avatar} alt={t.name} />
           ))}
         </div>
@@ -829,7 +805,14 @@ const FinalCTA: React.FC = () => (
    MAIN PAGE
 ───────────────────────────────────────────────────────────────────────────── */
 const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
+  const { data } = useTestimonialsPage();
   const pageRef = useRef<HTMLDivElement>(null);
+
+  // Use CMS testimonials if available, otherwise fall back to hardcoded list
+  const activeTestimonials: Testimonial[] =
+    data.testimonials.length > 0
+      ? data.testimonials.map(cmsToTestimonial)
+      : testimonials;
 
   useEffect(() => {
     const guards = [
@@ -859,56 +842,32 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   return (
     <div ref={pageRef}>
       <main className="testimonial-page">
-        <InternalPageHero
-          ready={ready}
-          hero={{
-            title_line_1: "Client [gold]Stories[/gold]",
-            title_line_2: "Words That [amber]Inspire[/amber]",
-            subtitle: `${testimonials.length} verified experiences — refined, discreet service from start to finish.`,
-            background_image: null,
-            background_image_url: "images/testi-hero.jpg",
-            show_video: false,
-            background_video_url: "",
-            mode: "stats",
-            buttons: [],
-            stats: [
-              { value: "5★", label: "Avg. Rating" },
-              { value: "100%", label: "Client Satisfaction" },
-              { value: `${testimonials.length}`, label: "Total Reviews" },
-            ],
-          }}
-        />
+        <InternalPageHero ready={ready} hero={data.hero} />
         <div className="t-section-heading">
           <header className="t-section-heading__header">
-            <span
-              className="t-section-heading__eyebrow"
-              data-gsap="fade-in"
-              data-gsap-start="top 100%"
-            >
-              Client Voices
+            <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
+              {data.section.eyebrow}
             </span>
-            <h2
-              className="t-section-heading__title"
-              data-gsap="char-reveal"
-              data-gsap-start="top 85%"
-            >
-              What Our Clients <em>Say</em>
+            <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
+              {data.section.heading}
             </h2>
-            <p
-              className="t-section-heading__subtitle"
-              data-gsap="fade-up"
-              data-gsap-delay="0.2"
-            >
-              Real experiences from real clients — every word earned, never
-              scripted.
+            <p className="t-section-heading__subtitle" data-gsap="fade-up" data-gsap-delay="0.2">
+              {data.section.subtitle}
             </p>
           </header>
         </div>
         <RGPSplitSlider />
-        <VoiceMosaic />
-        <TickerWall />
-
-        <FinalCTA />
+        <VoiceMosaic items={activeTestimonials} />
+        <TickerWall items={activeTestimonials} />
+        <FinalCTA
+          heading={data.final_cta.heading}
+          body={data.final_cta.body}
+          primaryLabel={data.final_cta.primary.label}
+          primaryHref={data.final_cta.primary.href}
+          secondaryLabel={data.final_cta.secondary.label}
+          secondaryHref={data.final_cta.secondary.href}
+          items={activeTestimonials}
+        />
       </main>
     </div>
   );
