@@ -1,0 +1,84 @@
+# Nginx site config for Real Gold Properties — EC2 HTTP demo
+# ─────────────────────────────────────────────────────────────────────────────
+# Deploy:
+#   sudo cp /home/ubuntu/rgp-wag/deploy/nginx/rgp-demo /etc/nginx/sites-available/rgp-demo
+#   sudo ln -s /etc/nginx/sites-available/rgp-demo /etc/nginx/sites-enabled/rgp-demo
+#   sudo rm -f /etc/nginx/sites-enabled/default
+#   sudo nginx -t && sudo systemctl reload nginx
+
+server {
+    listen 80;
+    server_name 54.252.235.169 ec2-54-252-235-169.ap-southeast-2.compute.amazonaws.com;
+
+    # ── Django collected static files ────────────────────────────────────────
+    # Run `python manage.py collectstatic` before first deploy.
+    location /static/ {
+        alias /home/ubuntu/rgp-wag/backend/staticfiles/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    # ── Uploaded media files (persistent on EC2) ─────────────────────────────
+    location /media/ {
+        alias /home/ubuntu/rgp-wag/backend/media/;
+        expires 7d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
+    # ── Django admin (user/auth management) ──────────────────────────────────
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+    }
+
+    # ── Wagtail CMS admin (content editing) ──────────────────────────────────
+    # NOTE: In this project the Wagtail admin lives at /cms/, not /admin/.
+    #   Django admin  → http://54.252.235.169/admin/
+    #   Wagtail admin → http://54.252.235.169/cms/
+    location /cms/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+    }
+
+    # ── Wagtail & custom REST API ─────────────────────────────────────────────
+    # Covers /api/v2/ (Wagtail built-in), /api/pages/*, /api/properties/*,
+    # /api/forms/*, /api/testimonials/*
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+    }
+
+    # ── Wagtail documents download ────────────────────────────────────────────
+    location /documents/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+    }
+
+    # ── React SPA (catch-all) ─────────────────────────────────────────────────
+    # Serves the Vite build output. All unmatched paths return index.html so
+    # React Router handles client-side navigation correctly.
+    root /home/ubuntu/rgp-wag/front/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

@@ -1,0 +1,34 @@
+[Unit]
+Description=Gunicorn WSGI server — Real Gold Properties (rgp-wag)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=www-data
+
+# Working directory must match the backend package root so that
+# python-decouple finds .env and Django resolves relative paths correctly.
+WorkingDirectory=/home/ubuntu/rgp-wag/backend
+
+# Also load .env into the process environment so systemd itself can see them
+# (python-decouple reads both the file and os.environ).
+EnvironmentFile=/home/ubuntu/rgp-wag/backend/.env
+
+ExecStart=/home/ubuntu/rgp-wag/backend/.venv/bin/gunicorn \
+    config.wsgi:application \
+    --bind 127.0.0.1:8000 \
+    --workers 3 \
+    --timeout 30 \
+    --worker-class sync
+
+# Logs go to journald — view with: sudo journalctl -u rgp-gunicorn -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rgp-gunicorn
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
