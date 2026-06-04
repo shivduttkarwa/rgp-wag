@@ -278,8 +278,12 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                   form.reset();
                   setPropertyType("Any type");
                   setBudget(budgetDefault);
-                } catch {
-                  setSubmitError("Could not submit right now. Please try again.");
+                } catch (err) {
+                  setSubmitError(
+                    err instanceof Error
+                      ? err.message
+                      : "Could not submit right now. Please try again.",
+                  );
                 } finally {
                   setIsSubmitting(false);
                 }

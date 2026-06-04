@@ -40,7 +40,6 @@ export default function InternalPageHero({ hero, ready = false }: InternalPageHe
           }
 
           const href = button.href?.trim() ?? "";
-          if (!href) return null;
 
           if (isInternalPath(href)) {
             return (
@@ -60,7 +59,7 @@ export default function InternalPageHero({ hero, ready = false }: InternalPageHe
               variant={variant}
               label={button.label}
               className="internal-page-hero__action"
-              href={href}
+              href={href || "#"}
               target={target}
               rel={rel}
             />

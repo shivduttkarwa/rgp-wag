@@ -11,6 +11,7 @@ class ContactFormAPIView(APIView):
     """POST /api/forms/contact/"""
 
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request: Request) -> Response:
         serializer = ContactFormSerializer(data=request.data)
@@ -24,6 +25,7 @@ class ExpressionOfInterestAPIView(APIView):
     """POST /api/forms/eoi/"""
 
     permission_classes = [AllowAny]
+    authentication_classes = []
 
     def post(self, request: Request) -> Response:
         serializer = ExpressionOfInterestSerializer(data=request.data)
