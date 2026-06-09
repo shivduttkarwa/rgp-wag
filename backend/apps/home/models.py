@@ -424,7 +424,11 @@ def _serialise_block_value(value):
     """
     from wagtail.blocks import StructValue
     from wagtail.images.models import AbstractImage
+    from wagtail.rich_text import RichText
     from apps.properties.models import Property
+
+    if isinstance(value, RichText):
+        return str(value)  # expand_db_html → returns display HTML
 
     if isinstance(value, AbstractImage):
         return {
