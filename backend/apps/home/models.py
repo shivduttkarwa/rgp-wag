@@ -98,13 +98,7 @@ class ContactPage(Page):
             cfg = raw if isinstance(raw, dict) else {}
 
             if btype == "hero":
-                mode = cfg.get("mode")
-                if mode not in {"none", "buttons", "stats"}:
-                    mode = "none"
-                cfg["mode"] = mode
-                cfg.setdefault("buttons", [])
-                cfg.setdefault("stats", [])
-                sections["hero"] = cfg
+                sections["hero"] = _normalise_internal_hero_config(cfg)
 
             elif btype == "contact_info":
                 sections["contact_info"] = _contact_info_from_cfg(cfg)
@@ -180,13 +174,7 @@ class TeamPage(Page):
             cfg = raw if isinstance(raw, dict) else {}
 
             if btype == "hero":
-                mode = cfg.get("mode")
-                if mode not in {"none", "buttons", "stats"}:
-                    mode = "none"
-                cfg["mode"] = mode
-                cfg.setdefault("buttons", [])
-                cfg.setdefault("stats", [])
-                sections["hero"] = cfg
+                sections["hero"] = _normalise_internal_hero_config(cfg)
 
             elif btype == "team_section":
                 sections["team_section"] = {
@@ -248,13 +236,7 @@ class PropertiesPage(Page):
             cfg = raw if isinstance(raw, dict) else {}
 
             if btype == "hero":
-                mode = cfg.get("mode")
-                if mode not in {"none", "buttons", "stats"}:
-                    mode = "none"
-                cfg["mode"] = mode
-                cfg.setdefault("buttons", [])
-                cfg.setdefault("stats", [])
-                sections["hero"] = cfg
+                sections["hero"] = _normalise_internal_hero_config(cfg)
 
             elif btype == "property_listing":
                 sections["property_listing"] = {
@@ -487,6 +469,40 @@ def _parse_csv_options(raw: str) -> list[str]:
     return [item.strip() for item in (raw or "").split(",") if item.strip()]
 
 
+def _normalise_internal_hero_config(hero: dict[str, Any]) -> dict[str, Any]:
+    mode = hero.get("mode")
+    if mode not in {"none", "buttons", "stats"}:
+        mode = "none"
+
+    buttons = hero.get("buttons") or []
+    stats = hero.get("stats") or []
+
+    hero["mode"] = mode
+    hero["buttons"] = (
+        [
+            button
+            for button in buttons
+            if isinstance(button, dict) and (button.get("label") or "").strip()
+        ]
+        if mode == "buttons"
+        else []
+    )
+    hero["stats"] = (
+        [
+            stat
+            for stat in stats
+            if (
+                isinstance(stat, dict)
+                and (stat.get("value") or "").strip()
+                and (stat.get("label") or "").strip()
+            )
+        ]
+        if mode == "stats"
+        else []
+    )
+    return hero
+
+
 def _contact_info_from_cfg(cfg: dict) -> dict[str, Any]:
     return {
         "title": cfg.get("title") or "Let's Talk Appraisal.",
@@ -510,14 +526,9 @@ def _extract_internal_page_hero_block(hero_content) -> dict[str, Any] | None:
     for block in hero_content:
         if block.block_type == "internal_page_hero":
             hero = _serialise_block_value(block.value)
-            mode = hero.get("mode") if isinstance(hero, dict) else "none"
-            if mode not in {"none", "buttons", "stats"}:
-                mode = "none"
             if isinstance(hero, dict):
-                hero["mode"] = mode
-                hero["buttons"] = hero.get("buttons") or []
-                hero["stats"] = hero.get("stats") or []
-            return hero if isinstance(hero, dict) else None
+                return _normalise_internal_hero_config(hero)
+            return None
     return None
 
 
@@ -551,13 +562,7 @@ class AboutPage(Page):
             cfg = raw if isinstance(raw, dict) else {}
 
             if btype == "hero":
-                mode = cfg.get("mode")
-                if mode not in {"none", "buttons", "stats"}:
-                    mode = "none"
-                cfg["mode"] = mode
-                cfg.setdefault("buttons", [])
-                cfg.setdefault("stats", [])
-                sections["hero"] = cfg
+                sections["hero"] = _normalise_internal_hero_config(cfg)
 
             elif btype == "intro":
                 sections["intro"] = {"statement": cfg.get("statement") or ""}
@@ -800,13 +805,7 @@ class TestimonialsPage(Page):
             cfg = raw if isinstance(raw, dict) else {}
 
             if btype == "hero":
-                mode = cfg.get("mode")
-                if mode not in {"none", "buttons", "stats"}:
-                    mode = "none"
-                cfg["mode"] = mode
-                cfg.setdefault("buttons", [])
-                cfg.setdefault("stats", [])
-                sections["hero"] = cfg
+                sections["hero"] = _normalise_internal_hero_config(cfg)
 
             elif btype == "featured_testimonials":
                 sections["featured_testimonials"] = {

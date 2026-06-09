@@ -56,3 +56,75 @@ def global_admin_css():
   }
 </style>
 """)
+
+
+@hooks.register("insert_editor_js")
+def internal_page_hero_admin_js():
+    return mark_safe("""
+<script>
+(function () {
+  function getHeroField(block, name) {
+    var children = Array.prototype.slice.call(block.children || []);
+    var directMatch = children.find(function (child) {
+      return child.getAttribute("data-contentpath") === name;
+    });
+
+    return (
+      directMatch ||
+      block.querySelector('[data-contentpath="' + name + '"]') ||
+      block.querySelector('[data-structblock-child="' + name + '"]')
+    );
+  }
+
+  function setVisible(element, visible) {
+    if (!element) return;
+    element.hidden = !visible;
+    element.style.display = visible ? "" : "none";
+  }
+
+  function setupHeroBlock(block) {
+    if (!block || block.dataset.internalHeroToggleReady === "true") return;
+
+    var modeField = getHeroField(block, "mode");
+    var modeSelect = modeField ? modeField.querySelector("select") : null;
+
+    if (!modeSelect) return;
+
+    var buttonsField = getHeroField(block, "buttons");
+    var statsField = getHeroField(block, "stats");
+
+    function syncPanelFields() {
+      var mode = modeSelect.value || "none";
+      setVisible(buttonsField, mode === "buttons");
+      setVisible(statsField, mode === "stats");
+    }
+
+    modeSelect.addEventListener("change", syncPanelFields);
+    block.dataset.internalHeroToggleReady = "true";
+    syncPanelFields();
+  }
+
+  function init(root) {
+    (root || document).querySelectorAll(".internal-page-hero-block").forEach(setupHeroBlock);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    init(document);
+  });
+
+  document.addEventListener("wagtail:load", function (event) {
+    init(event.target || document);
+  });
+
+  new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (node) {
+        if (node.nodeType === 1) init(node);
+      });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
+  init(document);
+})();
+</script>
+""")

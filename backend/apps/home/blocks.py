@@ -29,7 +29,7 @@ class CtaBlock(StructBlock):
 
 
 class InternalHeroButtonBlock(StructBlock):
-    label = CharBlock(required=True)
+    label = CharBlock(required=False)
     href = CharBlock(
         required=False,
         help_text="Relative path (e.g. /contact), tel:/mailto:, or full URL",
@@ -51,8 +51,8 @@ class InternalHeroButtonBlock(StructBlock):
 
 
 class InternalHeroStatBlock(StructBlock):
-    value = CharBlock(required=True, help_text="e.g. 5, 100%, 350+")
-    label = CharBlock(required=True, help_text="e.g. Avg. Rating")
+    value = CharBlock(required=False, help_text="e.g. 5, 100%, 350+")
+    label = CharBlock(required=False, help_text="e.g. Avg. Rating")
 
     class Meta:
         icon = "pick"
@@ -62,11 +62,13 @@ class InternalHeroStatBlock(StructBlock):
 class InternalPageHeroBlock(StructBlock):
     title_line_1 = CharBlock(
         required=False,
-        default="",
+        default="Lorem [gold]Ipsum[/gold] Dolor",
         help_text="Use [gold]word[/gold] for gold accent colour.",
     )
-    title_line_2 = CharBlock(required=False, default="")
-    subtitle = TextBlock(default="")
+    title_line_2 = CharBlock(required=False, default="Sit Amet Consectetur")
+    subtitle = TextBlock(
+        default="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae sem non justo facilisis luctus.",
+    )
     background_image = ImageChooserBlock(
         required=False,
         help_text="Pick hero background image from media library.",
@@ -92,7 +94,7 @@ class InternalPageHeroBlock(StructBlock):
             ("buttons", "Buttons panel"),
             ("stats", "Stats slab"),
         ],
-        default="buttons",
+        default="none",
         required=False,
         help_text="Choose whether the hero shows buttons, stats, or no panel.",
     )
@@ -110,6 +112,7 @@ class InternalPageHeroBlock(StructBlock):
     class Meta:
         icon = "image"
         label = "Internal Page Hero"
+        form_classname = "struct-block internal-page-hero-block"
 
 
 class SearchTabBlock(StructBlock):

@@ -12,8 +12,10 @@ type InternalPageHeroProps = {
 };
 
 export default function InternalPageHero({ hero, ready = false }: InternalPageHeroProps) {
-  const buttons = hero.buttons ?? [];
-  const stats = hero.stats ?? [];
+  const buttons = (hero.buttons ?? []).filter((button) => button.label?.trim());
+  const stats = (hero.stats ?? []).filter(
+    (stat) => stat.value?.trim() && stat.label?.trim()
+  );
   const mode =
     hero.mode ??
     (stats.length ? "stats" : buttons.length ? "buttons" : "none");
