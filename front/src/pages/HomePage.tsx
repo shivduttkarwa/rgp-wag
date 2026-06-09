@@ -87,9 +87,9 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           navigate(href);
         }}
         showVideo={hero?.show_video ?? true}
-        bgImage={hero?.background_image?.url ?? hero?.background_image_url || undefined}
-        bgPoster={hero?.background_image?.url ?? hero?.background_image_url || undefined}
-        bgVideo={hero?.background_video ?? hero?.background_video_url || undefined}
+        bgImage={(hero?.background_image?.url ?? hero?.background_image_url) || undefined}
+        bgPoster={(hero?.background_image?.url ?? hero?.background_image_url) || undefined}
+        bgVideo={(hero?.background_video ?? hero?.background_video_url) || undefined}
         panel={heroTabs.length > 0 ? <HeroSearchPanel tabs={heroTabs} /> : undefined}
       />
 
