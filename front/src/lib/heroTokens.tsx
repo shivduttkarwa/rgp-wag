@@ -14,11 +14,16 @@ import type { ReactNode } from "react";
 export function renderHeroAccentTokens(text: string): ReactNode {
   if (!text) return null;
 
-  // Rich text HTML format — strip outer <p> wrapper and inject as HTML
+  // Rich text HTML format — strip outer <p> wrapper and inject as HTML.
+  // Inline styles are added alongside the classes so screen/filter blend
+  // modes on the parent can't wash out the accent colour.
   if (text.trim().startsWith("<")) {
     const inner = text.trim().replace(/^<p[^>]*>|<\/p>$/g, "").trim();
     if (!inner) return null;
-    return <span dangerouslySetInnerHTML={{ __html: inner }} />;
+    const styled = inner
+      .replace(/class="rg-gold"/g, 'class="rg-gold" style="color:#f9c206;font-weight:700"')
+      .replace(/class="rg-amber"/g, 'class="rg-amber" style="color:#f97316;font-weight:700"');
+    return <span dangerouslySetInnerHTML={{ __html: styled }} />;
   }
 
   // Legacy token format: [gold]…[/gold]  [amber]…[/amber]

@@ -96,6 +96,16 @@
   color: var(--rg-gold);
 }
 
+/* ── Accent colour spans (used by Draftail RichText titles) ── */
+.rg-gold {
+  color: #f9c206 !important;
+  font-weight: 700;
+}
+.rg-amber {
+  color: #f97316 !important;
+  font-weight: 700;
+}
+
 /* Prose below a section title */
 .rg-section-subtitle {
   font-family: var(--font-body);
