@@ -1,0 +1,315 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — Real Gold Properties</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bona+Nova+SC:wght@400;700&family=Bricolage+Grotesque:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #001f49;
+      --navy2: #00183a;
+      --gold:  #f9c206;
+      --gold2: #d4a200;
+      --beige: #fffdf6;
+      --white: #ffffff;
+      --err:   #e55;
+      --font-title: 'Bona Nova SC', serif;
+      --font-body:  'Bricolage Grotesque', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-body);
+      background: var(--navy2);
+      color: var(--white);
+    }
+
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── LEFT PANEL ── */
+    .login-left {
+      position: relative;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      overflow: hidden;
+    }
+
+    .login-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(249,194,6,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 20% 80%, rgba(249,194,6,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-left-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-left-logo img {
+      height: 48px;
+      width: auto;
+      filter: brightness(1.1);
+    }
+
+    .login-left-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-left-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+
+    .login-left-heading {
+      font-family: var(--font-title);
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+
+    .login-left-heading span {
+      color: var(--gold);
+    }
+
+    .login-left-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+      max-width: 32ch;
+    }
+
+    .login-left-footer {
+      position: relative;
+      z-index: 1;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .login-divider {
+      width: 2.5rem;
+      height: 2px;
+      background: var(--gold);
+      margin-bottom: 1.5rem;
+      border-radius: 2px;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .login-right {
+      background: var(--beige);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .login-form-wrap {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-form-heading {
+      font-family: var(--font-title);
+      font-size: 1.75rem;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .login-form-sub {
+      font-size: 0.875rem;
+      color: rgba(0,31,73,0.55);
+      margin-bottom: 2rem;
+    }
+
+    .field-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .field-group input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: #fff;
+      border: 1.5px solid rgba(0,31,73,0.15);
+      border-radius: 0.5rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(249,194,6,0.15);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--navy);
+      color: var(--gold);
+      border: none;
+      border-radius: 0.5rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 0.5rem;
+    }
+
+    .login-btn:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: translateY(-1px);
+    }
+
+    .login-forgot {
+      display: block;
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.82rem;
+      color: rgba(0,31,73,0.5);
+      text-decoration: none;
+    }
+
+    .login-forgot:hover {
+      color: var(--navy);
+    }
+
+    .error-msg {
+      background: rgba(229,85,85,0.1);
+      border: 1px solid rgba(229,85,85,0.3);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--err);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 720px) {
+      .login-wrap { grid-template-columns: 1fr; }
+      .login-left { display: none; }
+      .login-right { background: var(--navy2); }
+      .login-form-heading { color: var(--white); }
+      .login-form-sub { color: rgba(255,255,255,0.5); }
+      .field-group label { color: rgba(255,255,255,0.7); }
+      .field-group input { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); color: var(--white); }
+      .field-group input:focus { border-color: var(--gold); }
+      .login-btn { background: var(--gold); color: var(--navy); }
+      .login-btn:hover { background: var(--gold2); }
+      .login-forgot { color: rgba(255,255,255,0.4); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+
+    <!-- LEFT BRANDING -->
+    <div class="login-left">
+      <div class="login-left-logo">
+        <img src="/images/RGP-logo.png" alt="Real Gold Properties" />
+      </div>
+      <div class="login-left-body">
+        <div class="login-left-eyebrow">Content Management</div>
+        <div class="login-divider"></div>
+        <h1 class="login-left-heading">
+          Real <span>Gold</span><br />Properties
+        </h1>
+        <p class="login-left-text">
+          Manage your listings, testimonials, team, and pages — all from one place.
+        </p>
+      </div>
+      <div class="login-left-footer">
+        &copy; {% now "Y" %} Real Gold Properties. All rights reserved.
+      </div>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="login-right">
+      <div class="login-form-wrap">
+        <h2 class="login-form-heading">Welcome back</h2>
+        <p class="login-form-sub">Sign in to manage your website content.</p>
+
+        {% if form.errors %}
+          <div class="error-msg">
+            {% trans "The username or password you entered is incorrect. Please try again." %}
+          </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'wagtailadmin_login' %}" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}" />
+
+          <div class="field-group">
+            <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
+            <input
+              type="text"
+              id="{{ form.username.id_for_label }}"
+              name="{{ form.username.html_name }}"
+              value="{{ form.username.value|default:'' }}"
+              autocomplete="username"
+              autofocus
+            />
+          </div>
+
+          <div class="field-group">
+            <label for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>
+            <input
+              type="password"
+              id="{{ form.password.id_for_label }}"
+              name="{{ form.password.html_name }}"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <button type="submit" class="login-btn">{% trans "Sign in" %}</button>
+        </form>
+
+        {% if show_password_reset_link %}
+          <a href="{% url 'wagtailadmin_password_reset' %}" class="login-forgot">
+            {% trans "Forgotten your password?" %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
