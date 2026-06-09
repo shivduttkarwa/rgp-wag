@@ -423,12 +423,16 @@ def _serialise_block_value(value):
     so it can be JSON-serialised by DRF.
     """
     from wagtail.blocks import StructValue
+    from wagtail.documents.models import AbstractDocument
     from wagtail.images.models import AbstractImage
     from wagtail.rich_text import RichText
     from apps.properties.models import Property
 
     if isinstance(value, RichText):
         return str(value)  # expand_db_html → returns display HTML
+
+    if isinstance(value, AbstractDocument):
+        return value.file.url if value.file else None
 
     if isinstance(value, AbstractImage):
         return {

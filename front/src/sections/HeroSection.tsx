@@ -25,24 +25,15 @@ type HeroSectionProps = {
    ═══════════════════════════════════════════════════ */
 export default function HeroSection({
   ready = false,
-  titleLine1 = (
-    <>
-      Your <span className="rg-gold">Dream</span> Home
-    </>
-  ),
-  titleLine2 = (
-    <>
-      <span className="rg-amber">Perfectly</span> Delivered
-    </>
-  ),
-  subtitle =
-    "Premium properties delivered — residential houses, units, land, and exclusive estates crafted for those who demand the extraordinary.",
+  titleLine1,
+  titleLine2,
+  subtitle,
   ctaLabel = "Explore Properties",
   ctaOnClick,
   showCta = true,
   showVideo = true,
-  bgImage = "images/hero-rpg-brisbane.jpg",
-  bgVideo = "vids/hero-rgp.mp4",
+  bgImage,
+  bgVideo,
   bgPoster,
   footer,
   panel,

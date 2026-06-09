@@ -12,6 +12,7 @@ from wagtail.blocks import (
     StructBlock,
     TextBlock,
 )
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.snippets.blocks import SnippetChooserBlock
 
@@ -153,19 +154,19 @@ class HeroBlock(StructBlock):
     )
     background_image_url = CharBlock(
         required=False,
-        default="images/hero-rpg-brisbane.jpg",
-        help_text="Fallback: path relative to public/ folder or full URL (used only if no image is chosen above).",
+        default="",
+        help_text="Fallback: full URL only if no image is chosen above.",
     )
 
     # ── Background video ──────────────────────────────────────────────────────
+    background_video = DocumentChooserBlock(
+        required=False,
+        help_text="Upload or choose a video file from the document library (mp4 recommended).",
+    )
     background_video_url = CharBlock(
         required=False,
-        default="vids/hero-rgp.mp4",
-        help_text=(
-            "Direct video file path (e.g. vids/hero-rgp.mp4) "
-            "OR a Vimeo page URL (e.g. https://vimeo.com/123456789). "
-            "Vimeo videos play as a muted background loop automatically."
-        ),
+        default="",
+        help_text="Fallback: Vimeo page URL (e.g. https://vimeo.com/123456789) — used only if no document is chosen above.",
     )
     show_video = BooleanBlock(required=False, default=True)
 
