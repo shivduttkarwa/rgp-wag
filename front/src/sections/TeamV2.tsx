@@ -73,6 +73,7 @@ export default function TeamV2({ section, members }: TeamV2Props) {
 
   return (
     <section className="tv2">
+      <div className="tv2__container">
 
       {/* ── Header ── */}
       <header className="tv2__header">
@@ -189,6 +190,7 @@ export default function TeamV2({ section, members }: TeamV2Props) {
         ))}
       </div>
 
+      </div>
     </section>
   );
 }

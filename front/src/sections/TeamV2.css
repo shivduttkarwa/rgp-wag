@@ -4,8 +4,14 @@
 
 .tv2 {
   background: #ffffff;
-  padding: clamp(5rem, 8vw, 7.5rem) clamp(1.5rem, 3vw, 3rem);
+  padding-block: clamp(5rem, 8vw, 7.5rem);
   overflow: hidden;
+}
+
+.tv2__container {
+  max-width: var(--rg-max);
+  margin-inline: auto;
+  padding-inline: var(--rg-pad);
 }
 
 /* ═══════════════════════════════════════════════════════════
