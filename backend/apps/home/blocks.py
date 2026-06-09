@@ -8,7 +8,6 @@ from wagtail.blocks import (
     ChoiceBlock,
     IntegerBlock,
     ListBlock,
-    RichTextBlock,
     StreamBlock,
     StructBlock,
     TextBlock,
@@ -60,15 +59,12 @@ class InternalHeroStatBlock(StructBlock):
 
 
 class InternalPageHeroBlock(StructBlock):
-    title_line_1 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
+    title_line_1 = CharBlock(
         required=False,
-        help_text="Select a word then click Gold or Amber in the toolbar for accent colour.",
+        default="",
+        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
     )
-    title_line_2 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
-        required=False,
-    )
+    title_line_2 = CharBlock(required=False, default="")
     subtitle = TextBlock(default="")
     background_image = ImageChooserBlock(
         required=False,
@@ -136,15 +132,12 @@ class SearchTabBlock(StructBlock):
 # ─── Section blocks ──────────────────────────────────────────────────────────
 
 class HeroBlock(StructBlock):
-    title_line_1 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
+    title_line_1 = CharBlock(
         required=False,
-        help_text="Select a word then click Gold or Amber in the toolbar for accent colour.",
+        default="Your [gold]Dream[/gold] Home",
+        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
     )
-    title_line_2 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
-        required=False,
-    )
+    title_line_2 = CharBlock(required=False, default="[amber]Perfectly[/amber] Delivered")
     subtitle     = TextBlock(
         default="350+ premium properties delivered — luxury villas, penthouses & exclusive estates crafted for those who demand the extraordinary.",
     )
@@ -673,15 +666,12 @@ class AboutPageStreamBlock(StreamBlock):
 
 class TeamSectionBlock(StructBlock):
     eyebrow = CharBlock(required=False, default="Our People")
-    title_line_1 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
+    title_line_1 = CharBlock(
         required=False,
-        help_text="Select a word then click Gold or Amber in the toolbar for accent colour.",
+        default="The Minds",
+        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
     )
-    title_line_2 = RichTextBlock(
-        features=["accent-gold", "accent-amber"],
-        required=False,
-    )
+    title_line_2 = CharBlock(required=False, default="[gold]Behind[/gold] Every Deal")
     subtitle = TextBlock(
         default="A curated ensemble of creative minds and industry veterans — each bringing unmatched expertise to every client engagement.",
     )

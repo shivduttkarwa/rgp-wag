@@ -1,45 +1,5 @@
-import wagtail.admin.rich_text.editors.draftail.features as draftail_features
 from wagtail import hooks
-from wagtail.admin.rich_text.converters.html_to_contentstate import InlineStyleElementHandler
 from django.utils.safestring import mark_safe
-
-
-# ─── Custom Draftail inline styles ───────────────────────────────────────────
-
-@hooks.register("register_rich_text_features")
-def register_accent_gold(features):
-    type_ = "ACCENT_GOLD"
-    features.register_editor_plugin(
-        "draftail", "accent-gold",
-        draftail_features.InlineStyleFeature({
-            "type": type_,
-            "label": "Gold",
-            "description": "Gold accent colour",
-            "style": {"color": "#f9c206", "fontWeight": "700"},
-        }),
-    )
-    features.register_converter_rule("contentstate", "accent-gold", {
-        "from_database_format": {"span[class=\"rg-gold\"]": InlineStyleElementHandler(type_)},
-        "to_database_format": {"style_map": {type_: "span class=\"rg-gold\""}},
-    })
-
-
-@hooks.register("register_rich_text_features")
-def register_accent_amber(features):
-    type_ = "ACCENT_AMBER"
-    features.register_editor_plugin(
-        "draftail", "accent-amber",
-        draftail_features.InlineStyleFeature({
-            "type": type_,
-            "label": "Amber",
-            "description": "Amber accent colour",
-            "style": {"color": "#f97316", "fontWeight": "700"},
-        }),
-    )
-    features.register_converter_rule("contentstate", "accent-amber", {
-        "from_database_format": {"span[class=\"rg-amber\"]": InlineStyleElementHandler(type_)},
-        "to_database_format": {"style_map": {type_: "span class=\"rg-amber\""}},
-    })
 
 
 # ─── Admin branding ───────────────────────────────────────────────────────────
