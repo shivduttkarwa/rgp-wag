@@ -17,10 +17,10 @@ class ListingViewSet(SnippetViewSet):
 
 class PropertyAgentViewSet(SnippetViewSet):
     model = PropertyAgent
-    menu_label = "Listing Agents"
+    menu_label = "Property Agents"
     menu_name = "listing_agents"
     menu_icon = "user"
-    add_to_admin_menu = False
+    add_to_admin_menu = True
     list_display = ("name", "title", "phone", "email")
     search_fields = ("name", "email")
 
