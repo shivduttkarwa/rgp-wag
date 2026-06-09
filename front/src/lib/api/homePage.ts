@@ -22,8 +22,9 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
       { label: "Agent", icon: "agent", href: "/team" },
     ],
     background_image: null,
-    background_image_url: "images/hero-rpg-brisbane.jpg",
-    background_video_url: "vids/hero-rgp.mp4",
+    background_image_url: "",
+    background_video: null,
+    background_video_url: "",
     show_video: true,
   },
   intro: {
