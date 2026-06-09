@@ -1,4 +1,5 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
+import type { CtaSection, EoiCtaSection } from "@/types/homePage";
 
 export type AboutPageSections = {
   hero?: InternalPageHeroData;
@@ -26,6 +27,8 @@ export type AboutPageSections = {
     cta_label: string;
     cta_href: string;
   };
+  cta?: CtaSection;
+  eoi_cta?: EoiCtaSection;
 };
 
 export type AboutPageData = {

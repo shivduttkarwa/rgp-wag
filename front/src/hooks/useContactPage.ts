@@ -6,32 +6,6 @@ type Status = "loading" | "ready" | "fallback";
 
 let cachedData: ContactPageData | null = null;
 
-function mergeContactData(data: ContactPageData): ContactPageData {
-  const defaults = DEFAULT_CONTACT_PAGE_DATA;
-  return {
-    ...defaults,
-    ...data,
-    hero: {
-      ...defaults.hero,
-      ...data.hero,
-    },
-    contact_info: {
-      ...defaults.contact_info,
-      ...data.contact_info,
-    },
-    form: {
-      ...defaults.form,
-      ...data.form,
-      intent_options:
-        data.form?.intent_options?.length ? data.form.intent_options : defaults.form.intent_options,
-      property_type_options:
-        data.form?.property_type_options?.length
-          ? data.form.property_type_options
-          : defaults.form.property_type_options,
-    },
-  };
-}
-
 export function useContactPage(): { data: ContactPageData; status: Status } {
   const [data, setData] = useState<ContactPageData>(cachedData ?? DEFAULT_CONTACT_PAGE_DATA);
   const [status, setStatus] = useState<Status>(cachedData ? "ready" : "loading");
@@ -44,9 +18,8 @@ export function useContactPage(): { data: ContactPageData; status: Status } {
     fetchContactPage(controller.signal)
       .then((payload) => {
         startTransition(() => {
-          const merged = mergeContactData(payload);
-          cachedData = merged;
-          setData(merged);
+          cachedData = payload;
+          setData(payload);
           setStatus("ready");
         });
       })

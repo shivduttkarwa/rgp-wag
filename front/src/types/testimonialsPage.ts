@@ -1,4 +1,5 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
+import type { CtaSection, EoiCtaSection } from "@/types/homePage";
 
 export type CmsTestimonial = {
   id: number;
@@ -51,6 +52,8 @@ export type TestimonialsPageSections = {
     secondary: { label: string; href: string };
     items: CmsTestimonial[];
   };
+  cta?: CtaSection;
+  eoi_cta?: EoiCtaSection;
 };
 
 export type TestimonialsPageData = {

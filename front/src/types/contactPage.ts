@@ -1,4 +1,5 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
+import type { CtaSection, EoiCtaSection } from "@/types/homePage";
 
 export type ContactHero = InternalPageHeroData;
 
@@ -27,12 +28,18 @@ export type ContactFormSection = {
   submit_note: string;
 };
 
+export type ContactPageSections = {
+  hero?: ContactHero;
+  contact_info?: ContactInfoSection;
+  contact_form?: ContactFormSection;
+  cta?: CtaSection;
+  eoi_cta?: EoiCtaSection;
+};
+
 export type ContactPageData = {
   id: number;
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: ContactHero;
-  contact_info: ContactInfoSection;
-  form: ContactFormSection;
+  sections: ContactPageSections;
 };

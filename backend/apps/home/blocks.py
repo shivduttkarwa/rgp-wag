@@ -6,6 +6,7 @@ from wagtail.blocks import (
     BooleanBlock,
     CharBlock,
     ChoiceBlock,
+    IntegerBlock,
     ListBlock,
     StreamBlock,
     StructBlock,
@@ -526,6 +527,8 @@ class TestimonialsPageStreamBlock(StreamBlock):
     text_testimonials_grid = TestimonialTextGridBlock()
     ticker = TestimonialTickerBlock()
     final_cta = TestimonialFinalCtaBlock()
+    cta = CtaSectionBlock()
+    eoi_cta = EoiCtaSectionBlock()
 
     class Meta:
         block_counts = {
@@ -534,6 +537,8 @@ class TestimonialsPageStreamBlock(StreamBlock):
             "text_testimonials_grid": {"min_num": 0, "max_num": 1},
             "ticker": {"min_num": 0, "max_num": 1},
             "final_cta": {"min_num": 0, "max_num": 1},
+            "cta": {"min_num": 0, "max_num": 1},
+            "eoi_cta": {"min_num": 0, "max_num": 1},
         }
 
 
@@ -637,6 +642,8 @@ class AboutPageStreamBlock(StreamBlock):
     split = AboutSplitBlock()
     overlay = AboutOverlayBlock()
     avail = AboutAvailabilityBlock()
+    cta = CtaSectionBlock()
+    eoi_cta = EoiCtaSectionBlock()
 
     class Meta:
         block_counts = {
@@ -645,6 +652,8 @@ class AboutPageStreamBlock(StreamBlock):
             "split": {"min_num": 0, "max_num": 1},
             "overlay": {"min_num": 0, "max_num": 1},
             "avail": {"min_num": 0, "max_num": 1},
+            "cta": {"min_num": 0, "max_num": 1},
+            "eoi_cta": {"min_num": 0, "max_num": 1},
         }
 
 
@@ -666,14 +675,113 @@ class TeamSectionBlock(StructBlock):
 class TeamPageStreamBlock(StreamBlock):
     hero = InternalPageHeroBlock()
     team_section = TeamSectionBlock()
+    cta = CtaSectionBlock()
+    eoi_cta = EoiCtaSectionBlock()
 
     class Meta:
         block_counts = {
             "hero": {"min_num": 0, "max_num": 1},
             "team_section": {"min_num": 0, "max_num": 1},
+            "cta": {"min_num": 0, "max_num": 1},
+            "eoi_cta": {"min_num": 0, "max_num": 1},
         }
 
 
+# ─── Contact page blocks ─────────────────────────────────────────────────────
+
+class ContactFormConfigBlock(StructBlock):
+    eyebrow = CharBlock(default="Begin your enquiry")
+    heading_line_1 = CharBlock(default="Tell us what you're")
+    heading_line_2 = CharBlock(default="looking for.")
+    subtitle = TextBlock(default="Fill in the details and a specialist will respond within one business day.")
+    intent_options = CharBlock(
+        required=False,
+        default="Buy,Sell,Rent,Invest,Off-Plan,Valuation",
+        help_text="Comma-separated intent chips (e.g. Buy,Sell,Rent).",
+    )
+    property_type_options = CharBlock(
+        required=False,
+        default="Apartment,Villa / Townhouse,Penthouse,Commercial,Plot / Land",
+        help_text="Comma-separated property types for the dropdown.",
+    )
+    budget_min = IntegerBlock(default=500000, help_text="Minimum budget (AUD)")
+    budget_max = IntegerBlock(default=20000000, help_text="Maximum budget (AUD)")
+    budget_step = IntegerBlock(default=500000, help_text="Budget slider step (AUD)")
+    budget_default = IntegerBlock(default=5000000, help_text="Default budget value (AUD)")
+    submit_note = CharBlock(default="We respond within one business day.")
+
+    class Meta:
+        icon = "form"
+        label = "Contact Form Config"
+
+
+class ContactPageStreamBlock(StreamBlock):
+    hero = InternalPageHeroBlock()
+    contact_info = ContactInfoBlock()
+    contact_form = ContactFormConfigBlock()
+    cta = CtaSectionBlock()
+    eoi_cta = EoiCtaSectionBlock()
+
+    class Meta:
+        block_counts = {
+            "hero": {"min_num": 0, "max_num": 1},
+            "contact_info": {"min_num": 0, "max_num": 1},
+            "contact_form": {"min_num": 0, "max_num": 1},
+            "cta": {"min_num": 0, "max_num": 1},
+            "eoi_cta": {"min_num": 0, "max_num": 1},
+        }
+
+
+# ─── Properties page blocks ──────────────────────────────────────────────────
+
+class PropertiesPageListingBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="Browse Listings")
+    heading = CharBlock(default="Discover Your Next Property")
+    subtitle = TextBlock(
+        required=False,
+        default="Filter by sale, rent, or sold status and explore our complete listing portfolio in one place.",
+    )
+
+    class Meta:
+        icon = "home"
+        label = "Listing Section Heading"
+
+
+class PropertyMarqueeConfigBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="Featured Portfolio")
+    title = CharBlock(default="Explore")
+    title_em = CharBlock(default="Premium Homes")
+    subtitle = TextBlock(
+        required=False,
+        default="A curated selection of standout residences from across our portfolio — updated regularly.",
+    )
+    cta_label = CharBlock(default="View All Properties")
+
+    class Meta:
+        icon = "arrows-up-down"
+        label = "Property Marquee"
+
+
+class PropertiesPageStreamBlock(StreamBlock):
+    hero = InternalPageHeroBlock()
+    property_listing = PropertiesPageListingBlock()
+    property_marquee = PropertyMarqueeConfigBlock()
+    property_cta = PropertyCtaBlock()
+    cta = CtaSectionBlock()
+    eoi_cta = EoiCtaSectionBlock()
+
+    class Meta:
+        block_counts = {
+            "hero": {"min_num": 0, "max_num": 1},
+            "property_listing": {"min_num": 0, "max_num": 1},
+            "property_marquee": {"min_num": 0, "max_num": 1},
+            "property_cta": {"min_num": 0, "max_num": 1},
+            "cta": {"min_num": 0, "max_num": 1},
+            "eoi_cta": {"min_num": 0, "max_num": 1},
+        }
+
+
+# kept for migration compatibility — no longer used in models
 class ContactPageContentStreamBlock(StreamBlock):
     contact_info = ContactInfoBlock()
 

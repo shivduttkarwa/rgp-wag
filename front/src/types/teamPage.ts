@@ -1,4 +1,5 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
+import type { CtaSection, EoiCtaSection } from "@/types/homePage";
 
 export type TeamMemberStat = {
   value: string;
@@ -33,6 +34,8 @@ export type TeamSectionData = {
 export type TeamPageSections = {
   hero?: InternalPageHeroData;
   team_section?: TeamSectionData & { members: TeamMemberData[] };
+  cta?: CtaSection;
+  eoi_cta?: EoiCtaSection;
 };
 
 export type TeamPageData = {

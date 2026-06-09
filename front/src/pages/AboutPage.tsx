@@ -9,6 +9,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PropertyMarquee from "@/components/reusable/PropertyMarqee";
 import { useAboutPage } from "@/hooks/useAboutPage";
 import assetUrl from "@/lib/assetUrl";
+import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
 
 const base = import.meta.env.BASE_URL?.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -282,6 +284,8 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
         )}
         <PropertyMarquee />
       </main>
+      {sections.cta && <RgpCta section={sections.cta} />}
+      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
     </>
   );
 }

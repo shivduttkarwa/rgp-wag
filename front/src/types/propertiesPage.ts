@@ -1,6 +1,6 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
 import type { Property } from "@/components/reusable/PropertyCard";
-import type { WagtailImage } from "@/types/homePage";
+import type { CtaSection, EoiCtaSection, WagtailImage } from "@/types/homePage";
 
 export type PropertySectionData = {
   eyebrow: string;
@@ -42,14 +42,20 @@ export type PropertyCtaData = {
   min_height: string;
 };
 
+export type PropertiesPageSections = {
+  hero?: InternalPageHeroData;
+  property_listing?: PropertySectionData;
+  property_marquee?: PropertyMarqueeSectionData;
+  property_cta?: PropertyCtaData;
+  cta?: CtaSection;
+  eoi_cta?: EoiCtaSection;
+};
+
 export type PropertiesPageData = {
   id: number;
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: InternalPageHeroData;
-  property_section: PropertySectionData;
-  marquee: PropertyMarqueeSectionData;
-  property_cta: PropertyCtaData;
+  sections: PropertiesPageSections;
   listings: Property[];
 };

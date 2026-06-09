@@ -5,6 +5,9 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { submitContactForm } from "@/lib/api/forms";
 import { useContactPage } from "@/hooks/useContactPage";
+import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
+import { DEFAULT_CONTACT_PAGE_DATA } from "@/lib/api/contactPage";
 import "./ContactPage.css";
 
 const DEFAULT_INTENTS = ["Buy", "Sell", "Rent", "Invest", "Off-Plan", "Valuation"];
@@ -22,48 +25,53 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLElement>(null);
   const ptWrapRef = useRef<HTMLDivElement>(null);
   const { data, status } = useContactPage();
+  const { sections } = data;
 
-  const intentOptions = data.form.intent_options.length
-    ? data.form.intent_options
+  const defaultSections = DEFAULT_CONTACT_PAGE_DATA.sections;
+  const contactInfo = sections.contact_info ?? defaultSections.contact_info!;
+  const contactForm = sections.contact_form ?? defaultSections.contact_form!;
+
+  const intentOptions = contactForm.intent_options?.length
+    ? contactForm.intent_options
     : DEFAULT_INTENTS;
-  const propertyTypeOptions = data.form.property_type_options.length
-    ? data.form.property_type_options
+  const propertyTypeOptions = contactForm.property_type_options?.length
+    ? contactForm.property_type_options
     : DEFAULT_PROPERTY_TYPES;
 
-  const budgetMin = Math.max(0, data.form.budget_min || 500_000);
-  const budgetMax = Math.max(budgetMin + 1, data.form.budget_max || 20_000_000);
-  const budgetStep = Math.max(1, data.form.budget_step || 500_000);
-  const budgetDefault = clamp(data.form.budget_default || budgetMin, budgetMin, budgetMax);
+  const budgetMin = Math.max(0, contactForm.budget_min || 500_000);
+  const budgetMax = Math.max(budgetMin + 1, contactForm.budget_max || 20_000_000);
+  const budgetStep = Math.max(1, contactForm.budget_step || 500_000);
+  const budgetDefault = clamp(contactForm.budget_default || budgetMin, budgetMin, budgetMax);
   const contactItems = useMemo(
     () => [
       {
         label: "Contact Number",
-        value: data.contact_info.contact_number,
-        href: data.contact_info.contact_number
-          ? `tel:${data.contact_info.contact_number.replace(/\s+/g, "")}`
+        value: contactInfo.contact_number,
+        href: contactInfo.contact_number
+          ? `tel:${contactInfo.contact_number.replace(/\s+/g, "")}`
           : "",
       },
       {
         label: "Email",
-        value: data.contact_info.email,
-        href: data.contact_info.email ? `mailto:${data.contact_info.email}` : "",
+        value: contactInfo.email,
+        href: contactInfo.email ? `mailto:${contactInfo.email}` : "",
       },
       {
         label: "Address",
-        value: data.contact_info.address,
+        value: contactInfo.address,
         href: "",
       },
       {
         label: "Working Hours",
-        value: data.contact_info.working_hours,
+        value: contactInfo.working_hours,
         href: "",
       },
     ],
     [
-      data.contact_info.contact_number,
-      data.contact_info.email,
-      data.contact_info.address,
-      data.contact_info.working_hours,
+      contactInfo.contact_number,
+      contactInfo.email,
+      contactInfo.address,
+      contactInfo.working_hours,
     ],
   );
 
@@ -146,7 +154,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <main className="contact-page" ref={pageRef}>
-      <InternalPageHero ready={ready} hero={data.hero} />
+      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       <div className="contact-shell">
         <div className="top-rule" />
@@ -155,10 +163,10 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
           <section className="left">
             <div>
               <h1 className="hero-title" data-gsap="char-reveal" data-gsap-start="top 90%">
-                {data.contact_info.title}
+                {contactInfo.title}
               </h1>
               <p className="tagline" data-gsap="fade-up" data-gsap-delay="0.15">
-                {data.contact_info.tagline}
+                {contactInfo.tagline}
               </p>
             </div>
 
@@ -215,21 +223,21 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
               </nav>
 
               <div className="quote" data-gsap="fade-up" data-gsap-delay="0.1">
-                <blockquote>{data.contact_info.quote_text}</blockquote>
-                <cite>{data.contact_info.quote_author}</cite>
+                <blockquote>{contactInfo.quote_text}</blockquote>
+                <cite>{contactInfo.quote_author}</cite>
               </div>
             </div>
           </section>
 
           <section className="right">
-            <p className="form-eyebrow" data-gsap="fade-up">{data.form.eyebrow}</p>
+            <p className="form-eyebrow" data-gsap="fade-up">{contactForm.eyebrow}</p>
             <h2 className="form-heading" data-gsap="char-reveal" data-gsap-start="top 85%">
-              {data.form.heading_line_1}
+              {contactForm.heading_line_1}
               <br />
-              <em>{data.form.heading_line_2}</em>
+              <em>{contactForm.heading_line_2}</em>
             </h2>
             <p className="form-sub" data-gsap="fade-up" data-gsap-delay="0.15">
-              {data.form.subtitle}
+              {contactForm.subtitle}
             </p>
 
             <div className="intents" data-gsap="fade-up" data-gsap-delay="0.2">
@@ -406,7 +414,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                   endIcon={<Send size={18} aria-hidden="true" />}
                   disabled={isSubmitting}
                 />
-                <p className="s-note">{data.form.submit_note}</p>
+                <p className="s-note">{contactForm.submit_note}</p>
               </div>
               {submitError ? <p className="s-note">{submitError}</p> : null}
             </form>
@@ -452,6 +460,9 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
           />
         </section>
       </div>
+
+      {sections.cta && <RgpCta section={sections.cta} />}
+      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
 
       <div
         className={`succ-modal${success ? " show" : ""}`}

@@ -95,66 +95,51 @@ export const DEFAULT_PROPERTIES_PAGE_DATA: PropertiesPageData = {
   title: "Properties",
   slug: "properties",
   updated_at: null,
-  hero: {
-    title_line_1: "Our [gold]Premium[/gold]",
-    title_line_2: "[amber]Properties[/amber]",
-    subtitle:
-      "Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland.",
-    background_image: null,
-    background_image_url: "images/prop-hero.jpg",
-    show_video: false,
-    background_video_url: "",
-    mode: "buttons",
-    buttons: [
-      {
-        label: "Talk to an Expert",
-        href: "/contact",
-        style: "gold",
-        open_in_new_tab: false,
-      },
-    ],
-    stats: [],
-  },
-  property_section: {
-    eyebrow: "Browse Listings",
-    heading: "Discover Your Next Property",
-    subtitle:
-      "Filter by sale, rent, or sold status and explore our complete listing portfolio in one place.",
-  },
-  marquee: {
-    eyebrow: "Featured Portfolio",
-    title: "Explore",
-    title_em: "Premium Homes",
-    subtitle:
-      "A curated selection of standout residences from across our portfolio — updated regularly.",
-    cta_label: "View All Properties",
-  },
-  property_cta: {
-    eyebrow: "Need Help Choosing?",
-    title: "Let's Find Your",
-    title_em: "Perfect Home",
-    text:
-      "Tell us what you're looking for and we'll shortlist the best options, arrange inspections, and guide you through every step.",
-    primary: {
-      label: "Talk to an Expert",
-      href: "/contact",
+  sections: {
+    hero: {
+      title_line_1: "Our [gold]Premium[/gold]",
+      title_line_2: "[amber]Properties[/amber]",
+      subtitle: "Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland.",
+      background_image: null,
+      background_image_url: "images/prop-hero.jpg",
+      show_video: false,
+      background_video_url: "",
+      mode: "buttons",
+      buttons: [{ label: "Talk to an Expert", href: "/contact", style: "gold", open_in_new_tab: false }],
+      stats: [],
     },
-    secondary: {
-      label: "0450 009 291",
-      href: "tel:+61450009291",
+    property_listing: {
+      eyebrow: "Browse Listings",
+      heading: "Discover Your Next Property",
+      subtitle: "Filter by sale, rent, or sold status and explore our complete listing portfolio in one place.",
     },
-    commitments: [
-      { title: "Data-backed guidance" },
-      { title: "Inspection-ready planning" },
-      { title: "Negotiation that protects" },
-    ],
-    use_video: true,
-    background_image: null,
-    background_image_url: "images/int.jpg",
-    background_video_url: "vids/cta-2-vid.mp4",
-    video_poster_image: null,
-    video_poster_image_url: "images/int.jpg",
-    min_height: "100vh",
+    property_marquee: {
+      eyebrow: "Featured Portfolio",
+      title: "Explore",
+      title_em: "Premium Homes",
+      subtitle: "A curated selection of standout residences from across our portfolio — updated regularly.",
+      cta_label: "View All Properties",
+    },
+    property_cta: {
+      eyebrow: "Need Help Choosing?",
+      title: "Let's Find Your",
+      title_em: "Perfect Home",
+      text: "Tell us what you're looking for and we'll shortlist the best options, arrange inspections, and guide you through every step.",
+      primary: { label: "Talk to an Expert", href: "/contact" },
+      secondary: { label: "0450 009 291", href: "tel:+61450009291" },
+      commitments: [
+        { title: "Data-backed guidance" },
+        { title: "Inspection-ready planning" },
+        { title: "Negotiation that protects" },
+      ],
+      use_video: true,
+      background_image: null,
+      background_image_url: "images/int.jpg",
+      background_video_url: "vids/cta-2-vid.mp4",
+      video_poster_image: null,
+      video_poster_image_url: "images/int.jpg",
+      min_height: "100vh",
+    },
   },
   listings: allProperties,
 };
@@ -166,20 +151,14 @@ export async function fetchPropertiesPage(signal?: AbortSignal): Promise<Propert
   });
   if (!res.ok) throw new Error(`Properties page fetch failed: ${res.status}`);
 
-  const payload = (await res.json()) as Partial<PropertiesPageData> & {
-    listings?: unknown;
-  };
+  const payload = (await res.json()) as { sections?: unknown; listings?: unknown } & Partial<PropertiesPageData>;
 
   return {
-    ...payload,
-    hero: (payload.hero ?? DEFAULT_PROPERTIES_PAGE_DATA.hero) as PropertiesPageData["hero"],
-    property_section:
-      (payload.property_section ??
-        DEFAULT_PROPERTIES_PAGE_DATA.property_section) as PropertiesPageData["property_section"],
-    marquee: (payload.marquee ?? DEFAULT_PROPERTIES_PAGE_DATA.marquee) as PropertiesPageData["marquee"],
-    property_cta:
-      (payload.property_cta ??
-        DEFAULT_PROPERTIES_PAGE_DATA.property_cta) as PropertiesPageData["property_cta"],
+    id: payload.id ?? 0,
+    title: payload.title ?? "Properties",
+    slug: payload.slug ?? "properties",
+    updated_at: payload.updated_at ?? null,
+    sections: (payload.sections ?? {}) as PropertiesPageData["sections"],
     listings: mapListings(payload.listings),
-  } as PropertiesPageData;
+  };
 }

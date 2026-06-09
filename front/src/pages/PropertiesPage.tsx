@@ -18,7 +18,10 @@ import {
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import Cta2 from "@/components/reusable/cta-2";
 import PropertyMarqee from "@/components/reusable/PropertyMarqee";
+import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
 import { usePropertiesPage } from "@/hooks/usePropertiesPage";
+import { DEFAULT_PROPERTIES_PAGE_DATA } from "@/lib/api/propertiesPage";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -84,6 +87,10 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const { data, status } = usePropertiesPage();
+  const { sections, listings: sourceProperties } = data;
+  const defaultSections = DEFAULT_PROPERTIES_PAGE_DATA.sections;
+  const propertyListing = sections.property_listing ?? defaultSections.property_listing!;
+  const propertyMarquee = sections.property_marquee ?? defaultSections.property_marquee!;
   const pendingScrollRef = useRef<{
     mode: ScrollAction;
     scrollY: number;
@@ -259,8 +266,6 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   };
 
   // ── Data ─────────────────────────────────────────────────────────────────
-  const sourceProperties = data.listings;
-
   // filtered/displayed are from displayedFilters (what the grid actually shows)
   const filtered = useMemo(
     () => applyFilters(sourceProperties, displayedFilters),
@@ -322,7 +327,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <div className="ap-page" ref={pageRef}>
-      <InternalPageHero ready={ready} hero={data.hero} />
+      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       {/* ── Filter Slab ───────────────────────────────────────────────── */}
       <div className="ap-filter-slab">
@@ -332,9 +337,9 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           data-gsap-start="top 95%"
         >
           <div className="ap-filter-head">
-            <span className="ap-filter-head__eyebrow">{data.property_section.eyebrow}</span>
-            <h2 className="ap-filter-head__title">{data.property_section.heading}</h2>
-            <p className="ap-filter-head__subtitle">{data.property_section.subtitle}</p>
+            <span className="ap-filter-head__eyebrow">{propertyListing.eyebrow}</span>
+            <h2 className="ap-filter-head__title">{propertyListing.heading}</h2>
+            <p className="ap-filter-head__subtitle">{propertyListing.subtitle}</p>
           </div>
 
           <div className="ap-filter-row">
@@ -496,53 +501,59 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
         </div>
       </div>
 
-      <PropertyMarqee
-        properties={sourceProperties}
-        eyebrow={data.marquee.eyebrow}
-        title={data.marquee.title}
-        titleEm={data.marquee.title_em}
-        subtitle={data.marquee.subtitle}
-        ctaLabel={data.marquee.cta_label}
-      />
+      {sections.property_marquee && (
+        <PropertyMarqee
+          properties={sourceProperties}
+          eyebrow={propertyMarquee.eyebrow}
+          title={propertyMarquee.title}
+          titleEm={propertyMarquee.title_em}
+          subtitle={propertyMarquee.subtitle}
+          ctaLabel={propertyMarquee.cta_label}
+        />
+      )}
 
-      {/* ── CTA ───────────────────────────────────────────────────────── */}
-      <Cta2
-        eyebrow={data.property_cta.eyebrow}
-        title={data.property_cta.title}
-        titleEm={data.property_cta.title_em}
-        text={data.property_cta.text}
-        primary={{
-          label: data.property_cta.primary.label,
-          to: data.property_cta.primary.href.startsWith("/")
-            ? data.property_cta.primary.href
-            : undefined,
-          href: data.property_cta.primary.href.startsWith("/")
-            ? undefined
-            : data.property_cta.primary.href,
-        }}
-        secondary={{
-          label: data.property_cta.secondary.label,
-          to: data.property_cta.secondary.href.startsWith("/")
-            ? data.property_cta.secondary.href
-            : undefined,
-          href: data.property_cta.secondary.href.startsWith("/")
-            ? undefined
-            : data.property_cta.secondary.href,
-        }}
-        commitments={data.property_cta.commitments}
-        bgImage={
-          data.property_cta.background_image?.url ?? data.property_cta.background_image_url
-        }
-        bgVideo={
-          data.property_cta.use_video
-            ? (data.property_cta.background_video_url || undefined)
-            : undefined
-        }
-        posterImage={
-          data.property_cta.video_poster_image?.url ?? data.property_cta.video_poster_image_url
-        }
-        minHeight={data.property_cta.min_height}
-      />
+      {sections.property_cta && (
+        <Cta2
+          eyebrow={sections.property_cta.eyebrow}
+          title={sections.property_cta.title}
+          titleEm={sections.property_cta.title_em}
+          text={sections.property_cta.text}
+          primary={{
+            label: sections.property_cta.primary.label,
+            to: sections.property_cta.primary.href.startsWith("/")
+              ? sections.property_cta.primary.href
+              : undefined,
+            href: sections.property_cta.primary.href.startsWith("/")
+              ? undefined
+              : sections.property_cta.primary.href,
+          }}
+          secondary={{
+            label: sections.property_cta.secondary.label,
+            to: sections.property_cta.secondary.href.startsWith("/")
+              ? sections.property_cta.secondary.href
+              : undefined,
+            href: sections.property_cta.secondary.href.startsWith("/")
+              ? undefined
+              : sections.property_cta.secondary.href,
+          }}
+          commitments={sections.property_cta.commitments}
+          bgImage={
+            sections.property_cta.background_image?.url ?? sections.property_cta.background_image_url
+          }
+          bgVideo={
+            sections.property_cta.use_video
+              ? (sections.property_cta.background_video_url || undefined)
+              : undefined
+          }
+          posterImage={
+            sections.property_cta.video_poster_image?.url ?? sections.property_cta.video_poster_image_url
+          }
+          minHeight={sections.property_cta.min_height}
+        />
+      )}
+
+      {sections.cta && <RgpCta section={sections.cta} />}
+      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
     </div>
   );
 }

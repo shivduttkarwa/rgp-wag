@@ -8,6 +8,8 @@ import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import type { CmsFeaturedTestimonial, CmsTestimonial } from "@/types/testimonialsPage";
 import { resolveMediaUrl } from "@/lib/api/config";
+import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
 
 interface Testimonial {
   id: number;
@@ -922,6 +924,8 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
         )}
 
       </main>
+      {sections.cta && <RgpCta section={sections.cta} />}
+      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
     </div>
   );
 };

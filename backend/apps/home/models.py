@@ -8,10 +8,10 @@ from wagtail.models import Page
 
 from .blocks import (
     AboutPageStreamBlock,
-    ContactPageContentStreamBlock,
     ContactPageHeroStreamBlock,
+    ContactPageStreamBlock,
     HomePageStreamBlock,
-    PropertiesPageContentStreamBlock,
+    PropertiesPageStreamBlock,
     TeamPageStreamBlock,
     TestimonialsPageStreamBlock,
 )
@@ -66,121 +66,82 @@ class HomePage(Page):
 class ContactPage(Page):
     """
     CMS-managed contact page for the headless frontend.
-    Left-side contact content is controlled by a reusable StreamField block.
+    Editors build every section using StreamField blocks.
     """
 
-    hero_title_line_1 = models.CharField(max_length=255, default="Get In [gold]Touch[/gold]")
-    hero_title_line_2 = models.CharField(max_length=255, default="[amber]We're[/amber] Here")
-    hero_subtitle = models.TextField(
-        default="Our team is ready to guide you — from first enquiry to final key.",
-    )
-    hero_background_image = models.ForeignKey(
-        get_image_model_string(),
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    hero_background_image_url = models.CharField(max_length=500, default="images/contact-hero.jpg", blank=True)
-    hero_primary_cta_label = models.CharField(max_length=100, default="Call Us")
-    hero_primary_cta_href = models.CharField(max_length=255, default="tel:+61450009291")
-    hero_secondary_cta_label = models.CharField(max_length=100, default="Email Us")
-    hero_secondary_cta_href = models.CharField(max_length=255, default="mailto:admin@realgoldproperties.com.au")
-    hero_content = StreamField(
-        ContactPageHeroStreamBlock(),
+    body = StreamField(
+        ContactPageStreamBlock(),
         blank=True,
         use_json_field=True,
-        help_text="Reusable internal page hero block (buttons or stats mode).",
+        help_text="Add, remove and reorder sections. Each block is a section on the contact page.",
     )
-
-    contact_content = StreamField(
-        ContactPageContentStreamBlock(),
-        verbose_name="Contact Info",
-        blank=True,
-        use_json_field=True,
-        help_text="Fixed contact information fields shown on the left side.",
-    )
-
-    form_eyebrow = models.CharField(max_length=120, default="Begin your enquiry")
-    form_heading_line_1 = models.CharField(max_length=255, default="Tell us what you're")
-    form_heading_line_2 = models.CharField(max_length=255, default="looking for.")
-    form_subtitle = models.TextField(
-        default="Fill in the details and a specialist will respond within one business day.",
-    )
-    form_intent_options = models.CharField(
-        max_length=500,
-        blank=True,
-        default="Buy,Sell,Rent,Invest,Off-Plan,Valuation",
-        help_text="Comma-separated intent chips shown above the form.",
-    )
-    form_property_type_options = models.CharField(
-        max_length=600,
-        blank=True,
-        default="Apartment,Villa / Townhouse,Penthouse,Commercial,Plot / Land",
-        help_text="Comma-separated property types shown in the dropdown.",
-    )
-    form_budget_min = models.PositiveIntegerField(default=500000)
-    form_budget_max = models.PositiveIntegerField(default=20000000)
-    form_budget_step = models.PositiveIntegerField(default=500000)
-    form_budget_default = models.PositiveIntegerField(default=5000000)
-    form_submit_note = models.CharField(max_length=180, default="We respond within one business day.")
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types: list[str] = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_content"),
-        FieldPanel("contact_content", heading="Contact Info"),
-        FieldPanel("form_eyebrow"),
-        FieldPanel("form_heading_line_1"),
-        FieldPanel("form_heading_line_2"),
-        FieldPanel("form_subtitle"),
-        FieldPanel("form_intent_options"),
-        FieldPanel("form_property_type_options"),
-        FieldPanel("form_budget_min"),
-        FieldPanel("form_budget_max"),
-        FieldPanel("form_budget_step"),
-        FieldPanel("form_budget_default"),
-        FieldPanel("form_submit_note"),
+        FieldPanel("body"),
     ]
 
     promote_panels = Page.promote_panels + [
         PublishingPanel(),
     ]
 
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
     class Meta:
         verbose_name = "Contact Page"
 
     def get_api_representation(self) -> dict[str, Any]:
-        contact_info = _extract_contact_info_block(self.contact_content)
-        hero_payload = _extract_internal_page_hero_block(self.hero_content)
-        if not hero_payload:
-            hero_payload = _legacy_contact_hero_payload(self)
-        budget_min = self.form_budget_min
-        budget_max = max(self.form_budget_max, budget_min + 1)
-        budget_step = max(self.form_budget_step, 1)
-        budget_default = min(max(self.form_budget_default, budget_min), budget_max)
+        sections: dict[str, Any] = {}
+        for block in self.body:
+            btype = block.block_type
+            raw = _serialise_block_value(block.value)
+            cfg = raw if isinstance(raw, dict) else {}
+
+            if btype == "hero":
+                mode = cfg.get("mode")
+                if mode not in {"none", "buttons", "stats"}:
+                    mode = "none"
+                cfg["mode"] = mode
+                cfg.setdefault("buttons", [])
+                cfg.setdefault("stats", [])
+                sections["hero"] = cfg
+
+            elif btype == "contact_info":
+                sections["contact_info"] = _contact_info_from_cfg(cfg)
+
+            elif btype == "contact_form":
+                budget_min = int(cfg.get("budget_min") or 500000)
+                budget_max = int(cfg.get("budget_max") or 20000000)
+                budget_max = max(budget_max, budget_min + 1)
+                budget_step = max(int(cfg.get("budget_step") or 500000), 1)
+                budget_default = int(cfg.get("budget_default") or 5000000)
+                budget_default = min(max(budget_default, budget_min), budget_max)
+                sections["contact_form"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Begin your enquiry",
+                    "heading_line_1": cfg.get("heading_line_1") or "Tell us what you're",
+                    "heading_line_2": cfg.get("heading_line_2") or "looking for.",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "intent_options": _parse_csv_options(cfg.get("intent_options") or ""),
+                    "property_type_options": _parse_csv_options(cfg.get("property_type_options") or ""),
+                    "budget_min": budget_min,
+                    "budget_max": budget_max,
+                    "budget_step": budget_step,
+                    "budget_default": budget_default,
+                    "submit_note": cfg.get("submit_note") or "",
+                }
+
+            elif btype == "cta":
+                sections["cta"] = cfg
+
+            elif btype == "eoi_cta":
+                sections["eoi_cta"] = cfg
 
         return {
             "id": self.pk,
             "title": self.title,
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": hero_payload,
-            "contact_info": contact_info,
-            "form": {
-                "eyebrow": self.form_eyebrow,
-                "heading_line_1": self.form_heading_line_1,
-                "heading_line_2": self.form_heading_line_2,
-                "subtitle": self.form_subtitle,
-                "intent_options": _parse_csv_options(self.form_intent_options),
-                "property_type_options": _parse_csv_options(self.form_property_type_options),
-                "budget_min": budget_min,
-                "budget_max": budget_max,
-                "budget_step": budget_step,
-                "budget_default": budget_default,
-                "submit_note": self.form_submit_note,
-            },
+            "sections": sections,
         }
 
 
@@ -236,6 +197,12 @@ class TeamPage(Page):
                     "members": _get_active_team_member_items(),
                 }
 
+            elif btype == "cta":
+                sections["cta"] = cfg
+
+            elif btype == "eoi_cta":
+                sections["eoi_cta"] = cfg
+
         return {
             "id": self.pk,
             "title": self.title,
@@ -248,95 +215,91 @@ class TeamPage(Page):
 class PropertiesPage(Page):
     """
     CMS-managed properties page for the headless frontend.
-    Uses reusable internal hero and property CTA blocks, while listing cards
-    are sourced directly from the Listings snippet app.
+    Editors build every section using StreamField blocks; listings come from
+    the Property snippets app.
     """
 
-    hero_content = StreamField(
-        ContactPageHeroStreamBlock(),
+    body = StreamField(
+        PropertiesPageStreamBlock(),
         blank=True,
         use_json_field=True,
-        help_text="Reusable internal page hero block (buttons or stats mode).",
+        help_text="Add, remove and reorder sections. Listings always come from the Property snippets.",
     )
-
-    property_section_eyebrow = models.CharField(max_length=120, default="Browse Listings")
-    property_section_heading = models.CharField(max_length=255, default="Discover Your Next Property")
-    property_section_subtitle = models.TextField(
-        default=(
-            "Filter by sale, rent, or sold status and explore our complete listing"
-            " portfolio in one place."
-        )
-    )
-
-    marquee_eyebrow = models.CharField(max_length=120, default="Featured Portfolio")
-    marquee_title = models.CharField(max_length=255, default="Explore")
-    marquee_title_em = models.CharField(max_length=255, default="Premium Homes")
-    marquee_subtitle = models.TextField(
-        default=(
-            "A curated selection of standout residences from across our portfolio"
-            " — updated regularly."
-        )
-    )
-    marquee_cta_label = models.CharField(max_length=120, default="View All Properties")
-
-    content = StreamField(
-        PropertiesPageContentStreamBlock(),
-        blank=True,
-        use_json_field=True,
-        help_text="Add reusable content blocks for this page.",
-    )
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types: list[str] = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_content"),
-        FieldPanel("property_section_eyebrow"),
-        FieldPanel("property_section_heading"),
-        FieldPanel("property_section_subtitle"),
-        FieldPanel("marquee_eyebrow"),
-        FieldPanel("marquee_title"),
-        FieldPanel("marquee_title_em"),
-        FieldPanel("marquee_subtitle"),
-        FieldPanel("marquee_cta_label"),
-        FieldPanel("content"),
+        FieldPanel("body"),
     ]
 
     promote_panels = Page.promote_panels + [
         PublishingPanel(),
     ]
 
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
     class Meta:
         verbose_name = "Properties Page"
 
     def get_api_representation(self) -> dict[str, Any]:
-        hero_payload = _extract_internal_page_hero_block(self.hero_content)
-        if not hero_payload:
-            hero_payload = _default_properties_hero_payload()
+        sections: dict[str, Any] = {}
+        for block in self.body:
+            btype = block.block_type
+            raw = _serialise_block_value(block.value)
+            cfg = raw if isinstance(raw, dict) else {}
 
-        property_cta = _extract_property_cta_block(self.content)
-        if not property_cta:
-            property_cta = _default_property_cta_payload()
+            if btype == "hero":
+                mode = cfg.get("mode")
+                if mode not in {"none", "buttons", "stats"}:
+                    mode = "none"
+                cfg["mode"] = mode
+                cfg.setdefault("buttons", [])
+                cfg.setdefault("stats", [])
+                sections["hero"] = cfg
+
+            elif btype == "property_listing":
+                sections["property_listing"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Browse Listings",
+                    "heading": cfg.get("heading") or "Discover Your Next Property",
+                    "subtitle": cfg.get("subtitle") or "",
+                }
+
+            elif btype == "property_marquee":
+                sections["property_marquee"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Featured Portfolio",
+                    "title": cfg.get("title") or "Explore",
+                    "title_em": cfg.get("title_em") or "Premium Homes",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "cta_label": cfg.get("cta_label") or "View All Properties",
+                }
+
+            elif btype == "property_cta":
+                cfg.setdefault("primary", {"label": "", "href": ""})
+                cfg.setdefault("secondary", {"label": "", "href": ""})
+                cfg.setdefault("commitments", [])
+                cfg.setdefault("use_video", True)
+                cfg.setdefault("background_image", None)
+                cfg.setdefault("background_image_url", "images/int.jpg")
+                cfg.setdefault("background_video_url", "vids/cta-2-vid.mp4")
+                cfg.setdefault("video_poster_image", None)
+                cfg.setdefault(
+                    "video_poster_image_url",
+                    cfg.get("background_image_url") or "images/int.jpg",
+                )
+                cfg.setdefault("min_height", "100vh")
+                sections["property_cta"] = cfg
+
+            elif btype == "cta":
+                sections["cta"] = cfg
+
+            elif btype == "eoi_cta":
+                sections["eoi_cta"] = cfg
 
         return {
             "id": self.pk,
             "title": self.title,
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": hero_payload,
-            "property_section": {
-                "eyebrow": self.property_section_eyebrow,
-                "heading": self.property_section_heading,
-                "subtitle": self.property_section_subtitle,
-            },
-            "marquee": {
-                "eyebrow": self.marquee_eyebrow,
-                "title": self.marquee_title,
-                "title_em": self.marquee_title_em,
-                "subtitle": self.marquee_subtitle,
-                "cta_label": self.marquee_cta_label,
-            },
-            "property_cta": property_cta,
+            "sections": sections,
             "listings": _get_properties_page_listing_items(),
         }
 
@@ -399,82 +362,6 @@ def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
     cms_items = _get_active_video_testimonial_items()
     if cms_items:
         video_section["items"] = cms_items
-
-
-def _default_team_hero_payload() -> dict[str, Any]:
-    return {
-        "title_line_1": "Meet Our",
-        "title_line_2": "Expert [gold]Team[/gold]",
-        "subtitle": (
-            "A curated ensemble of creative minds and industry veterans shaping "
-            "the future of luxury real estate."
-        ),
-        "background_image": None,
-        "background_image_url": "images/about-hero.jpg",
-        "show_video": False,
-        "background_video_url": "",
-        "mode": "buttons",
-        "buttons": [
-            {
-                "label": "Book a Consultation",
-                "href": "/contact",
-                "style": "gold",
-                "open_in_new_tab": False,
-            }
-        ],
-        "stats": [],
-    }
-
-
-def _default_properties_hero_payload() -> dict[str, Any]:
-    return {
-        "title_line_1": "Our [gold]Premium[/gold]",
-        "title_line_2": "[amber]Properties[/amber]",
-        "subtitle": (
-            "Browse our curated portfolio of for-sale, sold and rental "
-            "properties across South-East Queensland."
-        ),
-        "background_image": None,
-        "background_image_url": "images/prop-hero.jpg",
-        "show_video": False,
-        "background_video_url": "",
-        "mode": "buttons",
-        "buttons": [
-            {
-                "label": "Talk to an Expert",
-                "href": "/contact",
-                "style": "gold",
-                "open_in_new_tab": False,
-            }
-        ],
-        "stats": [],
-    }
-
-
-def _default_property_cta_payload() -> dict[str, Any]:
-    return {
-        "eyebrow": "Need Help Choosing?",
-        "title": "Let's Find Your",
-        "title_em": "Perfect Home",
-        "text": (
-            "Tell us what you're looking for and we'll shortlist the best options, "
-            "arrange inspections, and guide you through every step."
-        ),
-        "primary": {"label": "Talk to an Expert", "href": "/contact"},
-        "secondary": {"label": "0450 009 291", "href": "tel:+61450009291"},
-        "commitments": [
-            {"title": "Data-backed guidance"},
-            {"title": "Inspection-ready planning"},
-            {"title": "Negotiation that protects"},
-        ],
-        "use_video": True,
-        "background_image": None,
-        "background_image_url": "images/int.jpg",
-        "background_video_url": "vids/cta-2-vid.mp4",
-        "video_poster_image": None,
-        "video_poster_image_url": "images/int.jpg",
-        "min_height": "100vh",
-    }
 
 
 def _get_active_team_member_items() -> list[dict[str, Any]]:
@@ -592,38 +479,22 @@ def _parse_csv_options(raw: str) -> list[str]:
     return [item.strip() for item in (raw or "").split(",") if item.strip()]
 
 
-def _legacy_contact_hero_payload(page: ContactPage) -> dict[str, Any]:
-    buttons: list[dict[str, Any]] = []
-    if page.hero_primary_cta_label.strip():
-        buttons.append(
-            {
-                "label": page.hero_primary_cta_label,
-                "href": page.hero_primary_cta_href,
-                "style": "gold",
-                "open_in_new_tab": False,
-            }
-        )
-    if page.hero_secondary_cta_label.strip():
-        buttons.append(
-            {
-                "label": page.hero_secondary_cta_label,
-                "href": page.hero_secondary_cta_href,
-                "style": "blue",
-                "open_in_new_tab": False,
-            }
-        )
-
+def _contact_info_from_cfg(cfg: dict) -> dict[str, Any]:
     return {
-        "title_line_1": page.hero_title_line_1,
-        "title_line_2": page.hero_title_line_2,
-        "subtitle": page.hero_subtitle,
-        "background_image": _serialise_block_value(page.hero_background_image),
-        "background_image_url": page.hero_background_image_url,
-        "show_video": False,
-        "background_video_url": "",
-        "mode": "buttons" if buttons else "none",
-        "buttons": buttons,
-        "stats": [],
+        "title": cfg.get("title") or "Let's Talk Appraisal.",
+        "tagline": cfg.get("tagline") or (
+            "Whether you're buying, selling, or investing — our advisors are ready "
+            "to guide you through every step."
+        ),
+        "contact_number": cfg.get("contact_number") or "0450 009 291",
+        "email": cfg.get("email") or "admin@realgoldproperties.com.au",
+        "address": cfg.get("address") or "Forest Lake, Brisbane QLD 4078",
+        "working_hours": cfg.get("working_hours") or "All days · 09:00 – 18:00",
+        "quote_text": cfg.get("quote_text") or (
+            '"Real estate is not just a transaction — it is the beginning of a life '
+            'lived better."'
+        ),
+        "quote_author": cfg.get("quote_author") or "— Our Promise",
     }
 
 
@@ -640,99 +511,6 @@ def _extract_internal_page_hero_block(hero_content) -> dict[str, Any] | None:
                 hero["stats"] = hero.get("stats") or []
             return hero if isinstance(hero, dict) else None
     return None
-
-
-def _extract_property_cta_block(content) -> dict[str, Any] | None:
-    for block in content:
-        if block.block_type == "property_cta":
-            cta = _serialise_block_value(block.value)
-            if not isinstance(cta, dict):
-                return None
-            cta.setdefault("primary", {"label": "", "href": ""})
-            cta.setdefault("secondary", {"label": "", "href": ""})
-            cta.setdefault("commitments", [])
-            cta.setdefault("use_video", True)
-            cta.setdefault("background_image", None)
-            cta.setdefault("background_image_url", "images/int.jpg")
-            cta.setdefault("background_video_url", "vids/cta-2-vid.mp4")
-            cta.setdefault("video_poster_image", None)
-            cta.setdefault("video_poster_image_url", cta.get("background_image_url") or "images/int.jpg")
-            cta.setdefault("min_height", "100vh")
-            return cta
-    return None
-
-
-def _extract_contact_info_block(contact_content) -> dict[str, Any]:
-    for block in contact_content:
-        if block.block_type == "contact_info":
-            raw = _serialise_block_value(block.value)
-            if not isinstance(raw, dict):
-                break
-
-            # Backward compatibility: map legacy flexible rows into fixed fields.
-            legacy_items = raw.get("items") or []
-            legacy_map: dict[str, str] = {}
-            if isinstance(legacy_items, list):
-                for item in legacy_items:
-                    if not isinstance(item, dict):
-                        continue
-                    label = str(item.get("label", "")).strip().lower()
-                    value = str(item.get("value", "")).strip()
-                    if not label or not value:
-                        continue
-                    legacy_map[label] = value
-
-            return {
-                "title": raw.get("title") or f"{raw.get('headline', '')} {raw.get('headline_em', '')}".strip() or "Let's Talk Appraisal.",
-                "tagline": raw.get("tagline")
-                or (
-                    "Whether you're buying, selling, or investing — our advisors are ready "
-                    "to guide you through every step."
-                ),
-                "contact_number": raw.get("contact_number")
-                or legacy_map.get("contact number")
-                or legacy_map.get("phone")
-                or "0450 009 291",
-                "email": raw.get("email")
-                or legacy_map.get("email")
-                or "admin@realgoldproperties.com.au",
-                "address": raw.get("address")
-                or legacy_map.get("address")
-                or legacy_map.get("visit")
-                or "Forest Lake, Brisbane QLD 4078",
-                "working_hours": raw.get("working_hours")
-                or " · ".join(
-                    part
-                    for part in [
-                        str(raw.get("office_days", "")).strip(),
-                        str(raw.get("office_time", "")).strip(),
-                    ]
-                    if part
-                )
-                or "All days · 09:00 – 18:00",
-                "quote_text": raw.get("quote_text")
-                or (
-                    '"Real estate is not just a transaction — it is the beginning of a life '
-                    'lived better."'
-                ),
-                "quote_author": raw.get("quote_author") or "— Our Promise",
-            }
-    return {
-        "title": "Let's Talk Appraisal.",
-        "tagline": (
-            "Whether you're buying, selling, or investing — our advisors are ready "
-            "to guide you through every step."
-        ),
-        "contact_number": "0450 009 291",
-        "email": "admin@realgoldproperties.com.au",
-        "address": "Forest Lake, Brisbane QLD 4078",
-        "working_hours": "All days · 09:00 – 18:00",
-        "quote_text": (
-            '"Real estate is not just a transaction — it is the beginning of a life '
-            'lived better."'
-        ),
-        "quote_author": "— Our Promise",
-    }
 
 
 # ─── About Page ──────────────────────────────────────────────────────────────
@@ -816,6 +594,12 @@ class AboutPage(Page):
                     "cta_label": cfg.get("cta_label") or "",
                     "cta_href": cfg.get("cta_href") or "/contact",
                 }
+
+            elif btype == "cta":
+                sections["cta"] = cfg
+
+            elif btype == "eoi_cta":
+                sections["eoi_cta"] = cfg
 
         return {
             "id": self.pk,
@@ -1049,6 +833,12 @@ class TestimonialsPage(Page):
                     },
                     "items": text_items(),
                 }
+
+            elif btype == "cta":
+                sections["cta"] = cfg
+
+            elif btype == "eoi_cta":
+                sections["eoi_cta"] = cfg
 
         return {
             "id": self.pk,

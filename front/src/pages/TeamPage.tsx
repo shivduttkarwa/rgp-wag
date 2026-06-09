@@ -5,6 +5,8 @@ import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { useTeamPage } from "@/hooks/useTeamPage";
 import assetUrl from "@/lib/assetUrl";
+import RgpCta from "@/components/reusable/RgpCta";
+import EoiCta from "@/components/reusable/eoi-cta";
 import "./TeamPage.css";
 
 
@@ -214,6 +216,8 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
           </div>
         </section>
       </main>
+      {sections.cta && <RgpCta section={sections.cta} />}
+      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
     </>
   );
 }
