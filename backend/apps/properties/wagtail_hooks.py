@@ -6,7 +6,7 @@ from .models import Property, PropertyAgent
 
 class ListingViewSet(SnippetViewSet):
     model = Property
-    menu_label = "Listings"
+    menu_label = "Property Listings"
     menu_name = "listings"
     menu_icon = "home"
     add_to_admin_menu = True
