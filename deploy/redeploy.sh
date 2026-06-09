@@ -20,6 +20,7 @@ echo "======================================================"
 echo ""
 echo "[ 1 ] Pulling latest code..."
 cd $PROJECT
+git checkout -- .
 git pull
 
 # ── 2. Backend: install deps + migrate + collectstatic ───────────────────────
@@ -28,6 +29,7 @@ echo "[ 2 ] Updating backend..."
 cd $BACKEND
 source .venv/bin/activate
 pip install -q -r requirements.txt
+python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput -v 0
 
