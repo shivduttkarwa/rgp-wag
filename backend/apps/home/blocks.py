@@ -458,16 +458,88 @@ class ContactInfoBlock(StructBlock):
 
 class FeaturedTestimonialsBlock(StructBlock):
     """
-    Reusable marker block — wherever added to a page's StreamField, all active
-    FeaturedTestimonial snippet records render in the SplitSlider on the frontend.
-    No configuration needed; items are always pulled live from the CMS snippet.
+    Reusable block — editors control the section heading; all active
+    FeaturedTestimonial snippet records render automatically in the SplitSlider.
     """
+
+    eyebrow = CharBlock(
+        required=False,
+        default="Testimonials",
+        help_text="Small label above the heading (e.g. 'Client Stories')",
+    )
+    heading = CharBlock(
+        default="What Our Clients Say",
+        help_text="Main section heading",
+    )
+    subtitle = TextBlock(
+        required=False,
+        default="",
+        help_text="Optional sub-heading shown below the main heading",
+    )
 
     class Meta:
         icon = "pick"
         label = "Featured Testimonials Slider"
 
 
+class TestimonialTextGridBlock(StructBlock):
+    """Section heading for the text testimonials bento grid (VoiceMosaic)."""
+
+    eyebrow = CharBlock(required=False, default="Client Voices")
+    heading = CharBlock(default="What Our Clients Say")
+    subtitle = TextBlock(
+        required=False,
+        default="Real experiences from real clients — every word earned, never scripted.",
+    )
+
+    class Meta:
+        icon = "openquote"
+        label = "Text Testimonials Grid"
+
+
+class TestimonialTickerBlock(StructBlock):
+    """Infinite auto-scroll ticker strip. Items come automatically from Text Testimonial snippets."""
+
+    class Meta:
+        icon = "arrows-up-down"
+        label = "Testimonial Ticker"
+
+
+class TestimonialFinalCtaBlock(StructBlock):
+    heading = CharBlock(default="Book a Free Appraisal")
+    body = TextBlock(
+        default="Get a clear price range, honest advice, and a plan that positions your property for a confident sale.",
+    )
+    primary_label = CharBlock(default="Book Your Appraisal")
+    primary_href = CharBlock(required=False, default="/contact")
+    secondary_label = CharBlock(default="Talk to Rahul")
+    secondary_href = CharBlock(required=False, default="/contact")
+
+    class Meta:
+        icon = "placeholder"
+        label = "Final CTA"
+
+
+class TestimonialsPageStreamBlock(StreamBlock):
+    """Main body stream for the Testimonials page — add, remove and reorder any section."""
+
+    hero = InternalPageHeroBlock()
+    featured_testimonials = FeaturedTestimonialsBlock()
+    text_testimonials_grid = TestimonialTextGridBlock()
+    ticker = TestimonialTickerBlock()
+    final_cta = TestimonialFinalCtaBlock()
+
+    class Meta:
+        block_counts = {
+            "hero": {"min_num": 0, "max_num": 1},
+            "featured_testimonials": {"min_num": 0, "max_num": 1},
+            "text_testimonials_grid": {"min_num": 0, "max_num": 1},
+            "ticker": {"min_num": 0, "max_num": 1},
+            "final_cta": {"min_num": 0, "max_num": 1},
+        }
+
+
+# kept for migration compatibility — no longer used in models
 class TestimonialsPageContentStreamBlock(StreamBlock):
     featured_testimonials = FeaturedTestimonialsBlock()
 

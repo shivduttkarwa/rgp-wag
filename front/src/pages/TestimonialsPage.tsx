@@ -818,43 +818,37 @@ function cmsFeaturedToSlide(item: CmsFeaturedTestimonial): SlideContent {
 /* ─────────────────────────────────────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────────────────────────────────────── */
+function sectionTextItems(
+  sec: { items?: CmsTestimonial[] } | undefined,
+  fallback: Testimonial[],
+): Testimonial[] {
+  if (!sec?.items?.length) return fallback;
+  return sec.items.map(cmsToTestimonial);
+}
+
 const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   const { data } = useTestimonialsPage();
   const pageRef = useRef<HTMLDivElement>(null);
+  const { sections } = data;
 
-  // Use CMS testimonials if available, otherwise fall back to hardcoded list
-  const activeTestimonials: Testimonial[] =
-    data.testimonials.length > 0
-      ? data.testimonials.map(cmsToTestimonial)
-      : testimonials;
+  const fallbackItems: Testimonial[] = testimonials;
 
-  // Featured testimonials → SplitSlider slides (undefined = use built-in defaults)
   const featuredSlides: SlideContent[] | undefined =
-    data.featured_testimonials.length > 0
-      ? data.featured_testimonials.map(cmsFeaturedToSlide)
+    sections.featured_testimonials?.items?.length
+      ? sections.featured_testimonials.items.map(cmsFeaturedToSlide)
       : undefined;
 
   useEffect(() => {
     const guards = [
-      "clipRevealInit",
-      "clipRevealRtlInit",
-      "clipRevealTopInit",
-      "clipRevealLeftInit",
-      "clipRevealRightInit",
-      "wordRevealInit",
-      "wordWriteInit",
-      "clipSmoothInit",
-      "clipSmoothDownInit",
-      "charRevealInit",
+      "clipRevealInit", "clipRevealRtlInit", "clipRevealTopInit",
+      "clipRevealLeftInit", "clipRevealRightInit", "wordRevealInit",
+      "wordWriteInit", "clipSmoothInit", "clipSmoothDownInit", "charRevealInit",
     ];
     guards.forEach((key) => {
       pageRef.current
-        ?.querySelectorAll<HTMLElement>(
-          `[data-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}]`,
-        )
+        ?.querySelectorAll<HTMLElement>(`[data-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}]`)
         .forEach((el) => delete el.dataset[key]);
     });
-
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return cleanup;
   }, []);
@@ -862,32 +856,71 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   return (
     <div ref={pageRef}>
       <main className="testimonial-page">
-        <InternalPageHero ready={ready} hero={data.hero} />
-        <div className="t-section-heading">
-          <header className="t-section-heading__header">
-            <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
-              {data.section.eyebrow}
-            </span>
-            <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
-              {data.section.heading}
-            </h2>
-            <p className="t-section-heading__subtitle" data-gsap="fade-up" data-gsap-delay="0.2">
-              {data.section.subtitle}
-            </p>
-          </header>
-        </div>
-        <RGPSplitSlider slides={featuredSlides} />
-        <VoiceMosaic items={activeTestimonials} />
-        <TickerWall items={activeTestimonials} />
-        <FinalCTA
-          heading={data.final_cta.heading}
-          body={data.final_cta.body}
-          primaryLabel={data.final_cta.primary.label}
-          primaryHref={data.final_cta.primary.href}
-          secondaryLabel={data.final_cta.secondary.label}
-          secondaryHref={data.final_cta.secondary.href}
-          items={activeTestimonials}
-        />
+
+        {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
+
+        {sections.featured_testimonials && (
+          <>
+            <div className="t-section-heading">
+              <header className="t-section-heading__header">
+                {sections.featured_testimonials.eyebrow && (
+                  <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
+                    {sections.featured_testimonials.eyebrow}
+                  </span>
+                )}
+                <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
+                  {sections.featured_testimonials.heading}
+                </h2>
+                {sections.featured_testimonials.subtitle && (
+                  <p className="t-section-heading__subtitle" data-gsap="fade-up" data-gsap-delay="0.2">
+                    {sections.featured_testimonials.subtitle}
+                  </p>
+                )}
+              </header>
+            </div>
+            <RGPSplitSlider slides={featuredSlides} />
+          </>
+        )}
+
+        {sections.text_testimonials_grid && (
+          <>
+            <div className="t-section-heading">
+              <header className="t-section-heading__header">
+                {sections.text_testimonials_grid.eyebrow && (
+                  <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
+                    {sections.text_testimonials_grid.eyebrow}
+                  </span>
+                )}
+                <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
+                  {sections.text_testimonials_grid.heading}
+                </h2>
+                {sections.text_testimonials_grid.subtitle && (
+                  <p className="t-section-heading__subtitle" data-gsap="fade-up" data-gsap-delay="0.2">
+                    {sections.text_testimonials_grid.subtitle}
+                  </p>
+                )}
+              </header>
+            </div>
+            <VoiceMosaic items={sectionTextItems(sections.text_testimonials_grid, fallbackItems)} />
+          </>
+        )}
+
+        {sections.ticker && (
+          <TickerWall items={sectionTextItems(sections.ticker, fallbackItems)} />
+        )}
+
+        {sections.final_cta && (
+          <FinalCTA
+            heading={sections.final_cta.heading}
+            body={sections.final_cta.body}
+            primaryLabel={sections.final_cta.primary.label}
+            primaryHref={sections.final_cta.primary.href}
+            secondaryLabel={sections.final_cta.secondary.label}
+            secondaryHref={sections.final_cta.secondary.href}
+            items={sectionTextItems(sections.final_cta, fallbackItems)}
+          />
+        )}
+
       </main>
     </div>
   );

@@ -27,19 +27,36 @@ export type CmsFeaturedTestimonial = {
   is_active: boolean;
 };
 
+export type TestimonialsPageSections = {
+  hero?: InternalPageHeroData;
+  featured_testimonials?: {
+    eyebrow: string;
+    heading: string;
+    subtitle: string;
+    items: CmsFeaturedTestimonial[];
+  };
+  text_testimonials_grid?: {
+    eyebrow: string;
+    heading: string;
+    subtitle: string;
+    items: CmsTestimonial[];
+  };
+  ticker?: {
+    items: CmsTestimonial[];
+  };
+  final_cta?: {
+    heading: string;
+    body: string;
+    primary: { label: string; href: string };
+    secondary: { label: string; href: string };
+    items: CmsTestimonial[];
+  };
+};
+
 export type TestimonialsPageData = {
   id: number;
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: InternalPageHeroData;
-  section: { eyebrow: string; heading: string; subtitle: string };
-  testimonials: CmsTestimonial[];
-  featured_testimonials: CmsFeaturedTestimonial[];
-  final_cta: {
-    heading: string;
-    body: string;
-    primary: { label: string; href: string };
-    secondary: { label: string; href: string };
-  };
+  sections: TestimonialsPageSections;
 };

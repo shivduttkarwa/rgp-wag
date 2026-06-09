@@ -11,7 +11,7 @@ from .blocks import (
     ContactPageHeroStreamBlock,
     HomePageStreamBlock,
     PropertiesPageContentStreamBlock,
-    TestimonialsPageContentStreamBlock,
+    TestimonialsPageStreamBlock,
 )
 
 
@@ -1007,97 +1007,94 @@ class ServicesPage(Page):
 # ─── Testimonials Page ────────────────────────────────────────────────────────
 
 class TestimonialsPage(Page):
-    hero_content = StreamField(
-        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
-        help_text="Internal page hero block.",
-    )
+    """
+    Testimonials page. Editors build every section using StreamField blocks —
+    add, remove, or reorder any section from the CMS, just like the home page.
+    """
 
-    content = StreamField(
-        TestimonialsPageContentStreamBlock(),
+    body = StreamField(
+        TestimonialsPageStreamBlock(),
         blank=True,
         use_json_field=True,
-        help_text=(
-            "Add the 'Featured Testimonials Slider' block here to place the SplitSlider "
-            "section. All active Featured Testimonial records render automatically."
-        ),
+        help_text="Add, remove and reorder sections. Each block is a section on the testimonials page.",
     )
-
-    section_eyebrow = models.CharField(max_length=120, default="Client Voices")
-    section_heading = models.CharField(max_length=255, default="What Our Clients Say")
-    section_subtitle = models.TextField(
-        default="Real experiences from real clients — every word earned, never scripted.",
-    )
-
-    final_cta_heading = models.CharField(max_length=255, default="Book a Free Appraisal")
-    final_cta_body = models.TextField(
-        default="Get a clear price range, honest advice, and a plan that positions your property for a confident sale.",
-    )
-    final_cta_primary_label = models.CharField(max_length=120, default="Book Your Appraisal")
-    final_cta_primary_href = models.CharField(max_length=255, default="/contact")
-    final_cta_secondary_label = models.CharField(max_length=120, default="Talk to Rahul")
-    final_cta_secondary_href = models.CharField(max_length=255, default="/contact")
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types: list[str] = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_content"),
-        FieldPanel("content", heading="Featured Testimonials Slider"),
-        MultiFieldPanel([
-            FieldPanel("section_eyebrow"),
-            FieldPanel("section_heading"),
-            FieldPanel("section_subtitle"),
-        ], heading="Section Heading"),
-        MultiFieldPanel([
-            FieldPanel("final_cta_heading"),
-            FieldPanel("final_cta_body"),
-            FieldRowPanel([FieldPanel("final_cta_primary_label"), FieldPanel("final_cta_primary_href")]),
-            FieldRowPanel([FieldPanel("final_cta_secondary_label"), FieldPanel("final_cta_secondary_href")]),
-        ], heading="Final CTA"),
+        FieldPanel("body"),
     ]
 
     promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
 
     class Meta:
         verbose_name = "Testimonials Page"
 
     def get_api_representation(self) -> dict[str, Any]:
-        hero = _extract_internal_page_hero_block(self.hero_content)
-        testimonials = _get_active_text_testimonial_items()
-        featured = _get_active_featured_testimonial_items()
-        count = len(testimonials)
-        if not hero:
-            hero = {
-                "title_line_1": "Client [gold]Stories[/gold]",
-                "title_line_2": "Words That [amber]Inspire[/amber]",
-                "subtitle": f"{count} verified experiences — refined, discreet service across South-East Queensland.",
-                "background_image": None, "background_image_url": "images/testi-hero.jpg",
-                "show_video": False, "background_video_url": "",
-                "mode": "stats",
-                "buttons": [],
-                "stats": [
-                    {"value": "5★", "label": "Avg. Rating"},
-                    {"value": "100%", "label": "Client Satisfaction"},
-                    {"value": str(count), "label": "Total Reviews"},
-                ],
-            }
+        sections: dict[str, Any] = {}
+        _text_items: list[dict[str, Any]] | None = None
+
+        def text_items() -> list[dict[str, Any]]:
+            nonlocal _text_items
+            if _text_items is None:
+                _text_items = _get_active_text_testimonial_items()
+            return _text_items
+
+        for block in self.body:
+            btype = block.block_type
+            raw = _serialise_block_value(block.value)
+            cfg = raw if isinstance(raw, dict) else {}
+
+            if btype == "hero":
+                mode = cfg.get("mode")
+                if mode not in {"none", "buttons", "stats"}:
+                    mode = "none"
+                cfg["mode"] = mode
+                cfg.setdefault("buttons", [])
+                cfg.setdefault("stats", [])
+                sections["hero"] = cfg
+
+            elif btype == "featured_testimonials":
+                sections["featured_testimonials"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Testimonials",
+                    "heading": cfg.get("heading") or "What Our Clients Say",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "items": _get_active_featured_testimonial_items(),
+                }
+
+            elif btype == "text_testimonials_grid":
+                sections["text_testimonials_grid"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Client Voices",
+                    "heading": cfg.get("heading") or "What Our Clients Say",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "items": text_items(),
+                }
+
+            elif btype == "ticker":
+                sections["ticker"] = {"items": text_items()}
+
+            elif btype == "final_cta":
+                sections["final_cta"] = {
+                    "heading": cfg.get("heading") or "Book a Free Appraisal",
+                    "body": cfg.get("body") or "",
+                    "primary": {
+                        "label": cfg.get("primary_label") or "Book Your Appraisal",
+                        "href": cfg.get("primary_href") or "/contact",
+                    },
+                    "secondary": {
+                        "label": cfg.get("secondary_label") or "Talk to Rahul",
+                        "href": cfg.get("secondary_href") or "/contact",
+                    },
+                    "items": text_items(),
+                }
+
         return {
-            "id": self.pk, "title": self.title, "slug": self.slug,
+            "id": self.pk,
+            "title": self.title,
+            "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": hero,
-            "section": {
-                "eyebrow": self.section_eyebrow,
-                "heading": self.section_heading,
-                "subtitle": self.section_subtitle,
-            },
-            "testimonials": testimonials,
-            "featured_testimonials": featured,
-            "final_cta": {
-                "heading": self.final_cta_heading,
-                "body": self.final_cta_body,
-                "primary": {"label": self.final_cta_primary_label, "href": self.final_cta_primary_href},
-                "secondary": {"label": self.final_cta_secondary_label, "href": self.final_cta_secondary_href},
-            },
+            "sections": sections,
         }
 
 
