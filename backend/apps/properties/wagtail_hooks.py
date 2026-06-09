@@ -9,6 +9,7 @@ class ListingViewSet(SnippetViewSet):
     menu_label = "Property Listings"
     menu_name = "listings"
     menu_icon = "home"
+    menu_order = 250
     add_to_admin_menu = True
     list_display = ("title", "listing_category", "status", "price", "city", "updated_at")
     list_filter = ("listing_category", "status", "featured", "city")
@@ -20,6 +21,7 @@ class PropertyAgentViewSet(SnippetViewSet):
     menu_label = "Property Agents"
     menu_name = "listing_agents"
     menu_icon = "user"
+    menu_order = 255
     add_to_admin_menu = True
     list_display = ("name", "title", "phone", "email")
     search_fields = ("name", "email")
