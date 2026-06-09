@@ -18,9 +18,21 @@ def register_accent_gold(features):
             "style": {"color": "#f9c206", "fontWeight": "700"},
         }),
     )
+    # style_map uses draftjs_exporter dict format:
+    #   'element' → tag name; CSS prop keys (camelCase) → inline style; other keys → HTML attrs
+    # Result: <span class="rg-gold" style="color:#f9c206;font-weight:700">word</span>
     features.register_converter_rule("contentstate", "accent-gold", {
         "from_database_format": {"span[class=\"rg-gold\"]": InlineStyleElementHandler(type_)},
-        "to_database_format": {"style_map": {type_: "span class=\"rg-gold\""}},
+        "to_database_format": {
+            "style_map": {
+                type_: {
+                    "element": "span",
+                    "class": "rg-gold",
+                    "color": "#f9c206",
+                    "fontWeight": "700",
+                }
+            }
+        },
     })
 
 
@@ -38,7 +50,16 @@ def register_accent_amber(features):
     )
     features.register_converter_rule("contentstate", "accent-amber", {
         "from_database_format": {"span[class=\"rg-amber\"]": InlineStyleElementHandler(type_)},
-        "to_database_format": {"style_map": {type_: "span class=\"rg-amber\""}},
+        "to_database_format": {
+            "style_map": {
+                type_: {
+                    "element": "span",
+                    "class": "rg-amber",
+                    "color": "#f97316",
+                    "fontWeight": "700",
+                }
+            }
+        },
     })
 
 
