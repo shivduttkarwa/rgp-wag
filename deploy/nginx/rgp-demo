@@ -10,6 +10,8 @@ server {
     listen 80;
     server_name 54.252.235.169 ec2-54-252-235-169.ap-southeast-2.compute.amazonaws.com;
 
+    client_max_body_size 200M;
+
     # ── Django collected static files ────────────────────────────────────────
     # Run `python manage.py collectstatic` before first deploy.
     location /static/ {
