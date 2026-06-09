@@ -38,7 +38,7 @@ class FeaturedTestimonialViewSet(SnippetViewSet):
 
 
 class TestimonialViewSetGroup(SnippetViewSetGroup):
-    menu_label = "Testimonial"
+    menu_label = "RGP Reviews"
     menu_name = "testimonial"
     menu_icon = "openquote"
     menu_order = 240

@@ -16,7 +16,7 @@ class TeamMemberViewSet(SnippetViewSet):
 
 
 class TeamViewSetGroup(SnippetViewSetGroup):
-    menu_label = "Team"
+    menu_label = "Team Members"
     menu_name = "team"
     menu_icon = "group"
     menu_order = 245
