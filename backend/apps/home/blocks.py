@@ -62,7 +62,7 @@ class InternalPageHeroBlock(StructBlock):
     title_line_1 = CharBlock(
         required=False,
         default="",
-        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
+        help_text="Use [gold]word[/gold] for gold accent colour.",
     )
     title_line_2 = CharBlock(required=False, default="")
     subtitle = TextBlock(default="")
@@ -135,9 +135,9 @@ class HeroBlock(StructBlock):
     title_line_1 = CharBlock(
         required=False,
         default="Your [gold]Dream[/gold] Home",
-        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
+        help_text="Use [gold]word[/gold] for gold accent colour.",
     )
-    title_line_2 = CharBlock(required=False, default="[amber]Perfectly[/amber] Delivered")
+    title_line_2 = CharBlock(required=False, default="Perfectly Delivered")
     subtitle     = TextBlock(
         default="350+ premium properties delivered — luxury villas, penthouses & exclusive estates crafted for those who demand the extraordinary.",
     )
@@ -669,7 +669,7 @@ class TeamSectionBlock(StructBlock):
     title_line_1 = CharBlock(
         required=False,
         default="The Minds",
-        help_text="Use [gold]word[/gold] or [amber]word[/amber] for accent colours.",
+        help_text="Use [gold]word[/gold] for gold accent colour.",
     )
     title_line_2 = CharBlock(required=False, default="[gold]Behind[/gold] Every Deal")
     subtitle = TextBlock(
