@@ -6,6 +6,14 @@ from django.utils.safestring import mark_safe
 def global_admin_css():
     return mark_safe("""
 <style>
+  /* ── Replace Wagtail bird logo with RGP logo ── */
+  .sidebar-wagtail-branding__icon { display: none !important; }
+  .sidebar-wagtail-branding__icon-wrapper {
+    background: url('/images/RGP-logo.png') no-repeat center/contain !important;
+    width: 6rem !important;
+    height: 6rem !important;
+  }
+
   /* ── Override Wagtail purple with RGP navy ── */
   :root,
   [data-controller~="w-sidebar"] {
