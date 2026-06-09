@@ -25,7 +25,6 @@ export type HeroSection = {
   search_tabs?: SearchTab[];
   cta?: CtaData;
   background_image: WagtailImage | null;
-  background_image_url: string;
   background_video: string | null;
   background_video_url: string;
   show_video: boolean;

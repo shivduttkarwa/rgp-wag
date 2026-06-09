@@ -22,7 +22,6 @@ export const DEFAULT_HOME_PAGE_SECTIONS: HomePageSections = {
       { label: "Agent", icon: "agent", href: "/team" },
     ],
     background_image: null,
-    background_image_url: "",
     background_video: null,
     background_video_url: "",
     show_video: true,

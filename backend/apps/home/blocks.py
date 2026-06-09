@@ -150,12 +150,7 @@ class HeroBlock(StructBlock):
     # ── Background image ──────────────────────────────────────────────────────
     background_image = ImageChooserBlock(
         required=False,
-        help_text="Pick an image from the media library. Takes priority over the URL field below.",
-    )
-    background_image_url = CharBlock(
-        required=False,
-        default="",
-        help_text="Fallback: full URL only if no image is chosen above.",
+        help_text="Pick a background image from the media library.",
     )
 
     # ── Background video ──────────────────────────────────────────────────────
@@ -166,7 +161,7 @@ class HeroBlock(StructBlock):
     background_video_url = CharBlock(
         required=False,
         default="",
-        help_text="Fallback: Vimeo page URL (e.g. https://vimeo.com/123456789) — used only if no document is chosen above.",
+        help_text="Vimeo page URL (e.g. https://vimeo.com/123456789) — used only if no document is chosen above.",
     )
     show_video = BooleanBlock(required=False, default=True)
 
