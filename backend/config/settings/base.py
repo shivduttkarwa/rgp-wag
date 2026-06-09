@@ -129,6 +129,11 @@ TIME_ZONE = "Australia/Brisbane"
 USE_I18N = True
 USE_TZ = True
 
+# ─── File upload limits ──────────────────────────────────────────────────────
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 209715200  # 200 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 209715200  # 200 MB
+
 # ─── Static & Media ──────────────────────────────────────────────────────────
 
 STATIC_URL = "/static/"
