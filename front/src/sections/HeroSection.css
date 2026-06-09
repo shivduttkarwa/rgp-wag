@@ -170,11 +170,15 @@ a {
   will-change: transform, opacity, filter;
 }
 
-.rgp-hero__title-text .rg-gold {
-  color: #f9c307;
+.rgp-hero__title-text .rg-gold,
+.rgp-hero__title-text span .rg-gold {
+  color: #f9c206 !important;
+  font-weight: 700 !important;
 }
-.rgp-hero__title-text .rg-amber {
-  color: #f9c307;
+.rgp-hero__title-text .rg-amber,
+.rgp-hero__title-text span .rg-amber {
+  color: #f97316 !important;
+  font-weight: 700 !important;
 }
 
 /* ─── SUBTITLE ─── */
