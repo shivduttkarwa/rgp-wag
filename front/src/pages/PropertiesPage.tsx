@@ -100,6 +100,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   );
   const pageClassName = [
     "ap-page",
+    status !== "loading" && !sections.hero ? "ap-page--no-hero" : "",
     status !== "loading" && !hasVisibleSections ? "ap-page--empty" : "",
   ]
     .filter(Boolean)
