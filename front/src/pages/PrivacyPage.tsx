@@ -3,7 +3,7 @@ import "./LegalPage.css";
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
-      <div className="legal-hero" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/legal-bg.jpg)` }}>
+      <div className="legal-hero">
         <div className="legal-hero__inner">
           <span className="legal-hero__eyebrow">Real Gold Properties</span>
           <h1 className="legal-hero__title">Privacy Policy</h1>

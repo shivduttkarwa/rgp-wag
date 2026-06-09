@@ -51,47 +51,49 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const eoiCta = sections.eoi_cta;
   const ctaSection = sections.cta;
   const ctaBackgroundImage =
-    ctaSection?.background_image?.url ?? ctaSection?.background_image_url ?? "images/hero1.jpg";
+    ctaSection?.background_image?.url ?? ctaSection?.background_image_url;
   const ctaVideoPoster =
     ctaSection?.video_poster_image?.url ??
-    ctaSection?.video_poster_image_url ??
-    ctaBackgroundImage;
+    ctaSection?.video_poster_image_url;
   const ctaVideo = ctaSection?.use_video
     ? (ctaSection.background_video_url || undefined)
     : undefined;
 
   const primaryCta = toRgpLink(
-    ctaSection?.primary.label || "Talk to an Expert",
-    ctaSection?.primary.href || "/contact",
+    ctaSection?.primary.label || "",
+    ctaSection?.primary.href || "",
   );
   const secondaryCta = toRgpLink(
-    ctaSection?.secondary.label || "0450 009 291",
-    ctaSection?.secondary.href || "tel:+61450009291",
+    ctaSection?.secondary.label || "",
+    ctaSection?.secondary.href || "",
   );
 
   return (
     <div ref={pageRef}>
-      <HeroSection
-        ready={ready}
-        titleLine1={renderHeroAccentTokens(hero?.title_line_1 ?? "Your [gold]Dream[/gold] Home")}
-        titleLine2={renderHeroAccentTokens(hero?.title_line_2 ?? "[amber]Perfectly[/amber] Delivered")}
-        subtitle={hero?.subtitle}
-        ctaLabel={legacyCta?.label ?? "Explore Properties"}
-        showCta={showLegacyCta}
-        ctaOnClick={() => {
-          const href = legacyCta?.href || "/properties";
-          if (isExternalHref(href)) {
-            window.location.assign(href);
-            return;
-          }
-          navigate(href);
-        }}
-        showVideo={hero?.show_video ?? true}
-        bgImage={hero?.background_image?.url || undefined}
-        bgPoster={hero?.background_image?.url || undefined}
-        bgVideo={(hero?.background_video ?? hero?.background_video_url) || undefined}
-        panel={heroTabs.length > 0 ? <HeroSearchPanel tabs={heroTabs} /> : undefined}
-      />
+      {hero ? (
+        <HeroSection
+          ready={ready}
+          titleLine1={renderHeroAccentTokens(hero.title_line_1)}
+          titleLine2={renderHeroAccentTokens(hero.title_line_2)}
+          subtitle={hero.subtitle}
+          ctaLabel={legacyCta?.label ?? ""}
+          showCta={showLegacyCta}
+          ctaOnClick={() => {
+            const href = legacyCta?.href || "";
+            if (!href) return;
+            if (isExternalHref(href)) {
+              window.location.assign(href);
+              return;
+            }
+            navigate(href);
+          }}
+          showVideo={hero.show_video}
+          bgImage={hero.background_image?.url || undefined}
+          bgPoster={hero.background_image?.url || undefined}
+          bgVideo={(hero.background_video ?? hero.background_video_url) || undefined}
+          panel={heroTabs.length > 0 ? <HeroSearchPanel tabs={heroTabs} /> : undefined}
+        />
+      ) : null}
 
       {sections.intro ? <Intro data={sections.intro} /> : null}
 
@@ -130,11 +132,6 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           minHeight={ctaSection.min_height}
           primary={primaryCta}
           secondary={secondaryCta}
-          stats={[
-            { value: "5+", label: "Years Experience" },
-            { value: "100+", label: "Happy Clients" },
-            { value: "24/7", label: "Support Available" },
-          ]}
         />
       ) : null}
 

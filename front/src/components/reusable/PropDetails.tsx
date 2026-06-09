@@ -697,15 +697,12 @@ const VideoTour: React.FC<{
   };
   const resolvedUrl = resolveVideoUrl(videoUrl);
 
-  const defaultThumbnail =
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
-
   return (
     <div className="pd-video__player">
       {!canPlay ? (
         <div
           className="pd-video__placeholder"
-          style={{ backgroundImage: `url(${thumbnail || defaultThumbnail})` }}
+          style={thumbnail ? { backgroundImage: `url(${thumbnail})` } : undefined}
         >
           <div className="pd-video__play">
             <Icons.play />
@@ -736,7 +733,7 @@ const ContactCard: React.FC<{
     name: "",
     email: "",
     phone: "",
-    message: `I'm interested in learning more about this property.`,
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 

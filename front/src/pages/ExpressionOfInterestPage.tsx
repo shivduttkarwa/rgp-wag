@@ -389,23 +389,24 @@ export default function ExpressionOfInterestPage({
 
   return (
     <main className="eoi-page" ref={pageRef}>
-      <InternalPageHero
-        ready={ready}
-        hero={{
-          ...eoiData.hero,
-          buttons: [
-            {
-              label: eoiData.hero.buttons?.[0]?.label ?? "Complete the Form",
-              style: "gold",
-              onClick: () =>
-                formTopRef.current?.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                }),
-            },
-          ],
-        }}
-      />
+      {eoiData.hero ? (
+        <InternalPageHero
+          ready={ready}
+          hero={{
+            ...eoiData.hero,
+            buttons: eoiData.hero.buttons?.length
+              ? eoiData.hero.buttons.map((button) => ({
+                  ...button,
+                  onClick: () =>
+                    formTopRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    }),
+                }))
+              : [],
+          }}
+        />
+      ) : null}
 
       <section className="eoi-shell">
         <div className="eoi-shell__rule" />
@@ -415,9 +416,11 @@ export default function ExpressionOfInterestPage({
               <h2 className="eoi-heading__title" data-gsap="char-reveal" data-gsap-start="top 88%">
                 Expression of Interest Form
               </h2>
-              <p className="eoi-heading__body" data-gsap="fade-up" data-gsap-delay="0.14">
-                {eoiData.legal_text}
-              </p>
+              {eoiData.legal_text ? (
+                <p className="eoi-heading__body" data-gsap="fade-up" data-gsap-delay="0.14">
+                  {eoiData.legal_text}
+                </p>
+              ) : null}
             </div>
 
             <form

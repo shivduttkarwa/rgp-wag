@@ -31,100 +31,6 @@ interface SplitSliderProps {
   className?: string;
 }
 
-// Default slides — 10 client reviews
-const defaultSlides: SlideContent[] = [
-  {
-    kicker: "★★★★★",
-    titleLines: ["From First", "Viewing to", "Settlement"],
-    description:
-      "Every step was handled with elegance and precision. The team's attention to detail made what could have been stressful feel entirely effortless.",
-    linkText: "— James & Priya Hartwell",
-    image: "images/ps1 (1).jpg",
-    theme: "theme-1",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["A Waterfront", "Dream Made", "Reality"],
-    description:
-      "They secured us a waterfront property we never imagined we could afford. Their negotiation skills and market knowledge are truly extraordinary.",
-    linkText: "— Michael Thornton",
-    image: "images/ps1 (2).jpg",
-    theme: "theme-2",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["They Knew", "Exactly What", "We Needed"],
-    description:
-      "Outstanding market knowledge. They understood our lifestyle requirements immediately and found a home that exceeded every expectation we had.",
-    linkText: "— Samantha Reed, Melbourne",
-    image: "images/ps1 (3).jpg",
-    theme: "theme-3",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Seamless From", "Start to", "Finish"],
-    description:
-      "Our penthouse purchase was handled flawlessly from the very first call to the day we received the keys. Truly premium, truly personal service.",
-    linkText: "— David & Claire Morrison",
-    image: "images/ps1 (4).jpg",
-    theme: "theme-4",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Discretion &", "Professionalism", "Unmatched"],
-    description:
-      "The team's discretion and professionalism set them apart from every other agency we've worked with. Quiet confidence and exceptional results.",
-    linkText: "— Private Investor, Sydney",
-    image: "images/ps1 (5).jpg",
-    theme: "theme-5",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Three Homes.", "Each Time,", "Flawless."],
-    description:
-      "We have purchased three properties through Real Gold Properties. Each transaction has been handled with the same impeccable standard of care.",
-    linkText: "— Benjamin Park, Singapore",
-    image: "images/ps1 (6).jpg",
-    theme: "theme-6",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Stress-Free", "Interstate", "Purchase"],
-    description:
-      "As interstate buyers, we relied on them completely. They managed inspections, negotiations and legal coordination — all without a single misstep.",
-    linkText: "— The Nguyen Family, Brisbane",
-    image: "images/ps1 (1).jpg",
-    theme: "theme-7",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Beyond What", "We Thought", "Possible"],
-    description:
-      "The off-market listing they sourced for us was beyond anything we'd seen publicly. Their network access is genuinely unparalleled in this market.",
-    linkText: "— Rachel & Tom Ashford",
-    image: "images/ps1 (2).jpg",
-    theme: "theme-8",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Sold Above", "Reserve in", "Any Market"],
-    description:
-      "Our property sold above reserve within days. Their staging strategy, marketing reach and negotiation delivered an outcome we couldn't have imagined.",
-    linkText: "— Grace Hamilton, Vendor",
-    image: "images/ps1 (3).jpg",
-    theme: "theme-9",
-  },
-  {
-    kicker: "★★★★★",
-    titleLines: ["Partners at", "Every", "Level"],
-    description:
-      "From our first luxury villa to managing a full investment portfolio — Real Gold Properties has guided us with expertise, integrity and genuine care.",
-    linkText: "— Marcus & Elena Wright",
-    image: "images/ps1 (4).jpg",
-    theme: "theme-10",
-  },
-];
-
 // Arrow Icon Component
 const ArrowIcon: React.FC<{ direction?: "left" | "right" }> = ({
   direction = "right",
@@ -156,7 +62,7 @@ const LinkArrowIcon: React.FC = () => (
 );
 
 const SplitSlider: React.FC<SplitSliderProps> = ({
-  slides = defaultSlides,
+  slides = [],
   className = "",
 }) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -172,7 +78,7 @@ const SplitSlider: React.FC<SplitSliderProps> = ({
 
   // Initialize Swiper
   useEffect(() => {
-    if (!picSwiperContainerRef.current) return;
+    if (!totalSlides || !picSwiperContainerRef.current) return;
 
     picSwiperRef.current = new Swiper(picSwiperContainerRef.current, {
       modules: [Parallax],
@@ -187,7 +93,7 @@ const SplitSlider: React.FC<SplitSliderProps> = ({
     return () => {
       picSwiperRef.current?.destroy();
     };
-  }, []);
+  }, [totalSlides]);
 
   // Go to slide function
   const goToSlide = useCallback(
@@ -304,6 +210,8 @@ const SplitSlider: React.FC<SplitSliderProps> = ({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [currentIndex, goToSlide]);
+
+  if (!slides.length) return null;
 
   return (
     <section

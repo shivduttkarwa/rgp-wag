@@ -5,7 +5,6 @@ import {
 } from "lucide-react";
 import RgButton from "@/components/reusable/RgButton";
 import type { ServicesSection } from "@/types/homePage";
-import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
 import "./ServiceSelection.css";
 
 const THEME_ICON_MAP = {
@@ -13,8 +12,6 @@ const THEME_ICON_MAP = {
   sell: TrendingUp,
   rent: CalendarCheck,
 };
-
-const FALLBACK_DATA: ServicesSection = DEFAULT_HOME_PAGE_SECTIONS.services!;
 
 type LegacyServiceItem = {
   id: string;
@@ -42,25 +39,15 @@ type ServiceSelectionProps = {
 };
 
 const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => {
-  let section = data ?? FALLBACK_DATA;
+  let section = data;
 
   if (!data && (services || header)) {
     section = {
-      ...FALLBACK_DATA,
-      header_eyebrow: header?.eyebrow ?? FALLBACK_DATA.header_eyebrow,
-      header_title: header?.title ?? FALLBACK_DATA.header_title,
-      header_title_em: header?.titleEm ?? FALLBACK_DATA.header_title_em,
-      header_subtitle: header?.subtitle ?? FALLBACK_DATA.header_subtitle,
-      services: (services && services.length ? services : FALLBACK_DATA.services.map((service) => ({
-        id: service.theme,
-        icon: Search,
-        headline: service.headline,
-        title: service.title,
-        subtitle: service.subtitle,
-        description: service.description,
-        cta: service.cta_label,
-        theme: service.theme,
-      }))).map((service) => ({
+      header_eyebrow: header?.eyebrow ?? "",
+      header_title: header?.title ?? "",
+      header_title_em: header?.titleEm ?? "",
+      header_subtitle: header?.subtitle ?? "",
+      services: (services ?? []).map((service) => ({
         theme: service.theme,
         headline: service.headline,
         title: service.title,
@@ -70,6 +57,8 @@ const ServiceSelection = ({ data, services, header }: ServiceSelectionProps) => 
       })),
     };
   }
+
+  if (!section) return null;
 
   return (
     <section className="svc">

@@ -3,7 +3,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import type { VideoTestimonialsSection } from "@/types/homePage";
-import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
 import assetUrl from "@/lib/assetUrl";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -17,42 +16,6 @@ type Testimonial = {
   poster: string;
   tintVar: "gold" | "amber" | "crimson";
 };
-
-const FALLBACK_SECTION: VideoTestimonialsSection = {
-  ...(DEFAULT_HOME_PAGE_SECTIONS.video_testimonials ?? {
-    section_label: "Testimonials",
-    heading: "What Our",
-    heading_em: "Clients Say",
-    items: [],
-  }),
-};
-
-const FALLBACK_TESTIMONIALS: Testimonial[] = [
-  {
-    kicker: "SUNNYBANK · SOLD",
-    title: "SARAH M.",
-    video: assetUrl("vids/rgp-video.mp4"),
-    poster:
-      "https://files.staging.peachworlds.com/website/dbf16c23-6134-4df6-a509-bd2a6b79ab37/chatgpt-image-3-apr-2025-16-33-58.webp",
-    tintVar: "gold",
-  },
-  {
-    kicker: "UNDERWOOD · PURCHASED",
-    title: "JAMES & LISA",
-    video: assetUrl("vids/rgp-video.mp4"),
-    poster:
-      "https://files.staging.peachworlds.com/website/d80b404a-7e8e-40ee-a08c-cbab3f8a7ad3/chatgpt-image-3-apr-2025-16-23-38.webp",
-    tintVar: "amber",
-  },
-  {
-    kicker: "EIGHT MILE PLAINS · APPRAISAL",
-    title: "DAVID K.",
-    video: assetUrl("vids/rgp-video.mp4"),
-    poster:
-      "https://files.staging.peachworlds.com/website/504aad69-04e9-4c61-8e60-4bf340ec746f/chatgpt-image-3-apr-2025-16-23-32.webp",
-    tintVar: "crimson",
-  },
-];
 
 function TestiCard({
   t,
@@ -169,20 +132,20 @@ function TestiCard({
 }
 
 export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSection }) {
-  const section = data ?? FALLBACK_SECTION;
+  const section = data;
   const [activeId, setActiveId] = useState<string | null>(null);
   const desktopSwiperRef = useRef<SwiperType | null>(null);
 
+  if (!section?.items.length) return null;
+
   const testimonials =
-    section.items.length > 0
-      ? section.items.map((item) => ({
-          kicker: item.kicker,
-          title: item.name,
-          video: assetUrl(item.video_url),
-          poster: assetUrl(item.poster_image?.url ?? item.poster_url),
-          tintVar: item.tint,
-        }))
-      : FALLBACK_TESTIMONIALS;
+    section.items.map((item) => ({
+      kicker: item.kicker,
+      title: item.name,
+      video: assetUrl(item.video_url),
+      poster: assetUrl(item.poster_image?.url ?? item.poster_url),
+      tintVar: item.tint,
+    }));
   const useDesktopSlider = testimonials.length > 3;
 
   return (

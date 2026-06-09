@@ -23,7 +23,7 @@ export type Cta2Props = {
   title: ReactNode;
   titleEm?: ReactNode;
   text: ReactNode;
-  primary: Cta2Link;
+  primary?: Cta2Link;
   secondary?: Cta2Link;
   commitments?: Cta2Commitment[];
   bgImage?: string;
@@ -33,12 +33,6 @@ export type Cta2Props = {
   className?: string;
 };
 
-const DEFAULT_COMMITMENTS: Cta2Commitment[] = [
-  { title: "Data‑backed guidance" },
-  { title: "Off‑market access" },
-  { title: "Calm negotiation" },
-];
-
 export default function Cta2({
   eyebrow,
   title,
@@ -46,8 +40,8 @@ export default function Cta2({
   text,
   primary,
   secondary,
-  commitments = DEFAULT_COMMITMENTS,
-  bgImage = "images/hero1.jpg",
+  commitments = [],
+  bgImage,
   bgVideo,
   posterImage,
   minHeight = "100vh",
@@ -107,21 +101,23 @@ export default function Cta2({
             <p className="cta2__text">{text}</p>
 
             <div className="cta2__actions">
-              {primary.to ? (
-                <RgButton
-                  variant="gold"
-                  to={primary.to}
-                  label={primary.label}
-                />
-              ) : (
-                <RgButton
-                  variant="gold"
-                  href={primary.href ?? "#"}
-                  label={primary.label}
-                />
-              )}
+              {primary?.label ? (
+                primary.to ? (
+                  <RgButton
+                    variant="gold"
+                    to={primary.to}
+                    label={primary.label}
+                  />
+                ) : (
+                  <RgButton
+                    variant="gold"
+                    href={primary.href ?? ""}
+                    label={primary.label}
+                  />
+                )
+              ) : null}
 
-              {secondary ? (
+              {secondary?.label ? (
                 secondary.to ? (
                   <RgButton
                     variant="outline"
@@ -131,7 +127,7 @@ export default function Cta2({
                 ) : (
                   <RgButton
                     variant="outline"
-                    href={secondary.href ?? "#"}
+                    href={secondary.href ?? ""}
                     label={secondary.label}
                   />
                 )
@@ -153,4 +149,3 @@ export default function Cta2({
     </section>
   );
 }
-

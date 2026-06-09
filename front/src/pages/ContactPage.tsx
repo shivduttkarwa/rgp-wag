@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, FileText, Send } from "lucide-react";
+import { ChevronDown, Send } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
@@ -7,17 +7,7 @@ import { submitContactForm } from "@/lib/api/forms";
 import { useContactPage } from "@/hooks/useContactPage";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
-import { DEFAULT_CONTACT_PAGE_DATA } from "@/lib/api/contactPage";
 import "./ContactPage.css";
-
-const DEFAULT_INTENTS = ["Buy", "Sell", "Rent", "Invest", "Off-Plan", "Valuation"];
-const DEFAULT_PROPERTY_TYPES = [
-  "Apartment",
-  "Villa / Townhouse",
-  "Penthouse",
-  "Commercial",
-  "Plot / Land",
-];
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -27,51 +17,50 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const { data, status } = useContactPage();
   const { sections } = data;
 
-  const defaultSections = DEFAULT_CONTACT_PAGE_DATA.sections;
-  const contactInfo = sections.contact_info ?? defaultSections.contact_info!;
-  const contactForm = sections.contact_form ?? defaultSections.contact_form!;
+  const contactInfo = sections.contact_info;
+  const contactForm = sections.contact_form;
 
-  const intentOptions = contactForm.intent_options?.length
-    ? contactForm.intent_options
-    : DEFAULT_INTENTS;
-  const propertyTypeOptions = contactForm.property_type_options?.length
-    ? contactForm.property_type_options
-    : DEFAULT_PROPERTY_TYPES;
+  const intentOptions = contactForm?.intent_options ?? [];
+  const propertyTypeOptions = contactForm?.property_type_options ?? [];
 
-  const budgetMin = Math.max(0, contactForm.budget_min || 500_000);
-  const budgetMax = Math.max(budgetMin + 1, contactForm.budget_max || 20_000_000);
-  const budgetStep = Math.max(1, contactForm.budget_step || 500_000);
-  const budgetDefault = clamp(contactForm.budget_default || budgetMin, budgetMin, budgetMax);
+  const budgetMin = Math.max(0, contactForm?.budget_min || 0);
+  const budgetMax = Math.max(budgetMin + 1, contactForm?.budget_max || budgetMin + 1);
+  const budgetStep = Math.max(1, contactForm?.budget_step || 1);
+  const budgetDefault = clamp(contactForm?.budget_default || budgetMin, budgetMin, budgetMax);
   const contactItems = useMemo(
-    () => [
-      {
-        label: "Contact Number",
-        value: contactInfo.contact_number,
-        href: contactInfo.contact_number
-          ? `tel:${contactInfo.contact_number.replace(/\s+/g, "")}`
-          : "",
-      },
-      {
-        label: "Email",
-        value: contactInfo.email,
-        href: contactInfo.email ? `mailto:${contactInfo.email}` : "",
-      },
-      {
-        label: "Address",
-        value: contactInfo.address,
-        href: "",
-      },
-      {
-        label: "Working Hours",
-        value: contactInfo.working_hours,
-        href: "",
-      },
-    ],
+    () =>
+      contactInfo
+        ? [
+            {
+              label: "Contact Number",
+              value: contactInfo.contact_number,
+              href: contactInfo.contact_number
+                ? `tel:${contactInfo.contact_number.replace(/\s+/g, "")}`
+                : "",
+            },
+            {
+              label: "Email",
+              value: contactInfo.email,
+              href: contactInfo.email ? `mailto:${contactInfo.email}` : "",
+            },
+            {
+              label: "Address",
+              value: contactInfo.address,
+              href: "",
+            },
+            {
+              label: "Working Hours",
+              value: contactInfo.working_hours,
+              href: "",
+            },
+          ].filter((item) => item.value)
+        : [],
     [
-      contactInfo.contact_number,
-      contactInfo.email,
-      contactInfo.address,
-      contactInfo.working_hours,
+      contactInfo,
+      contactInfo?.contact_number,
+      contactInfo?.email,
+      contactInfo?.address,
+      contactInfo?.working_hours,
     ],
   );
 
@@ -97,7 +86,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
     return cleanup;
   }, [status, data.updated_at]);
 
-  const [intent, setIntent] = useState(intentOptions[0] || "Buy");
+  const [intent, setIntent] = useState(intentOptions[0] || "");
   const [budget, setBudget] = useState(budgetDefault);
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,7 +95,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const [ptOpen, setPtOpen] = useState(false);
 
   useEffect(() => {
-    setIntent((prev) => (intentOptions.includes(prev) ? prev : intentOptions[0] || "Buy"));
+    setIntent((prev) => (intentOptions.includes(prev) ? prev : intentOptions[0] || ""));
   }, [intentOptionsKey, intentOptions]);
 
   useEffect(() => {
@@ -156,10 +145,12 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
     <main className="contact-page" ref={pageRef}>
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
+      {contactInfo || contactForm ? (
       <div className="contact-shell">
         <div className="top-rule" />
 
         <div className="page">
+          {contactInfo ? (
           <section className="left">
             <div>
               <h1 className="hero-title" data-gsap="char-reveal" data-gsap-start="top 90%">
@@ -228,7 +219,9 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
               </div>
             </div>
           </section>
+          ) : null}
 
+          {contactForm ? (
           <section className="right">
             <p className="form-eyebrow" data-gsap="fade-up">{contactForm.eyebrow}</p>
             <h2 className="form-heading" data-gsap="char-reveal" data-gsap-start="top 85%">
@@ -419,47 +412,10 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
               {submitError ? <p className="s-note">{submitError}</p> : null}
             </form>
           </section>
+          ) : null}
         </div>
-
-        <section
-          className="contact-cta"
-          data-gsap="clip-smooth-down"
-          data-gsap-start="top 88%"
-        >
-          <div className="contact-cta__copy">
-            <div className="contact-cta__badge" data-gsap="fade-up">
-              <FileText size={20} />
-              <span>Expression of Interest</span>
-            </div>
-            <h3
-              className="contact-cta__title"
-              data-gsap="char-reveal"
-              data-gsap-start="top 88%"
-            >
-              Need to submit a detailed property offer?
-            </h3>
-            <p
-              className="contact-cta__text"
-              data-gsap="fade-up"
-              data-gsap-delay="0.14"
-            >
-              Use our full Expression of Interest form to share buyer details,
-              offer terms, conditions, and solicitor information in one clean
-              submission.
-            </p>
-          </div>
-
-          <RgButton
-            to="/expressions-of-interest"
-            variant="gold"
-            className="contact-cta__button"
-            data-gsap="btn-clip-reveal"
-            data-gsap-delay="0.2"
-            label="Open the Form"
-            arrowSize={18}
-          />
-        </section>
       </div>
+      ) : null}
 
       {sections.cta && (
         <RgpCta

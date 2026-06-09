@@ -135,12 +135,16 @@ class SearchTabBlock(StructBlock):
 class HeroBlock(StructBlock):
     title_line_1 = CharBlock(
         required=False,
-        default="Your [gold]Dream[/gold] Home",
+        default="Find Your [gold]Next[/gold] Property",
         help_text="Use [gold]word[/gold] for gold accent colour.",
     )
-    title_line_2 = CharBlock(required=False, default="Perfectly Delivered")
+    title_line_2 = CharBlock(required=False, default="With Confident Guidance")
     subtitle     = TextBlock(
-        default="350+ premium properties delivered — luxury villas, penthouses & exclusive estates crafted for those who demand the extraordinary.",
+        required=False,
+        default=(
+            "Explore carefully selected properties with local advice, clear "
+            "market context, and support from enquiry through settlement."
+        ),
     )
     search_tabs  = ListBlock(
         SearchTabBlock(),
@@ -171,19 +175,27 @@ class HeroBlock(StructBlock):
 
 
 class IntroBlock(StructBlock):
-    label            = CharBlock(default="About the Founder")
-    headline_line1   = CharBlock(default="Building Wealth")
-    headline_line2   = CharBlock(default="Through Property,")
-    founder_name     = CharBlock(default="— Rahul Singh")
-    body             = TextBlock(default="Real Gold Properties is a vision turned reality — a private equity approach to multi-family real estate. Founded by Rahul Singh, we focus on disciplined acquisitions that deliver consistent returns.")
-    primary_cta      = CtaBlock()
-    secondary_cta    = CtaBlock()
+    label            = CharBlock(required=False, default="Founder Perspective")
+    headline_line1   = CharBlock(required=False, default="Property Choices")
+    headline_line2   = CharBlock(required=False, default="Made Clearer")
+    founder_name     = CharBlock(required=False, default="— Real Gold Properties")
+    body             = TextBlock(
+        required=False,
+        default=(
+            "Real Gold Properties brings practical market insight, measured "
+            "advice, and a client-first approach to every property decision."
+        ),
+    )
+    primary_cta      = CtaBlock(required=False)
+    secondary_cta    = CtaBlock(required=False)
     image            = ImageChooserBlock(
         required=False,
         help_text="Pick founder image from media library. Takes priority over URL fallback.",
     )
-    image_url        = CharBlock(default="images/rahul-singh.jpg",
-                                  help_text="Fallback path relative to public/ folder or full URL")
+    image_url        = CharBlock(
+        required=False,
+        help_text="Optional full URL only if no image is chosen above.",
+    )
 
     class Meta:
         icon  = "user"
@@ -191,9 +203,12 @@ class IntroBlock(StructBlock):
 
 
 class PropertyListingSectionBlock(StructBlock):
-    eyebrow  = CharBlock(default="Our Listings")
-    heading  = CharBlock(default="Available Properties")
-    subtitle = TextBlock(required=False, default="Explore our current listings across South-East Queensland.")
+    eyebrow  = CharBlock(required=False, default="Current Opportunities")
+    heading  = CharBlock(required=False, default="Featured Properties")
+    subtitle = TextBlock(
+        required=False,
+        default="Browse selected listings and recent results from the local market.",
+    )
     cards    = ListBlock(
         SnippetChooserBlock("properties.Property"),
         required=False,
@@ -206,19 +221,24 @@ class PropertyListingSectionBlock(StructBlock):
 
 
 class EoiCtaSectionBlock(StructBlock):
-    badge_text = CharBlock(default="Expression of Interest")
-    title = CharBlock(default="Ready to make an offer on a property you love?")
-    text = TextBlock(default="Complete our full Expression of Interest form with the exact buyer, offer, condition, and solicitor details needed for a clean review.")
-    button_label = CharBlock(default="Open the Form")
-    button_href = CharBlock(default="/expressions-of-interest", help_text="Relative path (e.g. /expressions-of-interest) or full URL")
+    badge_text = CharBlock(required=False, default="Expression of Interest")
+    title = CharBlock(required=False, default="Ready to submit your property offer?")
+    text = TextBlock(
+        required=False,
+        default=(
+            "Share buyer details, offer terms, conditions, and solicitor "
+            "information in one structured submission."
+        ),
+    )
+    button_label = CharBlock(required=False, default="Start the Form")
+    button_href = CharBlock(required=False, default="/expressions-of-interest", help_text="Relative path (e.g. /expressions-of-interest) or full URL")
     background_image = ImageChooserBlock(
         required=False,
         help_text="Desktop background image. Takes priority over URL fallback.",
     )
     background_image_url = CharBlock(
         required=False,
-        default="images/eoi-cta.jpg",
-        help_text="Fallback desktop image path relative to public/ or full URL.",
+        help_text="Optional full URL only if no image is chosen above.",
     )
     mobile_background_image = ImageChooserBlock(
         required=False,
@@ -226,8 +246,7 @@ class EoiCtaSectionBlock(StructBlock):
     )
     mobile_background_image_url = CharBlock(
         required=False,
-        default="images/eoi-cta-mob.jpg",
-        help_text="Fallback mobile image path relative to public/ or full URL.",
+        help_text="Optional full URL only if no image is chosen above.",
     )
     min_height = CharBlock(required=False, default="100vh")
     mobile_min_height = CharBlock(required=False, default="70vh")
@@ -239,11 +258,11 @@ class EoiCtaSectionBlock(StructBlock):
 
 class ServiceCardBlock(StructBlock):
     theme       = ChoiceBlock(choices=[("buy", "Buy"), ("sell", "Sell"), ("rent", "Rent")], default="buy")
-    headline    = CharBlock(default="Advisory")
-    title       = CharBlock(default="Buyer Support")
-    subtitle    = CharBlock(default="And Guidance")
+    headline    = CharBlock(default="Consulting")
+    title       = CharBlock(default="Buyer Guidance")
+    subtitle    = CharBlock(default="And Strategy")
     description = TextBlock()
-    cta_label   = CharBlock(default="Speak With Us")
+    cta_label   = CharBlock(default="Contact the Team")
 
     class Meta:
         icon  = "pick"
@@ -251,10 +270,10 @@ class ServiceCardBlock(StructBlock):
 
 
 class ServiceSectionBlock(StructBlock):
-    header_eyebrow   = CharBlock(default="How Can We Help You?")
-    header_title     = CharBlock(default="What Are You")
-    header_title_em  = CharBlock(default="Looking For?")
-    header_subtitle  = TextBlock(default="Whether you're buying, selling, or renting — we're here to make your real estate journey seamless and rewarding.")
+    header_eyebrow   = CharBlock(default="How We Can Support You")
+    header_title     = CharBlock(default="Choose The")
+    header_title_em  = CharBlock(default="Right Next Step")
+    header_subtitle  = TextBlock(default="Buying, selling, and leasing decisions become simpler with clear advice and local market perspective.")
     services         = ListBlock(ServiceCardBlock())
 
     class Meta:
@@ -263,10 +282,10 @@ class ServiceSectionBlock(StructBlock):
 
 
 class CtaSectionBlock(StructBlock):
-    eyebrow    = CharBlock(default="Need Guidance?")
-    title      = CharBlock(default="Not Sure Where to")
-    title_em   = CharBlock(default="Start?")
-    text       = TextBlock(default="Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.")
+    eyebrow    = CharBlock(default="Need Direction?")
+    title      = CharBlock(default="Unsure What Comes")
+    title_em   = CharBlock(default="Next?")
+    text       = TextBlock(default="Tell us your goals and we will help map a practical path through your next property decision.")
     primary    = CtaBlock()
     secondary  = CtaBlock()
     use_video  = BooleanBlock(
@@ -280,13 +299,13 @@ class CtaSectionBlock(StructBlock):
     )
     background_image_url = CharBlock(
         required=False,
-        default="images/hero1.jpg",
-        help_text="Fallback image path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no image is chosen above.",
     )
     background_video_url = CharBlock(
         required=False,
-        default="vids/cta-vid.mp4",
-        help_text="Video path relative to public/ or full URL. Used when video mode is enabled.",
+        default="",
+        help_text="Optional full URL. Used when video mode is enabled.",
     )
     video_poster_image = ImageChooserBlock(
         required=False,
@@ -294,8 +313,8 @@ class CtaSectionBlock(StructBlock):
     )
     video_poster_image_url = CharBlock(
         required=False,
-        default="images/hero1.jpg",
-        help_text="Fallback poster path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no poster image is chosen above.",
     )
     min_height = CharBlock(required=False, default="100vh")
 
@@ -305,7 +324,7 @@ class CtaSectionBlock(StructBlock):
 
 
 class PropertyCtaCommitmentBlock(StructBlock):
-    title = CharBlock(default="Data-backed guidance")
+    title = CharBlock(default="Clear market guidance")
 
     class Meta:
         icon = "doc-full"
@@ -313,13 +332,13 @@ class PropertyCtaCommitmentBlock(StructBlock):
 
 
 class PropertyCtaBlock(StructBlock):
-    eyebrow = CharBlock(default="Need Help Choosing?")
-    title = CharBlock(default="Let's Find Your")
-    title_em = CharBlock(default="Perfect Home")
+    eyebrow = CharBlock(default="Need Help Deciding?")
+    title = CharBlock(default="Find The Property")
+    title_em = CharBlock(default="That Fits")
     text = TextBlock(
         default=(
-            "Tell us what you're looking for and we'll shortlist the best "
-            "options, arrange inspections, and guide you through every step."
+            "Share what matters most and we will help compare options, "
+            "coordinate inspections, and clarify the next move."
         ),
     )
     primary = CtaBlock()
@@ -340,13 +359,13 @@ class PropertyCtaBlock(StructBlock):
     )
     background_image_url = CharBlock(
         required=False,
-        default="images/int.jpg",
-        help_text="Fallback image path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no image is chosen above.",
     )
     background_video_url = CharBlock(
         required=False,
-        default="vids/cta-2-vid.mp4",
-        help_text="Video path relative to public/ or full URL. Used when video mode is enabled.",
+        default="",
+        help_text="Optional full URL. Used when video mode is enabled.",
     )
     video_poster_image = ImageChooserBlock(
         required=False,
@@ -354,8 +373,8 @@ class PropertyCtaBlock(StructBlock):
     )
     video_poster_image_url = CharBlock(
         required=False,
-        default="images/int.jpg",
-        help_text="Fallback poster path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no poster image is chosen above.",
     )
     min_height = CharBlock(required=False, default="100vh")
 
@@ -381,9 +400,9 @@ class VideoTestimonialItemBlock(StructBlock):
 
 
 class VideoTestimonialsSectionBlock(StructBlock):
-    section_label = CharBlock(default="Testimonials")
-    heading       = CharBlock(default="What Our")
-    heading_em    = CharBlock(default="Clients Say")
+    section_label = CharBlock(default="Client Stories")
+    heading       = CharBlock(default="Hear From")
+    heading_em    = CharBlock(default="Our Clients")
     items         = ListBlock(
         VideoTestimonialItemBlock(),
         required=False,
@@ -420,10 +439,10 @@ class ShowcasePropertyItemBlock(StructBlock):
 
 
 class PortfolioSectionBlock(StructBlock):
-    eyebrow   = CharBlock(default="REAL GOLD PROPERTIES")
-    heading   = CharBlock(default="Featured")
-    heading_em = CharBlock(default="Properties")
-    subtitle  = TextBlock(default="Handpicked residences across Australia's most coveted neighbourhoods — every listing curated for quality, location, and lasting value.")
+    eyebrow   = CharBlock(default="PROPERTY PORTFOLIO")
+    heading   = CharBlock(default="Selected")
+    heading_em = CharBlock(default="Homes")
+    subtitle  = TextBlock(default="A focused collection of properties chosen for location, presentation, and long-term appeal.")
     projects  = ListBlock(ShowcasePropertyItemBlock())
 
     class Meta:
@@ -432,11 +451,11 @@ class PortfolioSectionBlock(StructBlock):
 
 
 class ContactInfoBlock(StructBlock):
-    title = CharBlock(default="Let's Talk Appraisal.")
+    title = CharBlock(default="Let's Talk Property.")
     tagline = TextBlock(
         default=(
-            "Whether you're buying, selling, or investing — our advisors are ready "
-            "to guide you through every step."
+            "Whether you are buying, selling, or reviewing your options, our team "
+            "can help you understand the next step."
         ),
     )
     contact_number = CharBlock(default="0450 009 291")
@@ -445,11 +464,11 @@ class ContactInfoBlock(StructBlock):
     working_hours = CharBlock(default="All days · 09:00 – 18:00")
     quote_text = TextBlock(
         default=(
-            '"Real estate is not just a transaction — it is the beginning of a life '
-            'lived better."'
+            '"Good property advice starts with listening, then turns information '
+            'into a clear decision."'
         ),
     )
-    quote_author = CharBlock(default="— Our Promise")
+    quote_author = CharBlock(default="— Our Approach")
 
     class Meta:
         icon = "user"
@@ -464,11 +483,11 @@ class FeaturedTestimonialsBlock(StructBlock):
 
     eyebrow = CharBlock(
         required=False,
-        default="Testimonials",
+        default="Client Stories",
         help_text="Small label above the heading (e.g. 'Client Stories')",
     )
     heading = CharBlock(
-        default="What Our Clients Say",
+        default="Real Client Feedback",
         help_text="Main section heading",
     )
     subtitle = TextBlock(
@@ -485,11 +504,11 @@ class FeaturedTestimonialsBlock(StructBlock):
 class TestimonialTextGridBlock(StructBlock):
     """Section heading for the text testimonials bento grid (VoiceMosaic)."""
 
-    eyebrow = CharBlock(required=False, default="Client Voices")
-    heading = CharBlock(default="What Our Clients Say")
+    eyebrow = CharBlock(required=False, default="Client Feedback")
+    heading = CharBlock(default="Stories From Our Clients")
     subtitle = TextBlock(
         required=False,
-        default="Real experiences from real clients — every word earned, never scripted.",
+        default="First-hand experiences from people who trusted the team with their property goals.",
     )
 
     class Meta:
@@ -506,13 +525,13 @@ class TestimonialTickerBlock(StructBlock):
 
 
 class TestimonialFinalCtaBlock(StructBlock):
-    heading = CharBlock(default="Book a Free Appraisal")
+    heading = CharBlock(default="Request Your Property Appraisal")
     body = TextBlock(
-        default="Get a clear price range, honest advice, and a plan that positions your property for a confident sale.",
+        default="Receive a practical price range, market context, and a plan for moving forward with confidence.",
     )
-    primary_label = CharBlock(default="Book Your Appraisal")
+    primary_label = CharBlock(default="Arrange an Appraisal")
     primary_href = CharBlock(required=False, default="/contact")
-    secondary_label = CharBlock(default="Talk to Rahul")
+    secondary_label = CharBlock(default="Speak With the Team")
     secondary_href = CharBlock(required=False, default="/contact")
 
     class Meta:
@@ -557,7 +576,7 @@ class TestimonialsPageContentStreamBlock(StreamBlock):
 
 class AboutIntroBlock(StructBlock):
     statement = TextBlock(
-        default="Rahul Singh is the appraisal-first agent behind Real Gold Properties — bringing local clarity, data-backed pricing, and calm negotiation to every homeowner.",
+        default="Real Gold Properties brings calm advice, local market clarity, and practical pricing insight to each property conversation.",
     )
 
     class Meta:
@@ -566,12 +585,12 @@ class AboutIntroBlock(StructBlock):
 
 
 class AboutSplitBlock(StructBlock):
-    heading = CharBlock(default="Why Sellers Choose Rahul")
+    heading = CharBlock(default="Why Sellers Choose This Approach")
     p1 = TextBlock(
-        default="He translates market noise into a clear, confident price position — with a strategy that attracts buyers and protects your upside.",
+        default="We turn market signals into a realistic pricing position and a campaign plan designed to attract qualified buyers.",
     )
     p2 = TextBlock(
-        default="You get straight answers, a staged plan, and weekly feedback so the appraisal never sits still.",
+        default="You receive plain-language advice, a staged process, and regular feedback so decisions stay informed.",
     )
     bullets = ListBlock(
         CharBlock(),
@@ -579,10 +598,10 @@ class AboutSplitBlock(StructBlock):
     )
     video_url = CharBlock(
         required=False,
-        default="vids/rgp-video.mp4",
-        help_text="Path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL.",
     )
-    cta_label = CharBlock(default="Book Your Appraisal")
+    cta_label = CharBlock(default="Arrange an Appraisal")
     cta_href = CharBlock(required=False, default="/contact")
 
     class Meta:
@@ -591,9 +610,9 @@ class AboutSplitBlock(StructBlock):
 
 
 class AboutOverlayBlock(StructBlock):
-    heading = CharBlock(default="The Appraisal Strategy")
+    heading = CharBlock(default="A Clear Appraisal Plan")
     text = TextBlock(
-        default="Rahul's appraisals are more than a number. Each one is built to attract the right buyers and set a confident path to sale.",
+        default="Each appraisal is built around evidence, buyer demand, and a practical path toward a confident sale.",
     )
     image = ImageChooserBlock(
         required=False,
@@ -601,8 +620,8 @@ class AboutOverlayBlock(StructBlock):
     )
     image_url = CharBlock(
         required=False,
-        default="images/int.jpg",
-        help_text="Fallback image path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no image is chosen above.",
     )
     steps = ListBlock(
         CharBlock(),
@@ -615,10 +634,10 @@ class AboutOverlayBlock(StructBlock):
 
 
 class AboutAvailabilityBlock(StructBlock):
-    eyebrow = CharBlock(required=False, default="APPRAISAL")
-    heading = CharBlock(default="Ready For Your Appraisal?")
+    eyebrow = CharBlock(required=False, default="PROPERTY APPRAISAL")
+    heading = CharBlock(default="Ready To Understand Your Value?")
     text = TextBlock(
-        default="Book a free, no-pressure appraisal with Rahul Singh. You'll get a clear price range, honest advice, and a next-step plan.",
+        default="Request a no-pressure appraisal and receive a useful price range, market context, and next-step guidance.",
     )
     image = ImageChooserBlock(
         required=False,
@@ -626,10 +645,10 @@ class AboutAvailabilityBlock(StructBlock):
     )
     image_url = CharBlock(
         required=False,
-        default="images/rahul-singh.jpg",
-        help_text="Fallback image path relative to public/ or full URL.",
+        default="",
+        help_text="Optional full URL only if no image is chosen above.",
     )
-    cta_label = CharBlock(default="Book Your Appraisal")
+    cta_label = CharBlock(default="Request an Appraisal")
     cta_href = CharBlock(required=False, default="/contact")
 
     class Meta:
@@ -661,15 +680,15 @@ class AboutPageStreamBlock(StreamBlock):
 # ─── Team page blocks ────────────────────────────────────────────────────────
 
 class TeamSectionBlock(StructBlock):
-    eyebrow = CharBlock(required=False, default="Our People")
+    eyebrow = CharBlock(required=False, default="Meet the Team")
     title_line_1 = CharBlock(
         required=False,
-        default="The Minds",
+        default="The People",
         help_text="Use [gold]word[/gold] for gold accent colour.",
     )
-    title_line_2 = CharBlock(required=False, default="[gold]Behind[/gold] Every Deal")
+    title_line_2 = CharBlock(required=False, default="[gold]Guiding[/gold] Each Step")
     subtitle = TextBlock(
-        default="A curated ensemble of creative minds and industry veterans — each bringing unmatched expertise to every client engagement.",
+        default="A focused team bringing local knowledge, clear communication, and steady support to every client relationship.",
     )
 
     class Meta:
@@ -695,10 +714,10 @@ class TeamPageStreamBlock(StreamBlock):
 # ─── Contact page blocks ─────────────────────────────────────────────────────
 
 class ContactFormConfigBlock(StructBlock):
-    eyebrow = CharBlock(default="Begin your enquiry")
-    heading_line_1 = CharBlock(default="Tell us what you're")
-    heading_line_2 = CharBlock(default="looking for.")
-    subtitle = TextBlock(default="Fill in the details and a specialist will respond within one business day.")
+    eyebrow = CharBlock(default="Start your enquiry")
+    heading_line_1 = CharBlock(default="Share what you")
+    heading_line_2 = CharBlock(default="need next.")
+    subtitle = TextBlock(default="Send through the details and our team will respond as soon as possible.")
     intent_options = CharBlock(
         required=False,
         default="Buy,Sell,Rent,Invest,Off-Plan,Valuation",
@@ -713,7 +732,7 @@ class ContactFormConfigBlock(StructBlock):
     budget_max = IntegerBlock(default=20000000, help_text="Maximum budget (AUD)")
     budget_step = IntegerBlock(default=500000, help_text="Budget slider step (AUD)")
     budget_default = IntegerBlock(default=5000000, help_text="Default budget value (AUD)")
-    submit_note = CharBlock(default="We respond within one business day.")
+    submit_note = CharBlock(default="We will review your enquiry and get back to you shortly.")
 
     class Meta:
         icon = "form"
@@ -740,11 +759,11 @@ class ContactPageStreamBlock(StreamBlock):
 # ─── Properties page blocks ──────────────────────────────────────────────────
 
 class PropertiesPageListingBlock(StructBlock):
-    eyebrow = CharBlock(required=False, default="Browse Listings")
-    heading = CharBlock(default="Discover Your Next Property")
+    eyebrow = CharBlock(required=False, default="View Listings")
+    heading = CharBlock(default="Find Your Next Opportunity")
     subtitle = TextBlock(
         required=False,
-        default="Filter by sale, rent, or sold status and explore our complete listing portfolio in one place.",
+        default="Filter available, rental, and sold properties to review the current portfolio.",
     )
 
     class Meta:
@@ -753,14 +772,14 @@ class PropertiesPageListingBlock(StructBlock):
 
 
 class PropertyMarqueeConfigBlock(StructBlock):
-    eyebrow = CharBlock(required=False, default="Featured Portfolio")
-    title = CharBlock(default="Explore")
-    title_em = CharBlock(default="Premium Homes")
+    eyebrow = CharBlock(required=False, default="Portfolio Highlights")
+    title = CharBlock(default="Browse")
+    title_em = CharBlock(default="Selected Properties")
     subtitle = TextBlock(
         required=False,
-        default="A curated selection of standout residences from across our portfolio — updated regularly.",
+        default="A rotating selection of notable listings and results from across the property portfolio.",
     )
-    cta_label = CharBlock(default="View All Properties")
+    cta_label = CharBlock(default="See All Properties")
 
     class Meta:
         icon = "arrows-up-down"

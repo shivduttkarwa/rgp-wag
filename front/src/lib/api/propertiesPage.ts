@@ -1,5 +1,4 @@
 import type { Property, Category } from "@/components/reusable/PropertyCard";
-import { allProperties } from "@/data/listingProperties";
 import type { PropertiesPageData } from "@/types/propertiesPage";
 
 const API_BASE = (
@@ -95,53 +94,8 @@ export const DEFAULT_PROPERTIES_PAGE_DATA: PropertiesPageData = {
   title: "Properties",
   slug: "properties",
   updated_at: null,
-  sections: {
-    hero: {
-      title_line_1: "Our [gold]Premium[/gold]",
-      title_line_2: "[amber]Properties[/amber]",
-      subtitle: "Browse our curated portfolio of for-sale, sold and rental properties across South-East Queensland.",
-      background_image: null,
-      background_image_url: "images/prop-hero.jpg",
-      show_video: false,
-      background_video_url: "",
-      mode: "buttons",
-      buttons: [{ label: "Talk to an Expert", href: "/contact", style: "gold", open_in_new_tab: false }],
-      stats: [],
-    },
-    property_listing: {
-      eyebrow: "Browse Listings",
-      heading: "Discover Your Next Property",
-      subtitle: "Filter by sale, rent, or sold status and explore our complete listing portfolio in one place.",
-    },
-    property_marquee: {
-      eyebrow: "Featured Portfolio",
-      title: "Explore",
-      title_em: "Premium Homes",
-      subtitle: "A curated selection of standout residences from across our portfolio — updated regularly.",
-      cta_label: "View All Properties",
-    },
-    property_cta: {
-      eyebrow: "Need Help Choosing?",
-      title: "Let's Find Your",
-      title_em: "Perfect Home",
-      text: "Tell us what you're looking for and we'll shortlist the best options, arrange inspections, and guide you through every step.",
-      primary: { label: "Talk to an Expert", href: "/contact" },
-      secondary: { label: "0450 009 291", href: "tel:+61450009291" },
-      commitments: [
-        { title: "Data-backed guidance" },
-        { title: "Inspection-ready planning" },
-        { title: "Negotiation that protects" },
-      ],
-      use_video: true,
-      background_image: null,
-      background_image_url: "images/int.jpg",
-      background_video_url: "vids/cta-2-vid.mp4",
-      video_poster_image: null,
-      video_poster_image_url: "images/int.jpg",
-      min_height: "100vh",
-    },
-  },
-  listings: allProperties,
+  sections: {},
+  listings: [],
 };
 
 export async function fetchPropertiesPage(signal?: AbortSignal): Promise<PropertiesPageData> {

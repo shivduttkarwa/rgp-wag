@@ -7,10 +7,10 @@ export type ServicesPageData = {
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: InternalPageHeroData;
-  intro: { statement: string };
-  buy: { heading: string; p1: string; p2: string; image_url: string; cta_label: string; cta_href: string };
-  cta: {
+  hero?: InternalPageHeroData;
+  intro?: { statement: string };
+  buy?: { heading: string; p1: string; p2: string; image_url: string; cta_label: string; cta_href: string };
+  cta?: {
     eyebrow: string;
     title: string;
     title_em: string;
@@ -19,6 +19,6 @@ export type ServicesPageData = {
     secondary: Cta;
     stats: Array<{ value: string; label: string }>;
   };
-  sell: { heading: string; text: string; image_url: string; cta_label: string; cta_href: string };
-  rent: { heading: string; text: string; image_url: string; cta_label: string; cta_href: string };
+  sell?: { heading: string; text: string; image_url: string; cta_label: string; cta_href: string };
+  rent?: { heading: string; text: string; image_url: string; cta_label: string; cta_href: string };
 };

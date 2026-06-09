@@ -5,6 +5,6 @@ export type EoiPageData = {
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: InternalPageHeroData;
+  hero?: InternalPageHeroData;
   legal_text: string;
 };

@@ -1,29 +1,13 @@
 import { useEffect, useRef } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
-import PropertyMarqee from "../components/reusable/PropertyMarqee";
-import ServiceSelection from "../sections/ServiceSelection";
 import RgpCta from "@/components/reusable/RgpCta";
 import RgButton from "@/components/reusable/RgButton";
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Building,
-  CalendarCheck,
-  Home,
-  Key,
-  Search,
-  TrendingUp,
-} from "lucide-react";
 import { useServicesPage } from "@/hooks/useServicesPage";
 import assetUrl from "@/lib/assetUrl";
-
-const base = import.meta.env.BASE_URL?.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
-
-const img = (name: string) => `${base}images/${name}`;
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
   const { data } = useServicesPage();
@@ -165,9 +149,10 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <InternalPageHero ready={ready} hero={data.hero} />
+      {data.hero ? <InternalPageHero ready={ready} hero={data.hero} /> : null}
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}
+        {data.intro ? (
         <section className="section section-spacious">
           <div className="container center stack">
             <h2 className="intro-statement lead" ref={introRef}>
@@ -175,8 +160,10 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
             </h2>
           </div>
         </section>
+        ) : null}
 
         {/* 3) GREEN SPLIT — Buy */}
+        {data.buy ? (
         <section className="split-green">
           <div className="container">
             <div className="wrap">
@@ -202,48 +189,40 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
               </div>
               <div className="img-card">
                 <div className="split-img-clip">
-                  <img
-                    data-gsap="clip-smooth-down"
-                    data-gsap-start="top 90%"
-                    data-gsap-delay="0.05"
-                    data-gsap-mobile="clip-smooth-down"
-                    data-gsap-mobile-cards-start="top 90%"
-                    alt="Buyer guidance"
-                    src={assetUrl(data.buy.image_url) || img("ps1 (6).jpg")}
-                  />
+                  {data.buy.image_url ? (
+                    <img
+                      data-gsap="clip-smooth-down"
+                      data-gsap-start="top 90%"
+                      data-gsap-delay="0.05"
+                      data-gsap-mobile="clip-smooth-down"
+                      data-gsap-mobile-cards-start="top 90%"
+                      alt=""
+                      src={assetUrl(data.buy.image_url)}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
           </div>
         </section>
+        ) : null}
 
-        <ServiceSelection
-          header={{ eyebrow: "Our Services", title: "Buy, Sell &", titleEm: "Rent",
-            subtitle: "One team, three core services — handled with clarity, speed, and market‑ready execution." }}
-          services={[
-            { id: "buy", icon: Search, secondaryIcon: Key, headline: "Buy", title: "Buyer",
-              subtitle: "Representation", description: "Search, shortlist, and negotiate with confidence. We secure access, run the numbers, and protect your position.", cta: "Start Buying", theme: "buy" },
-            { id: "sell", icon: TrendingUp, secondaryIcon: Home, headline: "Sell", title: "Sales",
-              subtitle: "Strategy", description: "Positioned pricing, premium presentation, and targeted marketing to create competition and lift results.", cta: "Plan My Sale", theme: "sell" },
-            { id: "rent", icon: CalendarCheck, secondaryIcon: Building, headline: "Rent", title: "Leasing",
-              subtitle: "Management", description: "End‑to‑end leasing with reliable tenants, clear reporting, and proactive maintenance care.", cta: "Lease My Property", theme: "rent" },
-          ]}
-        />
-
-        <RgpCta
-          eyebrow={data.cta.eyebrow}
-          title={data.cta.title}
-          titleEm={data.cta.title_em}
-          text={data.cta.text}
-          bgVideo="vids/cta-vid.mp4"
-          primary={{ label: data.cta.primary.label, to: data.cta.primary.href }}
-          secondary={{ label: data.cta.secondary.label, href: data.cta.secondary.href }}
-          stats={data.cta.stats}
-        />
+        {data.cta ? (
+          <RgpCta
+            eyebrow={data.cta.eyebrow}
+            title={data.cta.title}
+            titleEm={data.cta.title_em}
+            text={data.cta.text}
+            primary={{ label: data.cta.primary.label, to: data.cta.primary.href }}
+            secondary={{ label: data.cta.secondary.label, href: data.cta.secondary.href }}
+            stats={data.cta.stats}
+          />
+        ) : null}
 
         {/* 4) OVERLAY — Sell */}
+        {data.sell ? (
         <section className="img-overlay">
-          <img alt="Selling strategy" src={assetUrl(data.sell.image_url) || img("ps1 (5).jpg")} />
+          {data.sell.image_url ? <img alt="" src={assetUrl(data.sell.image_url)} /> : null}
           <div className="overlay-card" data-gsap="clip-reveal-left">
             <h3 className="h-serif">{data.sell.heading}</h3>
             <p>{data.sell.text}</p>
@@ -252,12 +231,14 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
             </div>
           </div>
         </section>
+        ) : null}
 
         {/* 5) AVAILABILITY — Rent */}
+        {data.rent ? (
         <section className="avail">
           <div className="grid">
             <div className="photo">
-              <img alt="Rental service" src={assetUrl(data.rent.image_url) || img("ps1 (1).jpg")} />
+              {data.rent.image_url ? <img alt="" src={assetUrl(data.rent.image_url)} /> : null}
             </div>
             <div className="panel">
               <div className="eyebrow">RENT</div>
@@ -271,8 +252,7 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
             </div>
           </div>
         </section>
-
-        <PropertyMarqee />
+        ) : null}
       </main>
     </>
   );

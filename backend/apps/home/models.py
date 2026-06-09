@@ -278,12 +278,12 @@ class PropertiesPage(Page):
                 cfg.setdefault("commitments", [])
                 cfg.setdefault("use_video", True)
                 cfg.setdefault("background_image", None)
-                cfg.setdefault("background_image_url", "images/int.jpg")
-                cfg.setdefault("background_video_url", "vids/cta-2-vid.mp4")
+                cfg.setdefault("background_image_url", "")
+                cfg.setdefault("background_video_url", "")
                 cfg.setdefault("video_poster_image", None)
                 cfg.setdefault(
                     "video_poster_image_url",
-                    cfg.get("background_image_url") or "images/int.jpg",
+                    cfg.get("background_image_url") or "",
                 )
                 cfg.setdefault("min_height", "100vh")
                 sections["property_cta"] = cfg
@@ -334,18 +334,18 @@ def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
         return
 
     sections["cta"] = {
-        "eyebrow": legacy_cta["eyebrow"] or "Need Guidance?",
-        "title": legacy_cta["title"] or "Not Sure Where to",
-        "title_em": legacy_cta["title_em"] or "Start?",
-        "text": legacy_cta["text"] or "Our experienced advisors are here to understand your needs and guide you through every step of your real estate journey.",
+        "eyebrow": legacy_cta["eyebrow"] or "Need Direction?",
+        "title": legacy_cta["title"] or "Unsure What Comes",
+        "title_em": legacy_cta["title_em"] or "Next?",
+        "text": legacy_cta["text"] or "Tell us your goals and we will help map a practical path through your next property decision.",
         "primary": legacy_cta["primary"] or {"label": "", "href": ""},
         "secondary": legacy_cta["secondary"] or {"label": "", "href": ""},
         "use_video": True,
         "background_image": None,
-        "background_image_url": "images/hero1.jpg",
-        "background_video_url": "vids/cta-vid.mp4",
+        "background_image_url": "",
+        "background_video_url": "",
         "video_poster_image": None,
-        "video_poster_image_url": "images/hero1.jpg",
+        "video_poster_image_url": "",
         "min_height": "100vh",
     }
 
@@ -627,24 +627,24 @@ class ServicesPage(Page):
     )
 
     intro_statement = models.TextField(
-        default="A full-service partner for buying, selling, and renting — one team, three core services, zero guesswork.",
+        default="A practical partner for buying, selling, and leasing, with one team keeping the next step clear.",
     )
 
     # Buy section
-    buy_heading = models.CharField(max_length=255, default="Buy With Confidence From Day One")
-    buy_p1 = models.TextField(default="We narrow the field quickly, secure the right property at the right price, and guide you through every step of the purchase process.")
-    buy_p2 = models.TextField(default="From off-market access to finance coordination and settlement support — you're never navigating alone.")
+    buy_heading = models.CharField(max_length=255, default="Buy With Practical Guidance")
+    buy_p1 = models.TextField(default="We help refine your brief, compare the market, and move toward the right property with less uncertainty.")
+    buy_p2 = models.TextField(default="From inspections and price context to offer support and settlement steps, you have steady guidance throughout.")
     buy_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    buy_image_url = models.CharField(max_length=500, default="images/ps1 (6).jpg", blank=True)
-    buy_cta_label = models.CharField(max_length=120, default="Explore Our Homes")
+    buy_image_url = models.CharField(max_length=500, default="", blank=True)
+    buy_cta_label = models.CharField(max_length=120, default="View Properties")
     buy_cta_href = models.CharField(max_length=255, default="/properties")
 
     # CTA section
-    cta_eyebrow = models.CharField(max_length=120, default="Ready to Move?")
-    cta_title = models.CharField(max_length=255, default="Get a")
-    cta_title_em = models.CharField(max_length=255, default="Tailored Plan")
-    cta_text = models.TextField(default="Tell us your goal and timeline — we'll map out a strategy built around your situation.")
-    cta_primary_label = models.CharField(max_length=120, default="Book a Consultation")
+    cta_eyebrow = models.CharField(max_length=120, default="Ready For Clarity?")
+    cta_title = models.CharField(max_length=255, default="Build a")
+    cta_title_em = models.CharField(max_length=255, default="Property Strategy")
+    cta_text = models.TextField(default="Share your goal and timing so we can outline the most useful next steps for your situation.")
+    cta_primary_label = models.CharField(max_length=120, default="Book a Conversation")
     cta_primary_href = models.CharField(max_length=255, default="/contact")
     cta_secondary_label = models.CharField(max_length=120, default="0450 009 291")
     cta_secondary_href = models.CharField(max_length=255, default="tel:+61450009291")
@@ -656,19 +656,19 @@ class ServicesPage(Page):
     cta_stat_3_label = models.CharField(max_length=100, default="Support Available")
 
     # Sell section
-    sell_heading = models.CharField(max_length=255, default="Sell With Clear Strategy")
-    sell_text = models.TextField(default="Pricing, positioning, staging, and marketing — all aligned to attract the right buyers and deliver a result you're confident in.")
+    sell_heading = models.CharField(max_length=255, default="Sell With A Clear Plan")
+    sell_text = models.TextField(default="We combine pricing evidence, campaign preparation, and buyer feedback so each decision is grounded in the market.")
     sell_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    sell_image_url = models.CharField(max_length=500, default="images/ps1 (5).jpg", blank=True)
-    sell_cta_label = models.CharField(max_length=120, default="Request a Valuation")
+    sell_image_url = models.CharField(max_length=500, default="", blank=True)
+    sell_cta_label = models.CharField(max_length=120, default="Request an Appraisal")
     sell_cta_href = models.CharField(max_length=255, default="/contact")
 
     # Rent section
-    rent_heading = models.CharField(max_length=255, default="Lease With Confidence")
-    rent_text = models.TextField(default="Premium leasing, tenant screening, and ongoing property care — so your investment performs without the stress.")
+    rent_heading = models.CharField(max_length=255, default="Lease With Steady Support")
+    rent_text = models.TextField(default="Tenant selection, communication, and property care are handled with attention so leasing feels organised from the start.")
     rent_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    rent_image_url = models.CharField(max_length=500, default="images/ps1 (1).jpg", blank=True)
-    rent_cta_label = models.CharField(max_length=120, default="View Available Rentals")
+    rent_image_url = models.CharField(max_length=500, default="", blank=True)
+    rent_cta_label = models.CharField(max_length=120, default="View Rentals")
     rent_cta_href = models.CharField(max_length=255, default="/properties")
 
     parent_page_types = ["home.HomePage"]
@@ -712,10 +712,10 @@ class ServicesPage(Page):
         hero = _extract_internal_page_hero_block(self.hero_content)
         if not hero:
             hero = {
-                "title_line_1": "Services For [gold]Buyers[/gold]",
-                "title_line_2": "Sellers & [amber]Renters[/amber]",
-                "subtitle": "We handle the full journey — buying, selling, and leasing across South-East Queensland.",
-                "background_image": None, "background_image_url": "images/hero1.jpg",
+                "title_line_1": "Property Services For [gold]Every[/gold] Step",
+                "title_line_2": "Buying, Selling & Leasing",
+                "subtitle": "Get practical guidance across the moments that shape your next property move.",
+                "background_image": None, "background_image_url": "",
                 "show_video": False, "background_video_url": "",
                 "mode": "none", "buttons": [], "stats": [],
             }
@@ -867,11 +867,10 @@ class EoiPage(Page):
 
     legal_text = models.TextField(
         default=(
-            "I/We acknowledge that if this offer is accepted, I/We will be required to enter into "
-            "and execute a contract of sale on these terms. I/We acknowledge that we may be one of "
-            "several parties making offers to the seller for their consideration. Both purchaser and "
-            "seller must sign a contract of sale before this offer becomes legally binding. An offer "
-            "may be withdrawn at any time before signing a contract of sale."
+            "I/We understand that acceptance of this expression of interest may require us to enter "
+            "into and sign a contract of sale on the agreed terms. I/We understand the seller may be "
+            "considering other offers at the same time. No binding sale exists until both purchaser "
+            "and seller have signed a contract of sale, and this offer may be withdrawn before that occurs."
         ),
     )
 
@@ -892,13 +891,13 @@ class EoiPage(Page):
         hero = _extract_internal_page_hero_block(self.hero_content)
         if not hero:
             hero = {
-                "title_line_1": "Expression [gold]of[/gold]",
-                "title_line_2": "Interest [amber]Form[/amber]",
-                "subtitle": "Use this form to submit your offer, purchaser details, and conditions for a property you wish to purchase.",
-                "background_image": None, "background_image_url": "images/hero1.jpg",
+                "title_line_1": "Expression [gold]of[/gold] Interest",
+                "title_line_2": "Property Offer Form",
+                "subtitle": "Submit purchaser details, offer terms, and conditions for the property you would like to pursue.",
+                "background_image": None, "background_image_url": "",
                 "show_video": False, "background_video_url": "",
                 "mode": "buttons",
-                "buttons": [{"label": "Complete the Form", "href": "", "style": "gold", "open_in_new_tab": False}],
+                "buttons": [{"label": "Start the Form", "href": "", "style": "gold", "open_in_new_tab": False}],
                 "stats": [],
             }
         return {

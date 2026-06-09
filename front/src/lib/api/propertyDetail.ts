@@ -105,12 +105,12 @@ export async function fetchPropertyDetail(slug: string, signal?: AbortSignal): P
     videoTourUrl: data.video_tour_url || "",
     videoThumbnail: resolveUrl(data.video_thumbnail_url || ""),
     agent: {
-      name: data.agent?.name || "Agent",
-      title: data.agent?.title || "Property Consultant",
+      name: data.agent?.name || "",
+      title: data.agent?.title || "",
       image: resolveUrl(data.agent?.photo_url || ""),
       phone: data.agent?.phone || "",
       email: data.agent?.email || "",
-      rating: Number(data.agent?.rating || 5),
+      rating: Number(data.agent?.rating || 0),
       reviewCount: data.agent?.review_count || 0,
     },
   };

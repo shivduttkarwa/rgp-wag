@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import type { PortfolioSection } from "@/types/homePage";
-import { DEFAULT_HOME_PAGE_SECTIONS } from "@/lib/api/homePage";
 import assetUrl from "@/lib/assetUrl";
 import "./PortfolioShowcase.css";
 import "swiper/css";
@@ -12,13 +11,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import RgButton from "@/components/reusable/RgButton";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const publicUrl = import.meta.env.BASE_URL || "/";
-
-const getImagePath = (imageName: string) =>
-  publicUrl.endsWith("/")
-    ? `${publicUrl}images/${imageName}`
-    : `${publicUrl}/images/${imageName}`;
 
 export interface ShowcaseProject {
   id: string;
@@ -38,83 +30,13 @@ interface PortfolioShowcaseProps {
   data?: PortfolioSection;
 }
 
-const defaultProjects: ShowcaseProject[] = [
-  {
-    id: "hawcliffe-manor",
-    title: "Hawcliffe Manor",
-    location: "Toorak, VIC",
-    price: "$4,250,000",
-    status: "For Sale",
-    thumb: getImagePath("ps1 (1).jpg"),
-    bg: getImagePath("ps1 (1).jpg"),
-    beds: 5,
-    baths: 4,
-    area: "3,800",
-    propertySlug: "hawcliffe-manor",
-  },
-  {
-    id: "northshore-penthouse",
-    title: "Northshore Penthouse",
-    location: "North Sydney, NSW",
-    price: "$3,100,000",
-    status: "For Sale",
-    thumb: getImagePath("ps1 (2).jpg"),
-    bg: getImagePath("ps1 (2).jpg"),
-    beds: 3,
-    baths: 2,
-    area: "2,100",
-    propertySlug: "northshore-penthouse",
-  },
-  {
-    id: "garden-terrace",
-    title: "The Garden Terrace",
-    location: "Brighton, VIC",
-    price: "$2,750,000",
-    status: "New Listing",
-    thumb: getImagePath("ps1 (3).jpg"),
-    bg: getImagePath("ps1 (3).jpg"),
-    beds: 4,
-    baths: 3,
-    area: "2,400",
-    propertySlug: "garden-terrace",
-  },
-  {
-    id: "evoke-residences",
-    title: "Evoke Residences",
-    location: "South Yarra, VIC",
-    price: "$1,850,000",
-    status: "For Sale",
-    thumb: getImagePath("ps1 (4).jpg"),
-    bg: getImagePath("ps1 (4).jpg"),
-    beds: 2,
-    baths: 2,
-    area: "1,200",
-    propertySlug: "evoke-residences",
-  },
-  {
-    id: "heritage-estate",
-    title: "Heritage Estate",
-    location: "Vaucluse, NSW",
-    price: "$6,800,000",
-    status: "Exclusive",
-    thumb: getImagePath("ps1 (5).jpg"),
-    bg: getImagePath("ps1 (5).jpg"),
-    beds: 6,
-    baths: 5,
-    area: "4,500",
-    propertySlug: "heritage-estate",
-  },
-];
-
-const FALLBACK_SECTION = DEFAULT_HOME_PAGE_SECTIONS.portfolio!;
-
 const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
-  const section = data ?? FALLBACK_SECTION;
+  const section = data;
   const sectionRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
 
   const projects = useMemo<ShowcaseProject[]>(() => {
-    if (!section.projects.length) return defaultProjects;
+    if (!section?.projects.length) return [];
     return section.projects.map((project, index) => {
       const image = assetUrl(project.image?.url ?? project.image_url);
       return {
@@ -131,7 +53,9 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
         propertySlug: project.property_slug || undefined,
       };
     });
-  }, [section.projects]);
+  }, [section?.projects]);
+
+  if (!section) return null;
 
   useEffect(() => {
     const featureSection = sectionRef.current;

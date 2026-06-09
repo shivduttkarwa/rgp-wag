@@ -6,17 +6,10 @@ import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import PropertyMarquee from "@/components/reusable/PropertyMarqee";
 import { useAboutPage } from "@/hooks/useAboutPage";
 import assetUrl from "@/lib/assetUrl";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
-
-const base = import.meta.env.BASE_URL?.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
-
-const img = (name: string) => `${base}images/${name}`;
 
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
   const { data } = useAboutPage();
@@ -174,17 +167,19 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                     data-gsap-mobile="clip-smooth-down"
                     data-gsap-mobile-cards-start="top 70%"
                   >
-                    <video
-                      ref={splitVideoRef}
-                      className="split-video"
-                      src={assetUrl(sections.split.video_url)}
-                      muted
-                      playsInline
-                      loop={!splitFullPlay}
-                      preload="metadata"
-                      controls={splitFullPlay}
-                    />
-                    {!splitFullPlay && (
+                    {sections.split.video_url ? (
+                      <video
+                        ref={splitVideoRef}
+                        className="split-video"
+                        src={assetUrl(sections.split.video_url)}
+                        muted
+                        playsInline
+                        loop={!splitFullPlay}
+                        preload="metadata"
+                        controls={splitFullPlay}
+                      />
+                    ) : null}
+                    {sections.split.video_url && !splitFullPlay ? (
                       <button
                         type="button"
                         className="split-play-btn"
@@ -202,7 +197,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                           <path d="M19 16l14 8-14 8V16z" fill="currentColor" />
                         </svg>
                       </button>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <div className="stack">
@@ -238,7 +233,9 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
         {/* 4) TURN-KEY */}
         {sections.overlay && (
           <section className="img-overlay">
-            <img alt="Modern home exterior" src={assetUrl(sections.overlay.image_url) || img("int.jpg")} />
+            {sections.overlay.image_url ? (
+              <img alt="" src={assetUrl(sections.overlay.image_url)} />
+            ) : null}
             <div className="overlay-card" data-gsap="clip-reveal-left">
               <h3 className="h-serif">{sections.overlay.heading}</h3>
               <p>{sections.overlay.text}</p>
@@ -260,7 +257,9 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                 data-gsap="clip-reveal-left"
                 data-gsap-mobile="clip-smooth-down"
               >
-                <img alt="Rahul Singh" src={assetUrl(sections.avail.image_url) || img("rahul-singh.jpg")} />
+                {sections.avail.image_url ? (
+                  <img alt="" src={assetUrl(sections.avail.image_url)} />
+                ) : null}
               </div>
               <div className="panel">
                 <div className="eyebrow">{sections.avail.eyebrow}</div>
@@ -282,7 +281,6 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
             </div>
           </section>
         )}
-        <PropertyMarquee />
       </main>
       {sections.cta && (
         <RgpCta

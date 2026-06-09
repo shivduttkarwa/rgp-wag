@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
 import { PropertyCard } from "./PropertyCard";
-import { allProperties } from "../../data/listingProperties";
 import type { Property } from "./PropertyCard";
 import RgButton from "@/components/reusable/RgButton";
 import "../../sections/PropertyListingsection.css";
@@ -21,11 +20,11 @@ type PropertyMarqueeProps = {
 
 export default function PropertyMarquee({
   properties,
-  eyebrow = "Featured Portfolio",
-  title = "Explore",
-  titleEm = "Premium Homes",
-  subtitle = "A curated selection of standout residences from across our portfolio — updated regularly.",
-  ctaLabel = "View All Properties",
+  eyebrow,
+  title,
+  titleEm,
+  subtitle,
+  ctaLabel,
 }: PropertyMarqueeProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -33,7 +32,7 @@ export default function PropertyMarquee({
 
   const SPEED_PX_PER_SEC = 42;
   const GAP_PX_FALLBACK = 18;
-  const sourceProperties = properties?.length ? properties : allProperties;
+  const sourceProperties = properties ?? [];
 
   // Duplicate for seamless loop
   const doubled = useMemo(
@@ -251,27 +250,35 @@ export default function PropertyMarquee({
     };
   }, []);
 
+  if (!sourceProperties.length) return null;
+
   return (
     <section className="rgMarquee property-section">
       <div className="wrap">
         <header className="section-header">
-          <div data-gsap="fade-up" className="section-badge">
-            <span>{eyebrow}</span>
-          </div>
-          <h2
-            className="section-title"
-            data-gsap="char-reveal"
-            data-gsap-start="top 85%"
-          >
-            {title} <em>{titleEm}</em>
-          </h2>
-          <p
-            className="section-subtitle"
-            data-gsap="fade-up"
-            data-gsap-delay="0.2"
-          >
-            {subtitle}
-          </p>
+          {eyebrow ? (
+            <div data-gsap="fade-up" className="section-badge">
+              <span>{eyebrow}</span>
+            </div>
+          ) : null}
+          {title || titleEm ? (
+            <h2
+              className="section-title"
+              data-gsap="char-reveal"
+              data-gsap-start="top 85%"
+            >
+              {title} {titleEm ? <em>{titleEm}</em> : null}
+            </h2>
+          ) : null}
+          {subtitle ? (
+            <p
+              className="section-subtitle"
+              data-gsap="fade-up"
+              data-gsap-delay="0.2"
+            >
+              {subtitle}
+            </p>
+          ) : null}
         </header>
       </div>
 
@@ -299,14 +306,16 @@ export default function PropertyMarquee({
         </div>
       </div>
 
-      <div className="rgMarquee__cta">
-        <RgButton
-          to="/properties"
-          variant="blue"
-          label={ctaLabel}
-          data-gsap="btn-clip-reveal"
-        />
-      </div>
+      {ctaLabel ? (
+        <div className="rgMarquee__cta">
+          <RgButton
+            to="/properties"
+            variant="blue"
+            label={ctaLabel}
+            data-gsap="btn-clip-reveal"
+          />
+        </div>
+      ) : null}
     </section>
   );
 }

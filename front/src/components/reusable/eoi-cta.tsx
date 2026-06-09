@@ -19,13 +19,13 @@ export type EoiCtaProps = {
 
 export default function EoiCta({
   badgeIcon,
-  badgeText = "Expression of Interest",
+  badgeText,
   title,
   text,
   buttonLabel,
   buttonTo,
-  bgImage = "images/eoi-cta.jpg",
-  mobileBgImage = "images/eoi-cta-mob.jpg",
+  bgImage,
+  mobileBgImage,
   minHeight = "100vh",
   mobileMinHeight = "70vh",
   className = "",
@@ -55,20 +55,24 @@ export default function EoiCta({
 
       <div className="eoi-cta__inner">
         <div className="eoi-cta__copy">
-          <div className="eoi-cta__badge">
-            {badgeIcon ? <span className="eoi-cta__badge-icon">{badgeIcon}</span> : null}
-            <span>{badgeText}</span>
-          </div>
+          {badgeText || badgeIcon ? (
+            <div className="eoi-cta__badge">
+              {badgeIcon ? <span className="eoi-cta__badge-icon">{badgeIcon}</span> : null}
+              {badgeText ? <span>{badgeText}</span> : null}
+            </div>
+          ) : null}
           <h3 className="eoi-cta__title">{title}</h3>
           <p className="eoi-cta__text">{text}</p>
         </div>
 
-        <RgButton
-          variant="gold"
-          to={buttonTo}
-          label={buttonLabel}
-          className="eoi-cta__button"
-        />
+        {buttonLabel ? (
+          <RgButton
+            variant="gold"
+            to={buttonTo}
+            label={buttonLabel}
+            className="eoi-cta__button"
+          />
+        ) : null}
       </div>
     </section>
   );

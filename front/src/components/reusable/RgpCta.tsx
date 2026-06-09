@@ -19,7 +19,7 @@ export type RgpCtaProps = {
   title: ReactNode;
   titleEm?: ReactNode;
   text: ReactNode;
-  primary: RgpCtaLink;
+  primary?: RgpCtaLink;
   secondary?: RgpCtaLink;
   stats?: RgpCtaStat[];
   bgImage?: string;
@@ -37,7 +37,7 @@ export default function RgpCta({
   primary,
   secondary,
   stats = [],
-  bgImage = "images/hero1.jpg",
+  bgImage,
   bgVideo,
   posterImage,
   minHeight = "100vh",
@@ -100,7 +100,8 @@ export default function RgpCta({
           </p>
 
           <div className="rgp-cta__actions">
-            {primary.to ? (
+            {primary?.label ? (
+              primary.to ? (
               <RgButton
                 variant="gold"
                 to={primary.to}
@@ -108,17 +109,18 @@ export default function RgpCta({
                 data-gsap="btn-clip-reveal"
                 data-gsap-delay="0.2"
               />
-            ) : (
+              ) : (
               <RgButton
                 variant="gold"
-                href={primary.href ?? "#"}
+                href={primary.href ?? ""}
                 label={primary.label}
                 data-gsap="btn-clip-reveal"
                 data-gsap-delay="0.2"
               />
-            )}
+              )
+            ) : null}
 
-            {secondary ? (
+            {secondary?.label ? (
               secondary.to ? (
                 <RgButton
                   variant="outline"
@@ -130,7 +132,7 @@ export default function RgpCta({
               ) : (
                 <RgButton
                   variant="outline"
-                  href={secondary.href ?? "#"}
+                  href={secondary.href ?? ""}
                   label={secondary.label}
                   data-gsap="btn-clip-reveal"
                   data-gsap-delay="0.2"
@@ -154,4 +156,3 @@ export default function RgpCta({
     </section>
   );
 }
-

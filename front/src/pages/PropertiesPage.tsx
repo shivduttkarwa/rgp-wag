@@ -21,7 +21,6 @@ import PropertyMarqee from "@/components/reusable/PropertyMarqee";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import { usePropertiesPage } from "@/hooks/usePropertiesPage";
-import { DEFAULT_PROPERTIES_PAGE_DATA } from "@/lib/api/propertiesPage";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -88,9 +87,23 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const { data, status } = usePropertiesPage();
   const { sections, listings: sourceProperties } = data;
-  const defaultSections = DEFAULT_PROPERTIES_PAGE_DATA.sections;
-  const propertyListing = sections.property_listing ?? defaultSections.property_listing!;
-  const propertyMarquee = sections.property_marquee ?? defaultSections.property_marquee!;
+  const propertyListing = sections.property_listing;
+  const propertyMarquee = sections.property_marquee;
+  const hasListings = sourceProperties.length > 0;
+  const hasVisibleSections = Boolean(
+    sections.hero ||
+      propertyListing ||
+      propertyMarquee ||
+      sections.property_cta ||
+      sections.cta ||
+      sections.eoi_cta,
+  );
+  const pageClassName = [
+    "ap-page",
+    status !== "loading" && !hasVisibleSections ? "ap-page--empty" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
   const pendingScrollRef = useRef<{
     mode: ScrollAction;
     scrollY: number;
@@ -326,9 +339,11 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     activeFilters.baths !== "any";
 
   return (
-    <div className="ap-page" ref={pageRef}>
+    <div className={pageClassName} ref={pageRef}>
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
+      {propertyListing ? (
+      <>
       {/* ── Filter Slab ───────────────────────────────────────────────── */}
       <div className="ap-filter-slab">
         <div
@@ -342,6 +357,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
             <p className="ap-filter-head__subtitle">{propertyListing.subtitle}</p>
           </div>
 
+          {hasListings ? (
           <div className="ap-filter-row">
             <div className="ap-filter-wrapper">
               <div ref={filterTabsRef} className="ap-filter-tabs">
@@ -429,10 +445,12 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
               {activeFiltered.length === 1 ? "property" : "properties"} found
             </p>
           </div>
+          ) : null}
         </div>
       </div>
 
       {/* ── Grid ───────────────────────────────────────────────────────── */}
+      {hasListings ? (
       <div className="ap-grid-section" ref={gridSectionRef}>
         <div className="ap-grid-container" ref={gridContainerRef}>
           {filtered.length === 0 ? (
@@ -500,8 +518,11 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           )}
         </div>
       </div>
+      ) : null}
+      </>
+      ) : null}
 
-      {sections.property_marquee && (
+      {sections.property_marquee && propertyMarquee ? (
         <PropertyMarqee
           properties={sourceProperties}
           eyebrow={propertyMarquee.eyebrow}
@@ -510,7 +531,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           subtitle={propertyMarquee.subtitle}
           ctaLabel={propertyMarquee.cta_label}
         />
-      )}
+      ) : null}
 
       {sections.property_cta && (
         <Cta2
