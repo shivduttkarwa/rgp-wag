@@ -58,18 +58,16 @@ class InternalHeroStatBlock(StructBlock):
 
 
 class InternalPageHeroBlock(StructBlock):
-    title_line_1 = CharBlock(default="Get In [gold]Touch[/gold]")
-    title_line_2 = CharBlock(default="[amber]We're[/amber] Here")
-    subtitle = TextBlock(
-        default="Our team is ready to guide you — from first enquiry to final key.",
-    )
+    title_line_1 = CharBlock(default="")
+    title_line_2 = CharBlock(default="")
+    subtitle = TextBlock(default="")
     background_image = ImageChooserBlock(
         required=False,
         help_text="Pick hero background image from media library.",
     )
     background_image_url = CharBlock(
         required=False,
-        default="images/contact-hero.jpg",
+        default="",
         help_text="Fallback image path relative to public/ or full URL.",
     )
     show_video = BooleanBlock(
@@ -546,6 +544,107 @@ class TestimonialsPageContentStreamBlock(StreamBlock):
     class Meta:
         block_counts = {
             "featured_testimonials": {"min_num": 0, "max_num": 1},
+        }
+
+
+# ─── About page blocks ───────────────────────────────────────────────────────
+
+class AboutIntroBlock(StructBlock):
+    statement = TextBlock(
+        default="Rahul Singh is the appraisal-first agent behind Real Gold Properties — bringing local clarity, data-backed pricing, and calm negotiation to every homeowner.",
+    )
+
+    class Meta:
+        icon = "doc-full"
+        label = "Intro Statement"
+
+
+class AboutSplitBlock(StructBlock):
+    heading = CharBlock(default="Why Sellers Choose Rahul")
+    p1 = TextBlock(
+        default="He translates market noise into a clear, confident price position — with a strategy that attracts buyers and protects your upside.",
+    )
+    p2 = TextBlock(
+        default="You get straight answers, a staged plan, and weekly feedback so the appraisal never sits still.",
+    )
+    bullets = ListBlock(
+        CharBlock(),
+        help_text="Key selling points shown as a bullet list.",
+    )
+    video_url = CharBlock(
+        required=False,
+        default="vids/rgp-video.mp4",
+        help_text="Path relative to public/ or full URL.",
+    )
+    cta_label = CharBlock(default="Book Your Appraisal")
+    cta_href = CharBlock(required=False, default="/contact")
+
+    class Meta:
+        icon = "media"
+        label = "Why Sellers Choose (Split Section)"
+
+
+class AboutOverlayBlock(StructBlock):
+    heading = CharBlock(default="The Appraisal Strategy")
+    text = TextBlock(
+        default="Rahul's appraisals are more than a number. Each one is built to attract the right buyers and set a confident path to sale.",
+    )
+    image = ImageChooserBlock(
+        required=False,
+        help_text="Overlay background image. Takes priority over the URL field.",
+    )
+    image_url = CharBlock(
+        required=False,
+        default="images/int.jpg",
+        help_text="Fallback image path relative to public/ or full URL.",
+    )
+    steps = ListBlock(
+        CharBlock(),
+        help_text="Numbered process steps shown in the overlay card.",
+    )
+
+    class Meta:
+        icon = "image"
+        label = "Appraisal Strategy Overlay"
+
+
+class AboutAvailabilityBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="APPRAISAL")
+    heading = CharBlock(default="Ready For Your Appraisal?")
+    text = TextBlock(
+        default="Book a free, no-pressure appraisal with Rahul Singh. You'll get a clear price range, honest advice, and a next-step plan.",
+    )
+    image = ImageChooserBlock(
+        required=False,
+        help_text="Section photo. Takes priority over the URL field.",
+    )
+    image_url = CharBlock(
+        required=False,
+        default="images/rahul-singh.jpg",
+        help_text="Fallback image path relative to public/ or full URL.",
+    )
+    cta_label = CharBlock(default="Book Your Appraisal")
+    cta_href = CharBlock(required=False, default="/contact")
+
+    class Meta:
+        icon = "pick"
+        label = "Availability / Appraisal CTA"
+
+
+class AboutPageStreamBlock(StreamBlock):
+    hero = InternalPageHeroBlock()
+    intro = AboutIntroBlock()
+    split = AboutSplitBlock()
+    overlay = AboutOverlayBlock()
+    avail = AboutAvailabilityBlock()
+
+    class Meta:
+        block_counts = {
+            "hero": {"min_num": 0, "max_num": 1},
+            "intro": {"min_num": 0, "max_num": 1},
+            "split": {"min_num": 0, "max_num": 1},
+            "overlay": {"min_num": 0, "max_num": 1},
+            "avail": {"min_num": 0, "max_num": 1},
         }
 
 

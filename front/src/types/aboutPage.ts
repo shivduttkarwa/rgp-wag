@@ -1,13 +1,9 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
 
-export type AboutPageData = {
-  id: number;
-  title: string;
-  slug: string;
-  updated_at: string | null;
-  hero: InternalPageHeroData;
-  intro: { statement: string };
-  split: {
+export type AboutPageSections = {
+  hero?: InternalPageHeroData;
+  intro?: { statement: string };
+  split?: {
     heading: string;
     p1: string;
     p2: string;
@@ -16,13 +12,13 @@ export type AboutPageData = {
     cta_label: string;
     cta_href: string;
   };
-  overlay: {
+  overlay?: {
     heading: string;
     text: string;
     image_url: string;
     steps: string[];
   };
-  avail: {
+  avail?: {
     eyebrow: string;
     heading: string;
     text: string;
@@ -30,4 +26,12 @@ export type AboutPageData = {
     cta_label: string;
     cta_href: string;
   };
+};
+
+export type AboutPageData = {
+  id: number;
+  title: string;
+  slug: string;
+  updated_at: string | null;
+  sections: AboutPageSections;
 };

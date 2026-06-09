@@ -18,6 +18,7 @@ const img = (name: string) => `${base}images/${name}`;
 
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
   const { data } = useAboutPage();
+  const { sections } = data;
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
   const splitVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -144,133 +145,141 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <InternalPageHero ready={ready} hero={data.hero} />
+      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}
-        <section className="section section-spacious">
-          <div className="container center stack">
-            <h2 className="intro-statement lead" ref={introRef}>
-              {data.intro.statement}
-            </h2>
-          </div>
-        </section>
+        {sections.intro && (
+          <section className="section section-spacious">
+            <div className="container center stack">
+              <h2 className="intro-statement lead" ref={introRef}>
+                {sections.intro.statement}
+              </h2>
+            </div>
+          </section>
+        )}
 
         {/* 3) GREEN SPLIT */}
-        <section className="split-green">
-          <div className="container">
-            <div className="wrap">
-              <div className="img-card">
-                <div
-                  className={`split-img-clip ${splitFullPlay ? "is-playing" : ""}`}
-                  data-gsap="clip-reveal-left"
-                  data-gsap-start="top 70%"
-                  data-gsap-delay="0.05"
-                  data-gsap-mobile="clip-smooth-down"
-                  data-gsap-mobile-cards-start="top 70%"
-                >
-                  <video
-                    ref={splitVideoRef}
-                    className="split-video"
-                    src={assetUrl(data.split.video_url)}
-                    muted
-                    playsInline
-                    loop={!splitFullPlay}
-                    preload="metadata"
-                    controls={splitFullPlay}
-                  />
-                  {!splitFullPlay && (
-                    <button
-                      type="button"
-                      className="split-play-btn"
-                      onClick={handleSplitPlayClick}
-                      aria-label="Play property video"
-                    >
-                      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                        <circle
-                          cx="24"
-                          cy="24"
-                          r="23"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                        />
-                        <path d="M19 16l14 8-14 8V16z" fill="currentColor" />
-                      </svg>
-                    </button>
-                  )}
+        {sections.split && (
+          <section className="split-green">
+            <div className="container">
+              <div className="wrap">
+                <div className="img-card">
+                  <div
+                    className={`split-img-clip ${splitFullPlay ? "is-playing" : ""}`}
+                    data-gsap="clip-reveal-left"
+                    data-gsap-start="top 70%"
+                    data-gsap-delay="0.05"
+                    data-gsap-mobile="clip-smooth-down"
+                    data-gsap-mobile-cards-start="top 70%"
+                  >
+                    <video
+                      ref={splitVideoRef}
+                      className="split-video"
+                      src={assetUrl(sections.split.video_url)}
+                      muted
+                      playsInline
+                      loop={!splitFullPlay}
+                      preload="metadata"
+                      controls={splitFullPlay}
+                    />
+                    {!splitFullPlay && (
+                      <button
+                        type="button"
+                        className="split-play-btn"
+                        onClick={handleSplitPlayClick}
+                        aria-label="Play property video"
+                      >
+                        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                          <circle
+                            cx="24"
+                            cy="24"
+                            r="23"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <path d="M19 16l14 8-14 8V16z" fill="currentColor" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="stack">
+                  <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 90%">
+                    {sections.split.heading}
+                  </h3>
+                  <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.15">
+                    {sections.split.p1}
+                  </p>
+                  <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.25">
+                    {sections.split.p2}
+                  </p>
+                  <ul className="rahul-points" data-gsap="fade-up" data-gsap-delay="0.32">
+                    {sections.split.bullets.map((bullet, i) => (
+                      <li key={i}>{bullet}</li>
+                    ))}
+                  </ul>
+                  <div className="split-cta">
+                    <RgButton
+                      to={sections.split.cta_href}
+                      variant="outline"
+                      label={sections.split.cta_label}
+                      data-gsap="btn-clip-reveal"
+                      data-gsap-delay="0.2"
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="stack">
-                <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 90%">
-                  {data.split.heading}
+            </div>
+          </section>
+        )}
+
+        {/* 4) TURN-KEY */}
+        {sections.overlay && (
+          <section className="img-overlay">
+            <img alt="Modern home exterior" src={assetUrl(sections.overlay.image_url) || img("int.jpg")} />
+            <div className="overlay-card" data-gsap="clip-reveal-left">
+              <h3 className="h-serif">{sections.overlay.heading}</h3>
+              <p>{sections.overlay.text}</p>
+              <ul className="overlay-list">
+                {sections.overlay.steps.map((step, i) => (
+                  <li key={i}>{step}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* 5) AVAILABILITY */}
+        {sections.avail && (
+          <section className="avail">
+            <div className="grid">
+              <div
+                className="photo"
+                data-gsap="clip-reveal-left"
+                data-gsap-mobile="clip-smooth-down"
+              >
+                <img alt="Rahul Singh" src={assetUrl(sections.avail.image_url) || img("rahul-singh.jpg")} />
+              </div>
+              <div className="panel">
+                <div className="eyebrow">{sections.avail.eyebrow}</div>
+                <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 85%">
+                  {sections.avail.heading}
                 </h3>
-                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.15">
-                  {data.split.p1}
-                </p>
-                <p className="split-desc" data-gsap="fade-up" data-gsap-start="top 90%" data-gsap-delay="0.25">
-                  {data.split.p2}
-                </p>
-                <ul className="rahul-points" data-gsap="fade-up" data-gsap-delay="0.32">
-                  {data.split.bullets.map((bullet, i) => (
-                    <li key={i}>{bullet}</li>
-                  ))}
-                </ul>
-                <div className="split-cta">
+                <p data-gsap="fade-up" data-gsap-delay="0.15">{sections.avail.text}</p>
+                <div className="avail-cta">
                   <RgButton
-                    to={data.split.cta_href}
+                    to={sections.avail.cta_href}
                     variant="outline"
-                    label={data.split.cta_label}
+                    label={sections.avail.cta_label}
+                    className="avail-cta__btn"
                     data-gsap="btn-clip-reveal"
                     data-gsap-delay="0.2"
                   />
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* 4) TURN-KEY */}
-        <section className="img-overlay">
-          <img alt="Modern home exterior" src={assetUrl(data.overlay.image_url) || img("int.jpg")} />
-          <div className="overlay-card" data-gsap="clip-reveal-left">
-            <h3 className="h-serif">{data.overlay.heading}</h3>
-            <p>{data.overlay.text}</p>
-            <ul className="overlay-list">
-              {data.overlay.steps.map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* 5) AVAILABILITY */}
-        <section className="avail">
-          <div className="grid">
-            <div
-              className="photo"
-              data-gsap="clip-reveal-left"
-              data-gsap-mobile="clip-smooth-down"
-            >
-              <img alt="Rahul Singh" src={assetUrl(data.avail.image_url) || img("rahul-singh.jpg")} />
-            </div>
-            <div className="panel">
-              <div className="eyebrow">{data.avail.eyebrow}</div>
-              <h3 className="h-serif" data-gsap="char-reveal" data-gsap-start="top 85%">
-                {data.avail.heading}
-              </h3>
-              <p data-gsap="fade-up" data-gsap-delay="0.15">{data.avail.text}</p>
-              <div className="avail-cta">
-                <RgButton
-                  to={data.avail.cta_href}
-                  variant="outline"
-                  label={data.avail.cta_label}
-                  className="avail-cta__btn"
-                  data-gsap="btn-clip-reveal"
-                  data-gsap-delay="0.2"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
         <PropertyMarquee />
       </main>
     </>

@@ -7,6 +7,7 @@ from wagtail.images import get_image_model_string
 from wagtail.models import Page
 
 from .blocks import (
+    AboutPageStreamBlock,
     ContactPageContentStreamBlock,
     ContactPageHeroStreamBlock,
     HomePageStreamBlock,
@@ -736,132 +737,91 @@ def _extract_contact_info_block(contact_content) -> dict[str, Any]:
 # ─── About Page ──────────────────────────────────────────────────────────────
 
 class AboutPage(Page):
-    hero_content = StreamField(
-        ContactPageHeroStreamBlock(), blank=True, use_json_field=True,
-        help_text="Internal page hero block.",
+    body = StreamField(
+        AboutPageStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Add, remove and reorder sections. Each block is a section on the about page.",
     )
-
-    # Intro statement
-    intro_statement = models.TextField(
-        default="Rahul Singh is the appraisal-first agent behind Real Gold Properties — bringing local clarity, data-backed pricing, and calm negotiation to every homeowner.",
-    )
-
-    # Split section
-    split_heading = models.CharField(max_length=255, default="Why Sellers Choose Rahul")
-    split_p1 = models.TextField(default="He translates market noise into a clear, confident price position — with a strategy that attracts buyers and protects your upside.")
-    split_p2 = models.TextField(default="You get straight answers, a staged plan, and weekly feedback so the appraisal never sits still.")
-    split_bullet_1 = models.TextField(default="Street-level pricing: recent sales, buyer demand, and suburb momentum.")
-    split_bullet_2 = models.TextField(default="Launch strategy: presentation, timing, and campaign plan that drives competition.")
-    split_bullet_3 = models.TextField(default="Calm guidance: no pressure, just clarity and next steps.")
-    split_video_url = models.CharField(max_length=500, default="vids/rgp-video.mp4", blank=True)
-    split_cta_label = models.CharField(max_length=120, default="Book Your Appraisal")
-    split_cta_href = models.CharField(max_length=255, default="/contact")
-
-    # Overlay section
-    overlay_heading = models.CharField(max_length=255, default="The Appraisal Strategy")
-    overlay_text = models.TextField(default="Rahul's appraisals are more than a number. Each one is built to attract the right buyers and set a confident path to sale.")
-    overlay_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    overlay_image_url = models.CharField(max_length=500, default="images/int.jpg", blank=True)
-    overlay_step_1 = models.CharField(max_length=255, default="01 On-site walk-through + market scan")
-    overlay_step_2 = models.CharField(max_length=255, default="02 Pricing range + demand positioning")
-    overlay_step_3 = models.CharField(max_length=255, default="03 Launch plan + feedback loop")
-
-    # Availability section
-    avail_eyebrow = models.CharField(max_length=120, default="APPRAISAL")
-    avail_heading = models.CharField(max_length=255, default="Ready For Your Appraisal?")
-    avail_text = models.TextField(default="Book a free, no-pressure appraisal with Rahul Singh. You'll get a clear price range, honest advice, and a next-step plan.")
-    avail_image = models.ForeignKey(get_image_model_string(), null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
-    avail_image_url = models.CharField(max_length=500, default="images/rahul-singh.jpg", blank=True)
-    avail_cta_label = models.CharField(max_length=120, default="Book Your Appraisal")
-    avail_cta_href = models.CharField(max_length=255, default="/contact")
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types: list[str] = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_content"),
-        MultiFieldPanel([FieldPanel("intro_statement")], heading="Intro Statement"),
-        MultiFieldPanel([
-            FieldPanel("split_heading"),
-            FieldPanel("split_p1"),
-            FieldPanel("split_p2"),
-            FieldPanel("split_bullet_1"),
-            FieldPanel("split_bullet_2"),
-            FieldPanel("split_bullet_3"),
-            FieldPanel("split_video_url"),
-            FieldRowPanel([FieldPanel("split_cta_label"), FieldPanel("split_cta_href")]),
-        ], heading="Why Sellers Choose Section"),
-        MultiFieldPanel([
-            FieldPanel("overlay_heading"),
-            FieldPanel("overlay_text"),
-            FieldPanel("overlay_image"),
-            FieldPanel("overlay_image_url"),
-            FieldPanel("overlay_step_1"),
-            FieldPanel("overlay_step_2"),
-            FieldPanel("overlay_step_3"),
-        ], heading="Appraisal Strategy Overlay"),
-        MultiFieldPanel([
-            FieldPanel("avail_eyebrow"),
-            FieldPanel("avail_heading"),
-            FieldPanel("avail_text"),
-            FieldPanel("avail_image"),
-            FieldPanel("avail_image_url"),
-            FieldRowPanel([FieldPanel("avail_cta_label"), FieldPanel("avail_cta_href")]),
-        ], heading="Availability / Appraisal CTA"),
+        FieldPanel("body"),
     ]
 
     promote_panels = Page.promote_panels + [PublishingPanel()]
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
 
     class Meta:
         verbose_name = "About Page"
 
     def get_api_representation(self) -> dict[str, Any]:
-        hero = _extract_internal_page_hero_block(self.hero_content)
-        if not hero:
-            hero = {
-                "title_line_1": "Meet [gold]Rahul[/gold] Singh",
-                "title_line_2": "Appraisal-First [amber]Agent[/amber]",
-                "subtitle": "Brisbane's calm, data-backed appraisal specialist. Clear pricing, honest advice, and a plan that helps your property stand out.",
-                "background_image": None,
-                "background_image_url": "images/hero4.jpg",
-                "show_video": False,
-                "background_video_url": "",
-                "mode": "buttons",
-                "buttons": [{"label": "Book a Free Appraisal", "href": "/contact", "style": "gold", "open_in_new_tab": False}],
-                "stats": [],
-            }
-        overlay_image_url = self.overlay_image.file.url if self.overlay_image and getattr(self.overlay_image, "file", None) else self.overlay_image_url
-        avail_image_url = self.avail_image.file.url if self.avail_image and getattr(self.avail_image, "file", None) else self.avail_image_url
+        sections: dict[str, Any] = {}
+        for block in self.body:
+            btype = block.block_type
+            raw = _serialise_block_value(block.value)
+            cfg = raw if isinstance(raw, dict) else {}
+
+            if btype == "hero":
+                mode = cfg.get("mode")
+                if mode not in {"none", "buttons", "stats"}:
+                    mode = "none"
+                cfg["mode"] = mode
+                cfg.setdefault("buttons", [])
+                cfg.setdefault("stats", [])
+                sections["hero"] = cfg
+
+            elif btype == "intro":
+                sections["intro"] = {"statement": cfg.get("statement") or ""}
+
+            elif btype == "split":
+                sections["split"] = {
+                    "heading": cfg.get("heading") or "",
+                    "p1": cfg.get("p1") or "",
+                    "p2": cfg.get("p2") or "",
+                    "bullets": cfg.get("bullets") or [],
+                    "video_url": cfg.get("video_url") or "",
+                    "cta_label": cfg.get("cta_label") or "",
+                    "cta_href": cfg.get("cta_href") or "/contact",
+                }
+
+            elif btype == "overlay":
+                image = cfg.get("image")
+                image_url = (
+                    image.get("url")
+                    if isinstance(image, dict) and image.get("url")
+                    else cfg.get("image_url") or ""
+                )
+                sections["overlay"] = {
+                    "heading": cfg.get("heading") or "",
+                    "text": cfg.get("text") or "",
+                    "image_url": image_url,
+                    "steps": cfg.get("steps") or [],
+                }
+
+            elif btype == "avail":
+                image = cfg.get("image")
+                image_url = (
+                    image.get("url")
+                    if isinstance(image, dict) and image.get("url")
+                    else cfg.get("image_url") or ""
+                )
+                sections["avail"] = {
+                    "eyebrow": cfg.get("eyebrow") or "",
+                    "heading": cfg.get("heading") or "",
+                    "text": cfg.get("text") or "",
+                    "image_url": image_url,
+                    "cta_label": cfg.get("cta_label") or "",
+                    "cta_href": cfg.get("cta_href") or "/contact",
+                }
+
         return {
             "id": self.pk,
             "title": self.title,
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": hero,
-            "intro": {"statement": self.intro_statement},
-            "split": {
-                "heading": self.split_heading,
-                "p1": self.split_p1,
-                "p2": self.split_p2,
-                "bullets": [self.split_bullet_1, self.split_bullet_2, self.split_bullet_3],
-                "video_url": self.split_video_url,
-                "cta_label": self.split_cta_label,
-                "cta_href": self.split_cta_href,
-            },
-            "overlay": {
-                "heading": self.overlay_heading,
-                "text": self.overlay_text,
-                "image_url": overlay_image_url,
-                "steps": [self.overlay_step_1, self.overlay_step_2, self.overlay_step_3],
-            },
-            "avail": {
-                "eyebrow": self.avail_eyebrow,
-                "heading": self.avail_heading,
-                "text": self.avail_text,
-                "image_url": avail_image_url,
-                "cta_label": self.avail_cta_label,
-                "cta_href": self.avail_cta_href,
-            },
+            "sections": sections,
         }
 
 
