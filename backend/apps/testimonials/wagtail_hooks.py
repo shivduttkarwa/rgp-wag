@@ -1,7 +1,7 @@
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet, SnippetViewSetGroup
 
-from .models import TextTestimonial, VideoTestimonial
+from .models import FeaturedTestimonial, TextTestimonial, VideoTestimonial
 
 
 class VideoTestimonialViewSet(SnippetViewSet):
@@ -26,12 +26,23 @@ class TextTestimonialViewSet(SnippetViewSet):
     search_fields = ("client_name", "slug", "location", "quote")
 
 
+class FeaturedTestimonialViewSet(SnippetViewSet):
+    model = FeaturedTestimonial
+    icon = "pick"
+    menu_label = "Featured Testimonial"
+    menu_name = "featured_testimonials"
+    add_to_admin_menu = False
+    list_display = ("title", "slug", "rating", "attribution", "theme", "is_active", "order", "updated_at")
+    list_filter = ("rating", "theme", "is_active")
+    search_fields = ("title", "slug", "attribution", "quote")
+
+
 class TestimonialViewSetGroup(SnippetViewSetGroup):
     menu_label = "Testimonial"
     menu_name = "testimonial"
     menu_icon = "openquote"
     menu_order = 240
-    items = (VideoTestimonialViewSet, TextTestimonialViewSet)
+    items = (VideoTestimonialViewSet, TextTestimonialViewSet, FeaturedTestimonialViewSet)
 
 
 register_snippet(TestimonialViewSetGroup)

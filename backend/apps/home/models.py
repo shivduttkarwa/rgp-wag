@@ -11,6 +11,7 @@ from .blocks import (
     ContactPageHeroStreamBlock,
     HomePageStreamBlock,
     PropertiesPageContentStreamBlock,
+    TestimonialsPageContentStreamBlock,
 )
 
 
@@ -1011,6 +1012,16 @@ class TestimonialsPage(Page):
         help_text="Internal page hero block.",
     )
 
+    content = StreamField(
+        TestimonialsPageContentStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text=(
+            "Add the 'Featured Testimonials Slider' block here to place the SplitSlider "
+            "section. All active Featured Testimonial records render automatically."
+        ),
+    )
+
     section_eyebrow = models.CharField(max_length=120, default="Client Voices")
     section_heading = models.CharField(max_length=255, default="What Our Clients Say")
     section_subtitle = models.TextField(
@@ -1031,6 +1042,7 @@ class TestimonialsPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("hero_content"),
+        FieldPanel("content", heading="Featured Testimonials Slider"),
         MultiFieldPanel([
             FieldPanel("section_eyebrow"),
             FieldPanel("section_heading"),
@@ -1052,6 +1064,7 @@ class TestimonialsPage(Page):
     def get_api_representation(self) -> dict[str, Any]:
         hero = _extract_internal_page_hero_block(self.hero_content)
         testimonials = _get_active_text_testimonial_items()
+        featured = _get_active_featured_testimonial_items()
         count = len(testimonials)
         if not hero:
             hero = {
@@ -1078,6 +1091,7 @@ class TestimonialsPage(Page):
                 "subtitle": self.section_subtitle,
             },
             "testimonials": testimonials,
+            "featured_testimonials": featured,
             "final_cta": {
                 "heading": self.final_cta_heading,
                 "body": self.final_cta_body,
@@ -1146,6 +1160,22 @@ def _get_active_text_testimonial_items() -> list[dict[str, Any]]:
         return []
     try:
         qs = TextTestimonial.objects.filter(is_active=True).select_related("client_image").order_by("order", "id")
+        return [t.to_api_item() for t in qs]
+    except DatabaseError:
+        return []
+
+
+def _get_active_featured_testimonial_items() -> list[dict[str, Any]]:
+    try:
+        from apps.testimonials.models import FeaturedTestimonial
+    except Exception:
+        return []
+    try:
+        qs = (
+            FeaturedTestimonial.objects.filter(is_active=True)
+            .select_related("image")
+            .order_by("order", "id")
+        )
         return [t.to_api_item() for t in qs]
     except DatabaseError:
         return []

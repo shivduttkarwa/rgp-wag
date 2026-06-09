@@ -456,6 +456,27 @@ class ContactInfoBlock(StructBlock):
         label = "Contact Info"
 
 
+class FeaturedTestimonialsBlock(StructBlock):
+    """
+    Reusable marker block — wherever added to a page's StreamField, all active
+    FeaturedTestimonial snippet records render in the SplitSlider on the frontend.
+    No configuration needed; items are always pulled live from the CMS snippet.
+    """
+
+    class Meta:
+        icon = "pick"
+        label = "Featured Testimonials Slider"
+
+
+class TestimonialsPageContentStreamBlock(StreamBlock):
+    featured_testimonials = FeaturedTestimonialsBlock()
+
+    class Meta:
+        block_counts = {
+            "featured_testimonials": {"min_num": 0, "max_num": 1},
+        }
+
+
 class ContactPageContentStreamBlock(StreamBlock):
     contact_info = ContactInfoBlock()
 

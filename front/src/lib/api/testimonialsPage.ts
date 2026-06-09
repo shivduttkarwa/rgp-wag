@@ -26,6 +26,7 @@ export const DEFAULT_TESTIMONIALS_PAGE_DATA: TestimonialsPageData = {
     subtitle: "Real experiences from real clients — every word earned, never scripted.",
   },
   testimonials: [],
+  featured_testimonials: [],
   final_cta: {
     heading: "Book a Free Appraisal",
     body: "Get a clear price range, honest advice, and a plan that positions your property for a confident sale.",

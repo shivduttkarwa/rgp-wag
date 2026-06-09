@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
+import type { SlideContent } from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
-import type { CmsTestimonial } from "@/types/testimonialsPage";
+import type { CmsFeaturedTestimonial, CmsTestimonial } from "@/types/testimonialsPage";
+import { resolveMediaUrl } from "@/lib/api/config";
 
 interface Testimonial {
   id: number;
@@ -801,6 +803,18 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ heading, body, primaryLabel, primar
   </section>
 );
 
+function cmsFeaturedToSlide(item: CmsFeaturedTestimonial): SlideContent {
+  return {
+    kicker: item.kicker,
+    titleLines: item.title_lines,
+    description: item.description,
+    linkText: item.link_text,
+    linkUrl: item.link_url ?? undefined,
+    image: resolveMediaUrl(item.image),
+    theme: item.theme,
+  };
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────────────────────────────────────── */
@@ -813,6 +827,12 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
     data.testimonials.length > 0
       ? data.testimonials.map(cmsToTestimonial)
       : testimonials;
+
+  // Featured testimonials → SplitSlider slides (undefined = use built-in defaults)
+  const featuredSlides: SlideContent[] | undefined =
+    data.featured_testimonials.length > 0
+      ? data.featured_testimonials.map(cmsFeaturedToSlide)
+      : undefined;
 
   useEffect(() => {
     const guards = [
@@ -856,7 +876,7 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
             </p>
           </header>
         </div>
-        <RGPSplitSlider />
+        <RGPSplitSlider slides={featuredSlides} />
         <VoiceMosaic items={activeTestimonials} />
         <TickerWall items={activeTestimonials} />
         <FinalCTA

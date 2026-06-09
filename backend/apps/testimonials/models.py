@@ -10,6 +10,9 @@ class TestimonialTint(models.TextChoices):
     CRIMSON = "crimson", "Crimson"
 
 
+FEATURED_THEME_CHOICES = [(f"theme-{i}", f"Theme {i}") for i in range(1, 11)]
+
+
 class VideoTestimonial(models.Model):
     # Keep schema compatible with existing DB tables from the older Wagtail build.
     slug = models.SlugField(
@@ -124,6 +127,115 @@ class VideoTestimonial(models.Model):
             }
         )
         return payload
+
+
+class FeaturedTestimonial(models.Model):
+    """
+    A testimonial record designed for the SplitSlider component.
+    Each active record becomes one slide (rating stars, title, quote, image, theme).
+    """
+
+    slug = models.SlugField(unique=True, max_length=200, help_text="Unique slug for this record.")
+    rating = models.PositiveSmallIntegerField(
+        default=5,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="Star rating 1–5. Shown above the slide title.",
+    )
+    title = models.CharField(
+        max_length=500,
+        help_text=(
+            "Slide heading. Use newlines to control line breaks; "
+            "otherwise words are grouped automatically (~2 per line)."
+        ),
+    )
+    quote = models.TextField(help_text="Body text displayed on the slide.")
+    attribution = models.CharField(
+        max_length=200,
+        blank=True,
+        default="",
+        help_text='Attribution line shown below the quote. e.g. "— James & Priya Hartwell"',
+    )
+    link_url = models.CharField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="If set the attribution becomes a clickable link.",
+    )
+    image = models.ForeignKey(
+        settings.WAGTAILIMAGES_IMAGE_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Slide image from media library.",
+    )
+    image_url = models.CharField(
+        max_length=500,
+        blank=True,
+        default="",
+        help_text="Fallback image path relative to public/ or full URL. Used when no image is chosen above.",
+    )
+    theme = models.CharField(
+        max_length=20,
+        choices=FEATURED_THEME_CHOICES,
+        default="theme-1",
+        help_text="Colour theme applied while this slide is active.",
+    )
+    order = models.PositiveIntegerField(default=0, help_text="Lower numbers appear first.")
+    is_active = models.BooleanField(default=True, help_text="Only active records are sent to the frontend.")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldRowPanel([FieldPanel("title"), FieldPanel("slug")]),
+                FieldPanel("rating"),
+                FieldPanel("quote"),
+                FieldRowPanel([FieldPanel("attribution"), FieldPanel("link_url")]),
+                FieldPanel("image"),
+                FieldPanel("image_url"),
+                FieldRowPanel([FieldPanel("theme"), FieldPanel("is_active"), FieldPanel("order")]),
+            ],
+            heading="Featured Testimonial",
+        ),
+    ]
+
+    class Meta:
+        verbose_name = "Featured Testimonial"
+        verbose_name_plural = "Featured Testimonials"
+        ordering = ("order", "id")
+
+    def __str__(self) -> str:
+        return f"{self.title} ({self.attribution or self.slug})"
+
+    def _resolved_image_url(self) -> str:
+        if self.image and getattr(self.image, "file", None):
+            return self.image.file.url
+        return self.image_url
+
+    @staticmethod
+    def _split_title(title: str) -> list[str]:
+        """Split title into slide lines. Respects explicit newlines; otherwise groups ~2 words per line."""
+        explicit = [l.strip() for l in title.splitlines() if l.strip()]
+        if explicit:
+            return explicit
+        words = title.split()
+        return [" ".join(words[i : i + 2]) for i in range(0, len(words), 2)]
+
+    def to_api_item(self) -> dict:
+        return {
+            "id": self.pk,
+            "slug": self.slug,
+            "kicker": "★" * self.rating,
+            "title_lines": self._split_title(self.title),
+            "description": self.quote,
+            "link_text": self.attribution,
+            "link_url": self.link_url or None,
+            "image": self._resolved_image_url(),
+            "theme": self.theme,
+            "order": self.order,
+            "is_active": self.is_active,
+        }
 
 
 class TextTestimonial(models.Model):
