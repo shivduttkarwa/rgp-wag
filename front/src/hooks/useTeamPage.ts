@@ -1,22 +1,24 @@
 import { startTransition, useEffect, useState } from "react";
 import { DEFAULT_TEAM_PAGE_DATA, fetchTeamPage } from "@/lib/api/teamPage";
-import type { TeamMemberData, TeamPageData } from "@/types/teamPage";
+import type { TeamMemberData, TeamPageData, TeamSectionData } from "@/types/teamPage";
+import type { InternalPageHeroData } from "@/types/internalPageHero";
 
 type Status = "loading" | "ready" | "fallback";
 
 let cachedData: TeamPageData | null = null;
 
 function mergeMembers(members: TeamMemberData[] | undefined): TeamMemberData[] {
-  if (!members?.length) return DEFAULT_TEAM_PAGE_DATA.members;
+  const defaultMembers = DEFAULT_TEAM_PAGE_DATA.sections.team_section?.members ?? [];
+  if (!members?.length) return defaultMembers;
   return members.map((member, index) => {
-    const fallback = DEFAULT_TEAM_PAGE_DATA.members[index] ?? DEFAULT_TEAM_PAGE_DATA.members[0];
+    const fallback = defaultMembers[index] ?? defaultMembers[0];
     return {
       ...fallback,
       ...member,
-      stats: member.stats?.length ? member.stats : fallback.stats,
-      tags: member.tags?.length ? member.tags : fallback.tags,
+      stats: member.stats?.length ? member.stats : fallback?.stats ?? [],
+      tags: member.tags?.length ? member.tags : fallback?.tags ?? [],
       social: {
-        ...fallback.social,
+        ...fallback?.social,
         ...member.social,
       },
     };
@@ -28,15 +30,19 @@ function mergeTeamData(data: TeamPageData): TeamPageData {
   return {
     ...defaults,
     ...data,
-    hero: {
-      ...defaults.hero,
-      ...data.hero,
+    sections: {
+      ...defaults.sections,
+      ...data.sections,
+      hero: {
+        ...defaults.sections.hero,
+        ...data.sections?.hero,
+      } as InternalPageHeroData,
+      team_section: {
+        ...defaults.sections.team_section,
+        ...data.sections?.team_section,
+        members: mergeMembers(data.sections?.team_section?.members),
+      } as TeamSectionData & { members: TeamMemberData[] },
     },
-    team_section: {
-      ...defaults.team_section,
-      ...data.team_section,
-    },
-    members: mergeMembers(data.members),
   };
 }
 

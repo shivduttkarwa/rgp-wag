@@ -461,8 +461,33 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
         </section>
       </div>
 
-      {sections.cta && <RgpCta section={sections.cta} />}
-      {sections.eoi_cta && <EoiCta section={sections.eoi_cta} />}
+      {sections.cta && (
+        <RgpCta
+          eyebrow={sections.cta.eyebrow}
+          title={sections.cta.title}
+          titleEm={sections.cta.title_em}
+          text={sections.cta.text}
+          primary={{ label: sections.cta.primary.label, to: sections.cta.primary.href }}
+          secondary={{ label: sections.cta.secondary.label, to: sections.cta.secondary.href }}
+          bgImage={sections.cta.background_image?.url ?? sections.cta.background_image_url}
+          bgVideo={sections.cta.background_video_url}
+          posterImage={sections.cta.video_poster_image?.url ?? sections.cta.video_poster_image_url}
+          minHeight={sections.cta.min_height}
+        />
+      )}
+      {sections.eoi_cta && (
+        <EoiCta
+          badgeText={sections.eoi_cta.badge_text}
+          title={sections.eoi_cta.title}
+          text={sections.eoi_cta.text}
+          buttonLabel={sections.eoi_cta.button_label}
+          buttonTo={sections.eoi_cta.button_href}
+          bgImage={sections.eoi_cta.background_image?.url ?? sections.eoi_cta.background_image_url}
+          mobileBgImage={sections.eoi_cta.mobile_background_image?.url ?? sections.eoi_cta.mobile_background_image_url}
+          minHeight={sections.eoi_cta.min_height}
+          mobileMinHeight={sections.eoi_cta.mobile_min_height}
+        />
+      )}
 
       <div
         className={`succ-modal${success ? " show" : ""}`}
