@@ -31,19 +31,6 @@ def global_admin_css():
     background-color: #001f49 !important;
   }
 
-  /* Active / hover menu items */
-  .sidebar-menu-item__link:hover,
-  .sidebar-menu-item--active .sidebar-menu-item__link {
-    background-color: rgba(249, 194, 6, 0.12) !important;
-    color: #f9c206 !important;
-  }
-
-  /* Account bar at bottom */
-  .sidebar-sub-menu-panel,
-  .sidebar-footer {
-    background-color: #001430 !important;
-  }
-
   /* Top nav / header bar */
   header.header,
   .w-header {
