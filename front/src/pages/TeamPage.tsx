@@ -65,6 +65,7 @@ const VALUES = [
 export default function TeamPage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const { data, status } = useTeamPage();
+  const { sections } = data;
 
   useEffect(() => {
     if (status === "loading") return;
@@ -87,14 +88,13 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
-      <InternalPageHero
-        ready={ready}
-        hero={data.hero}
-      />
+      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       <main className="team-page" ref={pageRef}>
         {/* ── Expanding cards ── */}
-        <Team section={data.team_section} members={data.members} />
+        {sections.team_section && (
+          <Team section={sections.team_section} members={sections.team_section.members} />
+        )}
        
 
         {/* ── Values ── */}

@@ -648,6 +648,32 @@ class AboutPageStreamBlock(StreamBlock):
         }
 
 
+# ─── Team page blocks ────────────────────────────────────────────────────────
+
+class TeamSectionBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="Our People")
+    title_line_1 = CharBlock(default="The Minds")
+    title_line_2 = CharBlock(default="[gold]Behind[/gold] Every Deal")
+    subtitle = TextBlock(
+        default="A curated ensemble of creative minds and industry veterans — each bringing unmatched expertise to every client engagement.",
+    )
+
+    class Meta:
+        icon = "group"
+        label = "Team Section Heading"
+
+
+class TeamPageStreamBlock(StreamBlock):
+    hero = InternalPageHeroBlock()
+    team_section = TeamSectionBlock()
+
+    class Meta:
+        block_counts = {
+            "hero": {"min_num": 0, "max_num": 1},
+            "team_section": {"min_num": 0, "max_num": 1},
+        }
+
+
 class ContactPageContentStreamBlock(StreamBlock):
     contact_info = ContactInfoBlock()
 

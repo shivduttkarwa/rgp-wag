@@ -30,12 +30,15 @@ export type TeamSectionData = {
   subtitle: string;
 };
 
+export type TeamPageSections = {
+  hero?: InternalPageHeroData;
+  team_section?: TeamSectionData & { members: TeamMemberData[] };
+};
+
 export type TeamPageData = {
   id: number;
   title: string;
   slug: string;
   updated_at: string | null;
-  hero: InternalPageHeroData;
-  team_section: TeamSectionData;
-  members: TeamMemberData[];
+  sections: TeamPageSections;
 };

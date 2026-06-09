@@ -12,6 +12,7 @@ from .blocks import (
     ContactPageHeroStreamBlock,
     HomePageStreamBlock,
     PropertiesPageContentStreamBlock,
+    TeamPageStreamBlock,
     TestimonialsPageStreamBlock,
 )
 
@@ -189,58 +190,58 @@ class TeamPage(Page):
     Uses reusable internal hero block and Team Member sidebar app records.
     """
 
-    hero_content = StreamField(
-        ContactPageHeroStreamBlock(),
+    body = StreamField(
+        TeamPageStreamBlock(),
         blank=True,
         use_json_field=True,
-        help_text="Reusable internal page hero block (buttons or stats mode).",
+        help_text="Add, remove and reorder sections. Team members always come from the Team Member snippets.",
     )
-    team_section_eyebrow = models.CharField(max_length=120, default="Our People")
-    team_section_title_line_1 = models.CharField(max_length=255, default="The Minds")
-    team_section_title_line_2 = models.CharField(max_length=255, default="[gold]Behind[/gold] Every Deal")
-    team_section_subtitle = models.TextField(
-        default=(
-            "A curated ensemble of creative minds and industry veterans — each "
-            "bringing unmatched expertise to every client engagement."
-        )
-    )
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types: list[str] = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("hero_content"),
-        FieldPanel("team_section_eyebrow"),
-        FieldPanel("team_section_title_line_1"),
-        FieldPanel("team_section_title_line_2"),
-        FieldPanel("team_section_subtitle"),
+        FieldPanel("body"),
     ]
 
     promote_panels = Page.promote_panels + [
         PublishingPanel(),
     ]
 
+    parent_page_types = ["home.HomePage"]
+    subpage_types: list[str] = []
+
     class Meta:
         verbose_name = "Team Page"
 
     def get_api_representation(self) -> dict[str, Any]:
-        hero_payload = _extract_internal_page_hero_block(self.hero_content)
-        if not hero_payload:
-            hero_payload = _default_team_hero_payload()
+        sections: dict[str, Any] = {}
+        for block in self.body:
+            btype = block.block_type
+            raw = _serialise_block_value(block.value)
+            cfg = raw if isinstance(raw, dict) else {}
+
+            if btype == "hero":
+                mode = cfg.get("mode")
+                if mode not in {"none", "buttons", "stats"}:
+                    mode = "none"
+                cfg["mode"] = mode
+                cfg.setdefault("buttons", [])
+                cfg.setdefault("stats", [])
+                sections["hero"] = cfg
+
+            elif btype == "team_section":
+                sections["team_section"] = {
+                    "eyebrow": cfg.get("eyebrow") or "Our People",
+                    "title_line_1": cfg.get("title_line_1") or "The Minds",
+                    "title_line_2": cfg.get("title_line_2") or "[gold]Behind[/gold] Every Deal",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "members": _get_active_team_member_items(),
+                }
 
         return {
             "id": self.pk,
             "title": self.title,
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
-            "hero": hero_payload,
-            "team_section": {
-                "eyebrow": self.team_section_eyebrow,
-                "title_line_1": self.team_section_title_line_1,
-                "title_line_2": self.team_section_title_line_2,
-                "subtitle": self.team_section_subtitle,
-            },
-            "members": _get_active_team_member_items(),
+            "sections": sections,
         }
 
 
