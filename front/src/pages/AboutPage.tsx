@@ -157,18 +157,6 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
           </section>
         )}
 
-        {/* 3) PROPERTY MARQUEE */}
-        {sections.property_marquee && (
-          <PropertyMarquee
-            properties={sections.property_marquee.properties}
-            eyebrow={sections.property_marquee.eyebrow}
-            title={sections.property_marquee.title}
-            titleEm={sections.property_marquee.title_em}
-            subtitle={sections.property_marquee.subtitle}
-            ctaLabel={sections.property_marquee.cta_label}
-          />
-        )}
-
         {/* 4) GREEN SPLIT */}
         {sections.split && (
           <section className="split-green">
@@ -299,6 +287,17 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               </div>
             </div>
           </section>
+        )}
+        {/* 6) PROPERTY MARQUEE */}
+        {sections.property_marquee && (
+          <PropertyMarquee
+            properties={sections.property_marquee.properties}
+            eyebrow={sections.property_marquee.eyebrow}
+            title={sections.property_marquee.title}
+            titleEm={sections.property_marquee.title_em}
+            subtitle={sections.property_marquee.subtitle}
+            ctaLabel={sections.property_marquee.cta_label}
+          />
         )}
       </main>
       {sections.cta && (
