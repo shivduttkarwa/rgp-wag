@@ -29,6 +29,8 @@ function TestiCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [fullPlay, setFullPlay] = useState(false);
 
+  // Muted autoplay preview — only re-runs when the video source changes, never
+  // when fullPlay changes (avoids overwriting the muted=false set by handlePlayClick)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -36,18 +38,27 @@ function TestiCard({
     video.muted = true;
     video.defaultMuted = true;
 
-    const startMutedPreview = () => {
-      if (fullPlay) return;
-      video.play().catch(() => {});
-    };
-
+    const startMutedPreview = () => video.play().catch(() => {});
     startMutedPreview();
     video.addEventListener("canplay", startMutedPreview);
 
     return () => {
       video.removeEventListener("canplay", startMutedPreview);
     };
-  }, [fullPlay, t.video]);
+  }, [t.video]);
+
+  // Reset this card when another card becomes active
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (activeId === t.title) return;
+
+    video.pause();
+    video.currentTime = 0;
+    video.muted = true;
+    setFullPlay(false);
+    video.play().catch(() => {});
+  }, [activeId, t.title]);
 
   const handleMouseEnter = () => {
     if (fullPlay) return;
@@ -58,28 +69,13 @@ function TestiCard({
     e.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
+    setActiveId(t.title);
+    video.pause();
     video.currentTime = 0;
     video.muted = false;
     setFullPlay(true);
-    setActiveId(t.title);
     video.play().catch(() => {});
   };
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (activeId === t.title) return;
-
-    if (fullPlay) {
-      video.pause();
-      video.currentTime = 0;
-      video.muted = true;
-      setFullPlay(false);
-    }
-
-    video.play().catch(() => {});
-  }, [activeId, fullPlay, t.title]);
 
   return (
     <article
@@ -94,7 +90,6 @@ function TestiCard({
           src={t.video}
           poster={t.poster}
           muted
-          autoPlay
           playsInline
           loop
           preload="metadata"
@@ -135,6 +130,8 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
   const section = data;
   const [activeId, setActiveId] = useState<string | null>(null);
   const desktopSwiperRef = useRef<SwiperType | null>(null);
+  const [swiperIndex, setSwiperIndex] = useState(0);
+  const totalSwiperSlides = testimonials.length;
 
   if (!section?.items.length) return null;
 
@@ -173,8 +170,9 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
               <div className="rg-philo__desktop-nav">
                 <button
                   type="button"
-                  className="rg-philo__nav-btn"
+                  className={`rg-philo__nav-btn${swiperIndex === 0 ? " rg-philo__nav-btn--disabled" : ""}`}
                   aria-label="Previous testimonial"
+                  disabled={swiperIndex === 0}
                   onClick={() => desktopSwiperRef.current?.slidePrev()}
                 >
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -189,8 +187,9 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
                 </button>
                 <button
                   type="button"
-                  className="rg-philo__nav-btn"
+                  className={`rg-philo__nav-btn${swiperIndex >= totalSwiperSlides - 3 ? " rg-philo__nav-btn--disabled" : ""}`}
                   aria-label="Next testimonial"
+                  disabled={swiperIndex >= totalSwiperSlides - 3}
                   onClick={() => desktopSwiperRef.current?.slideNext()}
                 >
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -213,6 +212,7 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
               onSwiper={(swiper) => {
                 desktopSwiperRef.current = swiper;
               }}
+              onActiveIndexChange={(swiper) => setSwiperIndex(swiper.activeIndex)}
               pagination={{
                 clickable: true,
                 el: ".rg-philo__desktop-pagination",

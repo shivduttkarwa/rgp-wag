@@ -127,6 +127,13 @@
   outline-offset: 0.2rem;
 }
 
+.rg-philo__nav-btn--disabled,
+.rg-philo__nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .rg-philo__desktop-swiper .swiper-slide {
   height: auto;
 }
