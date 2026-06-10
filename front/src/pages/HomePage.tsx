@@ -50,13 +50,10 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const services = sections.services;
   const eoiCta = sections.eoi_cta;
   const ctaSection = sections.cta;
-  const ctaBackgroundImage =
-    ctaSection?.background_image?.url ?? ctaSection?.background_image_url;
-  const ctaVideoPoster =
-    ctaSection?.video_poster_image?.url ??
-    ctaSection?.video_poster_image_url;
-  const ctaVideo = ctaSection?.use_video
-    ? (ctaSection.background_video_url || undefined)
+  const ctaBackgroundImage = ctaSection?.background_image?.url;
+  const ctaVideoPoster = ctaSection?.video_poster_image?.url;
+  const ctaVideo = ctaSection?.background_type === "video"
+    ? (ctaSection.background_video || undefined)
     : undefined;
 
   const primaryCta = toRgpLink(
@@ -132,6 +129,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           minHeight={ctaSection.min_height}
           primary={primaryCta}
           secondary={secondaryCta}
+          stats={ctaSection.stats}
         />
       ) : null}
 

@@ -559,17 +559,13 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
               : sections.property_cta.secondary.href,
           }}
           commitments={sections.property_cta.commitments}
-          bgImage={
-            sections.property_cta.background_image?.url ?? sections.property_cta.background_image_url
-          }
+          bgImage={sections.property_cta.background_image?.url}
           bgVideo={
-            sections.property_cta.use_video
-              ? (sections.property_cta.background_video_url || undefined)
+            sections.property_cta.background_type === "video"
+              ? (sections.property_cta.background_video || undefined)
               : undefined
           }
-          posterImage={
-            sections.property_cta.video_poster_image?.url ?? sections.property_cta.video_poster_image_url
-          }
+          posterImage={sections.property_cta.video_poster_image?.url}
           minHeight={sections.property_cta.min_height}
         />
       )}
@@ -582,9 +578,9 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           text={sections.cta.text}
           primary={{ label: sections.cta.primary.label, to: sections.cta.primary.href }}
           secondary={{ label: sections.cta.secondary.label, to: sections.cta.secondary.href }}
-          bgImage={sections.cta.background_image?.url ?? sections.cta.background_image_url}
-          bgVideo={sections.cta.background_video_url}
-          posterImage={sections.cta.video_poster_image?.url ?? sections.cta.video_poster_image_url}
+          bgImage={sections.cta.background_image?.url}
+          bgVideo={sections.cta.background_type === "video" ? sections.cta.background_video || undefined : undefined}
+          posterImage={sections.cta.video_poster_image?.url}
           minHeight={sections.cta.min_height}
         />
       )}

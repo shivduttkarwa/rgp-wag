@@ -19,6 +19,15 @@ from wagtail.snippets.blocks import SnippetChooserBlock
 
 # ─── Reusable primitives ─────────────────────────────────────────────────────
 
+class CtaStatBlock(StructBlock):
+    value = CharBlock(help_text="e.g. 350+, 98%, $1.2M")
+    label = CharBlock(help_text="e.g. Properties Sold")
+
+    class Meta:
+        icon  = "pick"
+        label = "Stat"
+
+
 class CtaBlock(StructBlock):
     label = CharBlock(required=False)
     href  = CharBlock(required=False, help_text="Relative path (e.g. /properties) or full URL")
@@ -291,33 +300,31 @@ class CtaSectionBlock(StructBlock):
     text       = TextBlock(default="Tell us your goals and we will help map a practical path through your next property decision.")
     primary    = CtaBlock()
     secondary  = CtaBlock()
-    use_video  = BooleanBlock(
+    background_type = ChoiceBlock(
+        choices=[
+            ("image", "Background Image"),
+            ("video", "Background Video"),
+        ],
+        default="image",
         required=False,
-        default=True,
-        help_text="Enable video background mode. When off, image background is used.",
+        help_text="Choose Image or Video background.",
     )
     background_image = ImageChooserBlock(
         required=False,
-        help_text="Image mode background. Also used as fallback if video is unavailable.",
+        help_text="Pick background image from media library. Used when 'Background Image' is selected.",
     )
-    background_image_url = CharBlock(
+    background_video = DocumentChooserBlock(
         required=False,
-        default="",
-        help_text="Optional full URL only if no image is chosen above.",
-    )
-    background_video_url = CharBlock(
-        required=False,
-        default="",
-        help_text="Optional full URL. Used when video mode is enabled.",
+        help_text="Upload or choose a video file (mp4 recommended). Used when 'Background Video' is selected.",
     )
     video_poster_image = ImageChooserBlock(
         required=False,
-        help_text="Poster image shown before video loads. Used only when video mode is enabled.",
+        help_text="Poster image shown before video loads. Used when 'Background Video' is selected.",
     )
-    video_poster_image_url = CharBlock(
+    stats = ListBlock(
+        CtaStatBlock(),
         required=False,
-        default="",
-        help_text="Optional full URL only if no poster image is chosen above.",
+        help_text="Optional trust stats shown below the CTA buttons (e.g. 350+ Properties Sold).",
     )
     min_height = CharBlock(required=False, default="100vh")
 
@@ -351,33 +358,26 @@ class PropertyCtaBlock(StructBlock):
         required=False,
         help_text="Optional right-column commitments.",
     )
-    use_video = BooleanBlock(
+    background_type = ChoiceBlock(
+        choices=[
+            ("image", "Background Image"),
+            ("video", "Background Video"),
+        ],
+        default="image",
         required=False,
-        default=True,
-        help_text="Enable video background mode. When off, image background is used.",
+        help_text="Choose Image or Video background.",
     )
     background_image = ImageChooserBlock(
         required=False,
-        help_text="Image mode background. Also used as fallback if video is unavailable.",
+        help_text="Pick background image from media library. Used when 'Background Image' is selected.",
     )
-    background_image_url = CharBlock(
+    background_video = DocumentChooserBlock(
         required=False,
-        default="",
-        help_text="Optional full URL only if no image is chosen above.",
-    )
-    background_video_url = CharBlock(
-        required=False,
-        default="",
-        help_text="Optional full URL. Used when video mode is enabled.",
+        help_text="Upload or choose a video file (mp4 recommended). Used when 'Background Video' is selected.",
     )
     video_poster_image = ImageChooserBlock(
         required=False,
-        help_text="Poster image shown before video loads. Used only when video mode is enabled.",
-    )
-    video_poster_image_url = CharBlock(
-        required=False,
-        default="",
-        help_text="Optional full URL only if no poster image is chosen above.",
+        help_text="Poster image shown before video loads. Used when 'Background Video' is selected.",
     )
     min_height = CharBlock(required=False, default="100vh")
 

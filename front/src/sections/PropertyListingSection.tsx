@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
 import assetUrl from "@/lib/assetUrl";
@@ -54,6 +54,9 @@ const PropertyListingSection = ({
   data?: PropertyListingSectionData;
 }) => {
   const [activeFilter, setActiveFilter] = useState<Category | "*">("*");
+  const [gridPhase, setGridPhase] = useState<"" | "grid-exiting" | "grid-entering">("");
+  const pendingFilter = useRef<Category | "*">("*");
+  const animating = useRef(false);
 
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
@@ -66,6 +69,21 @@ const PropertyListingSection = ({
     activeFilter === "*"
       ? sourceProperties
       : sourceProperties.filter((property) => property.category === activeFilter);
+
+  const handleFilter = (next: Category | "*") => {
+    if (next === activeFilter || animating.current) return;
+    pendingFilter.current = next;
+    animating.current = true;
+    setGridPhase("grid-exiting");
+    setTimeout(() => {
+      setActiveFilter(pendingFilter.current);
+      setGridPhase("grid-entering");
+      setTimeout(() => {
+        setGridPhase("");
+        animating.current = false;
+      }, 420);
+    }, 260);
+  };
 
   return (
     <section className="property-section">
@@ -106,7 +124,7 @@ const PropertyListingSection = ({
             >
               <div className="filter-tabs">
                 <button
-                  onClick={() => setActiveFilter("*")}
+                  onClick={() => handleFilter("*")}
                   className={`filter-tab ${activeFilter === "*" ? "active" : ""}`}
                   type="button"
                 >
@@ -115,7 +133,7 @@ const PropertyListingSection = ({
                 {filterTabs.map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveFilter(tab.id)}
+                    onClick={() => handleFilter(tab.id)}
                     className={`filter-tab ${
                       activeFilter === tab.id ? "active" : ""
                     }`}
@@ -128,9 +146,13 @@ const PropertyListingSection = ({
               </div>
             </div>
 
-            <div className="property-grid">
+            <div className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}>
               {displayed.slice(0, 3).map((property, index) => (
-                <div key={property.id} className="property-card-wrap">
+                <div
+                  key={property.id}
+                  className="property-card-wrap"
+                  style={gridPhase === "grid-entering" ? { animationDelay: `${index * 0.08}s` } : undefined}
+                >
                   <PropertyCard property={property} cardIndex={index} />
                 </div>
               ))}

@@ -110,12 +110,11 @@ export type CtaSection = {
   text: string;
   primary: CtaData;
   secondary: CtaData;
-  use_video: boolean;
+  background_type: "image" | "video";
   background_image: WagtailImage | null;
-  background_image_url: string;
-  background_video_url: string;
+  background_video: string | null;
   video_poster_image: WagtailImage | null;
-  video_poster_image_url: string;
+  stats: Array<{ value: string; label: string }>;
   min_height: string;
 };
 

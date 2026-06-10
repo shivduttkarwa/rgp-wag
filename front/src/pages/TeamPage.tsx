@@ -49,9 +49,9 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
           text={sections.cta.text}
           primary={{ label: sections.cta.primary.label, to: sections.cta.primary.href }}
           secondary={{ label: sections.cta.secondary.label, to: sections.cta.secondary.href }}
-          bgImage={sections.cta.background_image?.url ?? sections.cta.background_image_url}
-          bgVideo={sections.cta.background_video_url}
-          posterImage={sections.cta.video_poster_image?.url ?? sections.cta.video_poster_image_url}
+          bgImage={sections.cta.background_image?.url}
+          bgVideo={sections.cta.background_type === "video" ? sections.cta.background_video || undefined : undefined}
+          posterImage={sections.cta.video_poster_image?.url}
           minHeight={sections.cta.min_height}
         />
       )}

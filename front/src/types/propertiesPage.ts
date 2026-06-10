@@ -33,12 +33,10 @@ export type PropertyCtaData = {
   primary: PropertyCtaLink;
   secondary: PropertyCtaLink;
   commitments: PropertyCtaCommitment[];
-  use_video: boolean;
+  background_type: "image" | "video";
   background_image: WagtailImage | null;
-  background_image_url: string;
-  background_video_url: string;
+  background_video: string | null;
   video_poster_image: WagtailImage | null;
-  video_poster_image_url: string;
   min_height: string;
 };
 

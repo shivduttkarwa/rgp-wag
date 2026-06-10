@@ -6,7 +6,7 @@
 /* ===== Section Base ===== */
 .property-section {
   padding-top: clamp(3rem, 8vw, 6rem);
-  padding-bottom: 0;
+  padding-bottom: clamp(3rem, 8vw, 6rem);
   background-color: #ffffff;
   overflow: hidden;
 }
@@ -117,8 +117,9 @@
 }
 
 .property-section .filter-tab.active {
-  background-color: transparent;
+  background-color: var(--rg-gold);
   color: var(--rg-navy);
+  box-shadow: 0 0.25rem 0.75rem rgba(249, 194, 6, 0.3);
 }
 
 .property-section .filter-tab svg {

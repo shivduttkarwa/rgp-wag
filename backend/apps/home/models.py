@@ -258,15 +258,10 @@ class PropertiesPage(Page):
                 cfg.setdefault("primary", {"label": "", "href": ""})
                 cfg.setdefault("secondary", {"label": "", "href": ""})
                 cfg.setdefault("commitments", [])
-                cfg.setdefault("use_video", True)
+                cfg.setdefault("background_type", "image")
                 cfg.setdefault("background_image", None)
-                cfg.setdefault("background_image_url", "")
-                cfg.setdefault("background_video_url", "")
+                cfg.setdefault("background_video", None)
                 cfg.setdefault("video_poster_image", None)
-                cfg.setdefault(
-                    "video_poster_image_url",
-                    cfg.get("background_image_url") or "",
-                )
                 cfg.setdefault("min_height", "100vh")
                 sections["property_cta"] = cfg
 
@@ -322,12 +317,11 @@ def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
         "text": legacy_cta["text"] or "Tell us your goals and we will help map a practical path through your next property decision.",
         "primary": legacy_cta["primary"] or {"label": "", "href": ""},
         "secondary": legacy_cta["secondary"] or {"label": "", "href": ""},
-        "use_video": True,
+        "background_type": "image",
         "background_image": None,
-        "background_image_url": "",
-        "background_video_url": "",
+        "background_video": None,
         "video_poster_image": None,
-        "video_poster_image_url": "",
+        "stats": [],
         "min_height": "100vh",
     }
 
