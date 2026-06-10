@@ -911,7 +911,12 @@ class TestimonialsPage(Page):
                 }
 
             elif btype == "ticker":
-                sections["ticker"] = {"items": text_items()}
+                sections["ticker"] = {
+                    "eyebrow": cfg.get("eyebrow") or "",
+                    "heading": cfg.get("heading") or "",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "items": text_items(),
+                }
 
             elif btype == "final_cta":
                 sections["final_cta"] = {

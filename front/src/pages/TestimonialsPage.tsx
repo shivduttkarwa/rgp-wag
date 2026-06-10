@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Star } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
 import type { SlideContent } from "../components/reusable/SplitSlider";
@@ -113,6 +114,7 @@ const VoiceMosaic: React.FC<{ items: Testimonial[] }> = ({ items }) => {
               </div>
               {item.rating ? (
                 <div className="tp-mosaic__card-rating">
+                  <Star size={12} fill="currentColor" />
                   {item.rating.toFixed(1)}
                 </div>
               ) : null}
@@ -293,7 +295,16 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
           </>
         ) : null}
 
-        {sections.ticker ? <TickerWall items={tickerItems} /> : null}
+        {sections.ticker ? (
+          <>
+            <SectionHeading
+              eyebrow={sections.ticker.eyebrow}
+              heading={sections.ticker.heading}
+              subtitle={sections.ticker.subtitle}
+            />
+            <TickerWall items={tickerItems} />
+          </>
+        ) : null}
 
         {sections.final_cta ? (
           <FinalCTA

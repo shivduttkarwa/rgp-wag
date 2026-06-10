@@ -43,6 +43,9 @@ export type TestimonialsPageSections = {
     items: CmsTestimonial[];
   };
   ticker?: {
+    eyebrow: string;
+    heading: string;
+    subtitle: string;
     items: CmsTestimonial[];
   };
   final_cta?: {

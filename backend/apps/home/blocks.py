@@ -489,6 +489,10 @@ class TestimonialTextGridBlock(StructBlock):
 class TestimonialTickerBlock(StructBlock):
     """Infinite auto-scroll ticker strip. Items come automatically from Text Testimonial snippets."""
 
+    eyebrow = CharBlock(required=False, default="WHAT OUR CLIENTS SAY")
+    heading = CharBlock(required=False, default="Voices From the Community")
+    subtitle = TextBlock(required=False, default="")
+
     class Meta:
         icon = "arrows-up-down"
         label = "Testimonial Ticker"
