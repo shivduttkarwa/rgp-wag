@@ -51,8 +51,8 @@ export type TestimonialsPageSections = {
   final_cta?: {
     heading: string;
     body: string;
-    primary: { label: string; href: string };
-    secondary: { label: string; href: string };
+    primary?: import("@/types/shared").ButtonBlockData;
+    secondary?: import("@/types/shared").ButtonBlockData;
     items: CmsTestimonial[];
   };
   cta?: CtaSection;

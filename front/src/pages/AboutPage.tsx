@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
+import CmsButton from "@/components/reusable/CmsButton";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import PropertyMarquee from "@/components/reusable/PropertyMarqee";
 
@@ -213,15 +214,11 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                       <li key={j}>{bullet}</li>
                     ))}
                   </ul>
-                  <div className="split-cta">
-                    <RgButton
-                      to={sections.split.cta_href}
-                      variant="outline"
-                      label={sections.split.cta_label}
-                      data-gsap="btn-clip-reveal"
-                      data-gsap-delay="0.2"
-                    />
-                  </div>
+                  {sections.split.cta?.label && sections.split.cta?.href ? (
+                    <div className="split-cta">
+                      <CmsButton button={sections.split.cta} data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -264,16 +261,11 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                   {sections.avail.heading}
                 </h3>
                 <p data-gsap="fade-up" data-gsap-delay="0.15">{sections.avail.text}</p>
-                <div className="avail-cta">
-                  <RgButton
-                    to={sections.avail.cta_href}
-                    variant="outline"
-                    label={sections.avail.cta_label}
-                    className="avail-cta__btn"
-                    data-gsap="btn-clip-reveal"
-                    data-gsap-delay="0.2"
-                  />
-                </div>
+                {sections.avail.cta?.label && sections.avail.cta?.href ? (
+                  <div className="avail-cta">
+                    <CmsButton button={sections.avail.cta} className="avail-cta__btn" data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
+                  </div>
+                ) : null}
               </div>
             </div>
           </section>
@@ -288,7 +280,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
             title={sections.property_marquee.title}
             titleEm={sections.property_marquee.title_em}
             subtitle={sections.property_marquee.subtitle}
-            ctaLabel={sections.property_marquee.cta_label}
+            cta={sections.property_marquee.cta}
           />
         ) : null;
 

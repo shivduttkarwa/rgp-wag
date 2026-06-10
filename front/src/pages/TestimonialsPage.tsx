@@ -5,6 +5,8 @@ import RGPSplitSlider from "../components/reusable/SplitSlider";
 import type { SlideContent } from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
+import CmsButton from "@/components/reusable/CmsButton";
+import type { ButtonBlockData } from "@/types/shared";
 import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
@@ -177,19 +179,15 @@ const TickerWall: React.FC<{ items: Testimonial[] }> = ({ items }) => {
 interface FinalCTAProps {
   heading: string;
   body: string;
-  primaryLabel: string;
-  primaryHref: string;
-  secondaryLabel: string;
-  secondaryHref: string;
+  primary?: ButtonBlockData;
+  secondary?: ButtonBlockData;
 }
 
 const FinalCTA: React.FC<FinalCTAProps> = ({
   heading,
   body,
-  primaryLabel,
-  primaryHref,
-  secondaryLabel,
-  secondaryHref,
+  primary,
+  secondary,
 }) => (
   <section className="tp-cta">
     <div className="tp-cta__inner">
@@ -209,20 +207,16 @@ const FinalCTA: React.FC<FinalCTAProps> = ({
           </p>
         ) : null}
         <div className="tp-cta__actions">
-          {primaryLabel ? (
-            <RgButton
-              href={primaryHref}
-              variant="gold"
-              label={primaryLabel}
+          {primary?.label && primary?.href ? (
+            <CmsButton
+              button={primary}
               data-gsap="btn-clip-reveal"
               data-gsap-delay="0.2"
             />
           ) : null}
-          {secondaryLabel ? (
-            <RgButton
-              href={secondaryHref}
-              variant="outline"
-              label={secondaryLabel}
+          {secondary?.label && secondary?.href ? (
+            <CmsButton
+              button={secondary}
               data-gsap="btn-clip-reveal"
               data-gsap-delay="0.32"
             />
@@ -315,10 +309,8 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
           <FinalCTA
             heading={sections.final_cta.heading}
             body={sections.final_cta.body}
-            primaryLabel={sections.final_cta.primary.label}
-            primaryHref={sections.final_cta.primary.href}
-            secondaryLabel={sections.final_cta.secondary.label}
-            secondaryHref={sections.final_cta.secondary.href}
+            primary={sections.final_cta.primary}
+            secondary={sections.final_cta.secondary}
           />
         ) : null}
       </main>

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { PropertyCard } from "./PropertyCard";
 import type { Property } from "./PropertyCard";
-import RgButton from "@/components/reusable/RgButton";
+import CmsButton from "@/components/reusable/CmsButton";
+import type { ButtonBlockData } from "@/types/shared";
 import "../../sections/PropertyListingsection.css";
 import "./PropertyMarqee.css";
 
@@ -15,7 +16,7 @@ type PropertyMarqueeProps = {
   title?: string;
   titleEm?: string;
   subtitle?: string;
-  ctaLabel?: string;
+  cta?: ButtonBlockData;
 };
 
 export default function PropertyMarquee({
@@ -24,7 +25,7 @@ export default function PropertyMarquee({
   title,
   titleEm,
   subtitle,
-  ctaLabel,
+  cta,
 }: PropertyMarqueeProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -306,14 +307,9 @@ export default function PropertyMarquee({
         </div>
       </div>
 
-      {ctaLabel ? (
+      {cta?.label && cta?.href ? (
         <div className="rgMarquee__cta">
-          <RgButton
-            to="/properties"
-            variant="blue"
-            label={ctaLabel}
-            data-gsap="btn-clip-reveal"
-          />
+          <CmsButton button={cta} data-gsap="btn-clip-reveal" />
         </div>
       ) : null}
     </section>

@@ -13,7 +13,7 @@ export type PropertyMarqueeSectionData = {
   title: string;
   title_em: string;
   subtitle: string;
-  cta_label: string;
+  cta?: import("@/types/shared").ButtonBlockData;
 };
 
 export type PropertyCtaLink = {

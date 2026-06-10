@@ -268,7 +268,7 @@ class PropertiesPage(Page):
                     "title": cfg.get("title") or "Explore",
                     "title_em": cfg.get("title_em") or "Premium Homes",
                     "subtitle": cfg.get("subtitle") or "",
-                    "cta_label": cfg.get("cta_label") or "View All Properties",
+                    "cta": cfg.get("cta"),
                 }
 
             elif btype == "property_cta":
@@ -707,7 +707,7 @@ class AboutPage(Page):
                     "title": cfg.get("title") or "",
                     "title_em": cfg.get("title_em") or "",
                     "subtitle": cfg.get("subtitle") or "",
-                    "cta_label": cfg.get("cta_label") or "View All Properties",
+                    "cta": cfg.get("cta"),
                     "properties": _get_properties_page_listing_items(),
                 }
                 section_order.append("property_marquee")
@@ -721,8 +721,7 @@ class AboutPage(Page):
                     "p2": cfg.get("p2") or "",
                     "bullets": cfg.get("bullets") or [],
                     "video_url": video_url,
-                    "cta_label": cfg.get("cta_label") or "",
-                    "cta_href": cfg.get("cta_href") or "/contact",
+                    "cta": cfg.get("cta"),
                 }
                 section_order.append("split")
 
@@ -753,8 +752,7 @@ class AboutPage(Page):
                     "heading": cfg.get("heading") or "",
                     "text": cfg.get("text") or "",
                     "image_url": image_url,
-                    "cta_label": cfg.get("cta_label") or "",
-                    "cta_href": cfg.get("cta_href") or "/contact",
+                    "cta": cfg.get("cta"),
                 }
                 section_order.append("avail")
 
@@ -988,14 +986,8 @@ class TestimonialsPage(Page):
                 sections["final_cta"] = {
                     "heading": cfg.get("heading") or "Book a Free Appraisal",
                     "body": cfg.get("body") or "",
-                    "primary": {
-                        "label": cfg.get("primary_label") or "Book Your Appraisal",
-                        "href": cfg.get("primary_href") or "/contact",
-                    },
-                    "secondary": {
-                        "label": cfg.get("secondary_label") or "Talk to Rahul",
-                        "href": cfg.get("secondary_href") or "/contact",
-                    },
+                    "primary": cfg.get("primary"),
+                    "secondary": cfg.get("secondary"),
                     "items": text_items(),
                 }
 

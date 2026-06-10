@@ -583,10 +583,8 @@ class TestimonialFinalCtaBlock(StructBlock):
     body = TextBlock(
         default="Receive a practical price range, market context, and a plan for moving forward with confidence.",
     )
-    primary_label = CharBlock(default="Arrange an Appraisal")
-    primary_href = CharBlock(required=False, default="/contact")
-    secondary_label = CharBlock(default="Speak With the Team")
-    secondary_href = CharBlock(required=False, default="/contact")
+    primary = ButtonBlock(required=False)
+    secondary = ButtonBlock(required=False)
 
     class Meta:
         icon = "placeholder"
@@ -660,8 +658,7 @@ class AboutSplitBlock(StructBlock):
         default="",
         help_text="Fallback video URL if no document is selected above.",
     )
-    cta_label = CharBlock(default="Arrange an Appraisal")
-    cta_href = CharBlock(required=False, default="/contact")
+    cta = ButtonBlock(required=False)
 
     class Meta:
         icon = "media"
@@ -707,8 +704,7 @@ class AboutAvailabilityBlock(StructBlock):
         default="",
         help_text="Optional full URL only if no image is chosen above.",
     )
-    cta_label = CharBlock(default="Request an Appraisal")
-    cta_href = CharBlock(required=False, default="/contact")
+    cta = ButtonBlock(required=False)
 
     class Meta:
         icon = "pick"
@@ -720,7 +716,7 @@ class PropertyMarqueeBlock(StructBlock):
     title = CharBlock(required=False, default="Properties That")
     title_em = CharBlock(required=False, default="Speak For Themselves")
     subtitle = CharBlock(required=False, default="Browse our current listings — from first homes to prestige properties, each one backed by honest advice and clear market insight.")
-    cta_label = CharBlock(required=False, default="View All Properties")
+    cta = ButtonBlock(required=False)
 
     class Meta:
         icon = "arrow-right"
@@ -902,7 +898,7 @@ class PropertyMarqueeConfigBlock(StructBlock):
         required=False,
         default="A rotating selection of notable listings and results from across the property portfolio.",
     )
-    cta_label = CharBlock(default="See All Properties")
+    cta = ButtonBlock(required=False)
 
     class Meta:
         icon = "arrows-up-down"

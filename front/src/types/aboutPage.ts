@@ -10,7 +10,7 @@ export type AboutPageSections = {
     title: string;
     title_em: string;
     subtitle: string;
-    cta_label: string;
+    cta?: import("@/types/shared").ButtonBlockData;
     properties: Property[];
   };
   split?: {
@@ -19,8 +19,7 @@ export type AboutPageSections = {
     p2: string;
     bullets: string[];
     video_url: string;
-    cta_label: string;
-    cta_href: string;
+    cta?: import("@/types/shared").ButtonBlockData;
   };
   overlay?: {
     heading: string;
@@ -33,8 +32,7 @@ export type AboutPageSections = {
     heading: string;
     text: string;
     image_url: string;
-    cta_label: string;
-    cta_href: string;
+    cta?: import("@/types/shared").ButtonBlockData;
   };
   cta?: CtaSection;
   eoi_cta?: EoiCtaSection;

@@ -471,7 +471,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           title={propertyMarquee.title}
           titleEm={propertyMarquee.title_em}
           subtitle={propertyMarquee.subtitle}
-          ctaLabel={propertyMarquee.cta_label}
+          cta={propertyMarquee.cta}
         />
       ) : null}
 
