@@ -8,6 +8,7 @@ from wagtail.blocks import (
     ChoiceBlock,
     IntegerBlock,
     ListBlock,
+    PageChooserBlock,
     StreamBlock,
     StructBlock,
     TextBlock,
@@ -30,7 +31,19 @@ class CtaStatBlock(StructBlock):
 
 class CtaBlock(StructBlock):
     label = CharBlock(required=False)
-    href  = CharBlock(required=False, help_text="Relative path (e.g. /properties) or full URL")
+    page = PageChooserBlock(
+        required=False,
+        help_text="Choose an internal page to link to.",
+    )
+    is_external = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to link to an external URL instead of a page above.",
+    )
+    external_url = CharBlock(
+        required=False,
+        help_text="Full URL — only used when 'External URL' is checked above.",
+    )
 
     class Meta:
         icon  = "link"

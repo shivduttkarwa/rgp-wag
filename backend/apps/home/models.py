@@ -401,6 +401,7 @@ def _serialise_block_value(value):
     from wagtail.blocks import StructValue
     from wagtail.documents.models import AbstractDocument
     from wagtail.images.models import AbstractImage
+    from wagtail.models import Page as WagtailPage
     from wagtail.rich_text import RichText
     from apps.properties.models import Property
 
@@ -409,6 +410,9 @@ def _serialise_block_value(value):
 
     if isinstance(value, AbstractDocument):
         return value.file.url if value.file else None
+
+    if isinstance(value, WagtailPage):
+        return value.get_url() or ""
 
     if isinstance(value, AbstractImage):
         return {
@@ -444,7 +448,17 @@ def _serialise_block_value(value):
         }
 
     if isinstance(value, StructValue):
-        return {key: _serialise_block_value(val) for key, val in value.items()}
+        result = {key: _serialise_block_value(val) for key, val in value.items()}
+        # Auto-resolve CtaBlock {label, page, is_external, external_url} → {label, href}
+        if set(result.keys()) == {"label", "page", "is_external", "external_url"}:
+            if result.get("is_external") and result.get("external_url"):
+                href = result["external_url"]
+            elif result.get("page"):
+                href = result["page"]
+            else:
+                href = ""
+            return {"label": result.get("label") or "", "href": href}
+        return result
 
     if isinstance(value, list):
         return [_serialise_block_value(item) for item in value]
