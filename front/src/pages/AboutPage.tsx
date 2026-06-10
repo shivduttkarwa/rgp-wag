@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
+import { renderHeroAccentTokens } from "@/lib/heroTokens";
 
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -76,6 +77,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
   }, []);
 
   useEffect(() => {
+    if (!sections.intro?.statement) return;
     gsap.registerPlugin(ScrollTrigger);
     const el = introRef.current;
     if (!el || el.dataset.wordReveal === "true") return;
@@ -136,7 +138,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
         once: true,
       },
     });
-  }, []);
+  }, [sections.intro?.statement]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -147,7 +149,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
           <section className="section section-spacious">
             <div className="container center stack">
               <h2 className="intro-statement lead" ref={introRef}>
-                {sections.intro.statement}
+                {renderHeroAccentTokens(sections.intro.statement)}
               </h2>
             </div>
           </section>
@@ -241,7 +243,10 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               <p>{sections.overlay.text}</p>
               <ul className="overlay-list">
                 {sections.overlay.steps.map((step, i) => (
-                  <li key={i}>{step}</li>
+                  <li key={i}>
+                    <span className="step">{String(i + 1).padStart(2, "0")}</span>
+                    {step}
+                  </li>
                 ))}
               </ul>
             </div>

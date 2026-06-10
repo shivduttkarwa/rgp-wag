@@ -547,6 +547,7 @@ class TestimonialsPageContentStreamBlock(StreamBlock):
 class AboutIntroBlock(StructBlock):
     statement = TextBlock(
         default="Real Gold Properties brings calm advice, local market clarity, and practical pricing insight to each property conversation.",
+        help_text="Wrap words in [gold]…[/gold] to highlight them in gold. E.g. [gold]Real Gold Properties[/gold] brings calm advice.",
     )
 
     class Meta:
@@ -566,10 +567,14 @@ class AboutSplitBlock(StructBlock):
         CharBlock(),
         help_text="Key selling points shown as a bullet list.",
     )
+    video = DocumentChooserBlock(
+        required=False,
+        help_text="Upload or choose a video file from the CMS media library.",
+    )
     video_url = CharBlock(
         required=False,
         default="",
-        help_text="Optional full URL.",
+        help_text="Fallback video URL if no document is selected above.",
     )
     cta_label = CharBlock(default="Arrange an Appraisal")
     cta_href = CharBlock(required=False, default="/contact")

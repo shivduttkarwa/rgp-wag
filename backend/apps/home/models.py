@@ -633,12 +633,17 @@ class AboutPage(Page):
                 sections["intro"] = {"statement": cfg.get("statement") or ""}
 
             elif btype == "split":
+                doc = cfg.get("video")
+                video_url = (
+                    doc.get("url") if isinstance(doc, dict) and doc.get("url")
+                    else cfg.get("video_url") or ""
+                )
                 sections["split"] = {
                     "heading": cfg.get("heading") or "",
                     "p1": cfg.get("p1") or "",
                     "p2": cfg.get("p2") or "",
                     "bullets": cfg.get("bullets") or [],
-                    "video_url": cfg.get("video_url") or "",
+                    "video_url": video_url,
                     "cta_label": cfg.get("cta_label") or "",
                     "cta_href": cfg.get("cta_href") or "/contact",
                 }
