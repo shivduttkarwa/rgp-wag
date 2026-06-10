@@ -32,7 +32,6 @@ export type TeamSectionData = {
 };
 
 export type CoreValueItem = {
-  icon: string;
   title: string;
   description: string;
 };

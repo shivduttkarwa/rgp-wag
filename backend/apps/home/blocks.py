@@ -691,11 +691,6 @@ class TeamSectionBlock(StructBlock):
 
 
 class CoreValueItemBlock(StructBlock):
-    icon = CharBlock(
-        required=False,
-        default="★",
-        help_text="Emoji or symbol shown as the value icon (e.g. ★, 🏡, 💡, ⚡).",
-    )
     title = CharBlock(default="Integrity")
     description = TextBlock(
         default="We give honest advice even when it's not what clients want to hear.",
@@ -716,7 +711,25 @@ class CoreValuesBlock(StructBlock):
     )
     values = ListBlock(
         CoreValueItemBlock(),
-        help_text="Add each core value — icon, title, and short description.",
+        default=[
+            {
+                "title": "Integrity",
+                "description": "We give honest advice even when it's not what clients want to hear. Trust is earned through consistency, not promises.",
+            },
+            {
+                "title": "Clarity",
+                "description": "Clear communication at every stage — no jargon, no guesswork. Clients always know where they stand and what comes next.",
+            },
+            {
+                "title": "Results",
+                "description": "Every strategy is built around one goal: the best outcome for our client. We bring data, discipline, and drive to every campaign.",
+            },
+            {
+                "title": "Care",
+                "description": "Property is personal. We treat every client's home and investment with the same respect and attention we would give our own.",
+            },
+        ],
+        help_text="Edit the default values or add more. Icons are shown automatically.",
     )
 
     class Meta:

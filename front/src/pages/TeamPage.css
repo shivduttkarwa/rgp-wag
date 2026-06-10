@@ -367,11 +367,19 @@
   border-color: rgba(249, 194, 6, 0.3);
 }
 
-.tp-core-values__icon {
-  font-size: 1.75rem;
-  line-height: 1;
+.tp-core-values__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--rg-gold);
+  color: var(--rg-text-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   margin-bottom: 1.25rem;
-  display: block;
 }
 
 .tp-core-values__card-title {

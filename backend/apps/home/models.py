@@ -194,7 +194,6 @@ class TeamPage(Page):
                     "subtitle": cfg.get("subtitle") or "",
                     "values": [
                         {
-                            "icon": v.get("icon") or "★",
                             "title": v.get("title") or "",
                             "description": v.get("description") or "",
                         }

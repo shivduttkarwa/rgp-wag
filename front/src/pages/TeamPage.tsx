@@ -73,8 +73,8 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
                     data-gsap="fade-up"
                     data-gsap-delay={`${i * 0.08}`}
                   >
-                    <span className="tp-core-values__icon" aria-hidden="true">
-                      {val.icon}
+                    <span className="tp-core-values__num" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                     <h3 className="tp-core-values__card-title">{val.title}</h3>
                     <p className="tp-core-values__card-desc">{val.description}</p>
