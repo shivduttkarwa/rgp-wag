@@ -4,9 +4,10 @@ import type { ButtonBlockData } from "@/types/shared";
 type Props = {
   button: ButtonBlockData;
   className?: string;
+  [key: string]: unknown;
 };
 
-export default function CmsButton({ button, className }: Props) {
+export default function CmsButton({ button, className, ...rest }: Props) {
   const { label, href, style = "gold", open_in_new_tab } = button;
 
   if (!label || !href) return null;
@@ -20,6 +21,7 @@ export default function CmsButton({ button, className }: Props) {
         className={className}
         target="_blank"
         rel="noreferrer"
+        {...rest}
       />
     );
   }
@@ -30,6 +32,7 @@ export default function CmsButton({ button, className }: Props) {
       to={href}
       label={label}
       className={className}
+      {...rest}
     />
   );
 }

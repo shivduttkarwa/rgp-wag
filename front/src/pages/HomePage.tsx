@@ -18,10 +18,6 @@ import { Building2 } from "lucide-react";
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
 
-const toRgpLink = (label: string, href: string) => {
-  if (isExternalHref(href)) return { label, href };
-  return { label, to: href };
-};
 
 export default function HomePage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -57,15 +53,6 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
   const ctaVideo = ctaSection?.background_type === "video"
     ? (ctaSection.background_video || undefined)
     : undefined;
-
-  const primaryCta = toRgpLink(
-    ctaSection?.primary.label || "",
-    ctaSection?.primary.href || "",
-  );
-  const secondaryCta = toRgpLink(
-    ctaSection?.secondary.label || "",
-    ctaSection?.secondary.href || "",
-  );
 
   if (status === "loading") return <PageSkeleton />;
 
@@ -129,8 +116,8 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           bgVideo={ctaVideo}
           posterImage={ctaVideoPoster}
           minHeight={ctaSection.min_height}
-          primary={primaryCta}
-          secondary={secondaryCta}
+          primary={ctaSection?.primary}
+          secondary={ctaSection?.secondary}
           stats={ctaSection.stats}
         />
       ) : null}

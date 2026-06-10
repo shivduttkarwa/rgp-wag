@@ -329,8 +329,8 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
           title={sections.cta.title}
           titleEm={sections.cta.title_em}
           text={sections.cta.text}
-          primary={{ label: sections.cta.primary.label, to: sections.cta.primary.href }}
-          secondary={{ label: sections.cta.secondary.label, to: sections.cta.secondary.href }}
+          primary={sections.cta.primary}
+          secondary={sections.cta.secondary}
           bgImage={sections.cta.background_image?.url}
           bgVideo={sections.cta.background_type === "video" ? sections.cta.background_video || undefined : undefined}
           posterImage={sections.cta.video_poster_image?.url}

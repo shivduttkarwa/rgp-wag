@@ -391,8 +391,8 @@ class CtaSectionBlock(StructBlock):
     title      = CharBlock(default="Unsure What Comes")
     title_em   = CharBlock(default="Next?")
     text       = TextBlock(default="Tell us your goals and we will help map a practical path through your next property decision.")
-    primary    = CtaBlock()
-    secondary  = CtaBlock()
+    primary    = ButtonBlock(required=False)
+    secondary  = ButtonBlock(required=False)
     background_type = ChoiceBlock(
         choices=[
             ("image", "Background Image"),

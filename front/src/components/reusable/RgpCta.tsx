@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
-import RgButton from "@/components/reusable/RgButton";
+import CmsButton from "@/components/reusable/CmsButton";
+import type { ButtonBlockData } from "@/types/shared";
 import assetUrl from "@/lib/assetUrl";
 import "./RgpCta.css";
 
@@ -8,19 +9,13 @@ export type RgpCtaStat = {
   label: ReactNode;
 };
 
-export type RgpCtaLink = {
-  label: ReactNode;
-  to?: string;
-  href?: string;
-};
-
 export type RgpCtaProps = {
   eyebrow: ReactNode;
   title: ReactNode;
   titleEm?: ReactNode;
   text: ReactNode;
-  primary?: RgpCtaLink;
-  secondary?: RgpCtaLink;
+  primary?: ButtonBlockData;
+  secondary?: ButtonBlockData;
   stats?: RgpCtaStat[];
   bgImage?: string;
   bgVideo?: string;
@@ -100,44 +95,11 @@ export default function RgpCta({
           </p>
 
           <div className="rgp-cta__actions">
-            {primary?.label ? (
-              primary.to ? (
-              <RgButton
-                variant="gold"
-                to={primary.to}
-                label={primary.label}
-                data-gsap="btn-clip-reveal"
-                data-gsap-delay="0.2"
-              />
-              ) : (
-              <RgButton
-                variant="gold"
-                href={primary.href ?? ""}
-                label={primary.label}
-                data-gsap="btn-clip-reveal"
-                data-gsap-delay="0.2"
-              />
-              )
+            {primary?.label && primary?.href ? (
+              <CmsButton button={primary} data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
             ) : null}
-
-            {secondary?.label ? (
-              secondary.to ? (
-                <RgButton
-                  variant="outline"
-                  to={secondary.to}
-                  label={secondary.label}
-                  data-gsap="btn-clip-reveal"
-                  data-gsap-delay="0.2"
-                />
-              ) : (
-                <RgButton
-                  variant="outline"
-                  href={secondary.href ?? ""}
-                  label={secondary.label}
-                  data-gsap="btn-clip-reveal"
-                  data-gsap-delay="0.2"
-                />
-              )
+            {secondary?.label && secondary?.href ? (
+              <CmsButton button={secondary} data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
             ) : null}
           </div>
 

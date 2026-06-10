@@ -104,8 +104,8 @@ export type CtaSection = {
   title: string;
   title_em: string;
   text: string;
-  primary: CtaData;
-  secondary: CtaData;
+  primary?: import("@/types/shared").ButtonBlockData;
+  secondary?: import("@/types/shared").ButtonBlockData;
   background_type: "image" | "video";
   background_image: WagtailImage | null;
   background_video: string | null;

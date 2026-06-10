@@ -1,6 +1,6 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
 
-type Cta = { label: string; href: string };
+import type { ButtonBlockData } from "@/types/shared";
 
 export type ServicesPageData = {
   id: number;
@@ -15,8 +15,8 @@ export type ServicesPageData = {
     title: string;
     title_em: string;
     text: string;
-    primary: Cta;
-    secondary: Cta;
+    primary?: ButtonBlockData;
+    secondary?: ButtonBlockData;
     stats: Array<{ value: string; label: string }>;
   };
   sell?: { heading: string; text: string; image_url: string; cta_label: string; cta_href: string };

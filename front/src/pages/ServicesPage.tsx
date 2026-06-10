@@ -218,8 +218,8 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
             title={data.cta.title}
             titleEm={data.cta.title_em}
             text={data.cta.text}
-            primary={{ label: data.cta.primary.label, to: data.cta.primary.href }}
-            secondary={{ label: data.cta.secondary.label, href: data.cta.secondary.href }}
+            primary={data.cta.primary}
+            secondary={data.cta.secondary}
             stats={data.cta.stats}
           />
         ) : null}
