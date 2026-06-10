@@ -632,10 +632,10 @@ class AboutAvailabilityBlock(StructBlock):
 
 
 class PropertyMarqueeBlock(StructBlock):
-    eyebrow = CharBlock(required=False, default="")
-    title = CharBlock(required=False, default="")
-    title_em = CharBlock(required=False, default="")
-    subtitle = CharBlock(required=False, default="")
+    eyebrow = CharBlock(required=False, default="OUR LISTINGS")
+    title = CharBlock(required=False, default="Properties That")
+    title_em = CharBlock(required=False, default="Speak For Themselves")
+    subtitle = CharBlock(required=False, default="Browse our current listings — from first homes to prestige properties, each one backed by honest advice and clear market insight.")
     cta_label = CharBlock(required=False, default="View All Properties")
 
     class Meta:
