@@ -52,8 +52,7 @@ export type EoiCtaSection = {
   badge_text: string;
   title: string;
   text: string;
-  button_label: string;
-  button_href: string;
+  button?: import("@/types/shared").ButtonBlockData;
   background_image: WagtailImage | null;
   mobile_background_image: WagtailImage | null;
   min_height: string;

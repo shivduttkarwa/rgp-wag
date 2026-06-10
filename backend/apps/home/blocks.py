@@ -344,8 +344,7 @@ class EoiCtaSectionBlock(StructBlock):
             "information in one structured submission."
         ),
     )
-    button_label = CharBlock(required=False, default="Start the Form")
-    button_href = CharBlock(required=False, default="/expressions-of-interest", help_text="Relative path (e.g. /expressions-of-interest) or full URL")
+    button = ButtonBlock(required=False)
     background_image = ImageChooserBlock(
         required=False,
         help_text="Desktop background image. Pick from media library.",

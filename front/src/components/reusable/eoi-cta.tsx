@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import RgButton from "@/components/reusable/RgButton";
+import CmsButton from "@/components/reusable/CmsButton";
+import type { ButtonBlockData } from "@/types/shared";
 import assetUrl from "@/lib/assetUrl";
 import "./eoi-cta.css";
 
@@ -8,8 +9,7 @@ export type EoiCtaProps = {
   badgeText?: ReactNode;
   title: ReactNode;
   text: ReactNode;
-  buttonLabel: ReactNode;
-  buttonTo: string;
+  button?: ButtonBlockData;
   bgImage?: string;
   mobileBgImage?: string;
   minHeight?: string;
@@ -22,8 +22,7 @@ export default function EoiCta({
   badgeText,
   title,
   text,
-  buttonLabel,
-  buttonTo,
+  button,
   bgImage,
   mobileBgImage,
   minHeight = "100vh",
@@ -65,14 +64,9 @@ export default function EoiCta({
           <p className="eoi-cta__text" data-gsap="fade-up" data-gsap-delay="0.12">{text}</p>
         </div>
 
-        {buttonLabel ? (
+        {button?.label && button?.href ? (
           <div data-gsap="fade-up" data-gsap-delay="0.22">
-            <RgButton
-              variant="gold"
-              to={buttonTo}
-              label={buttonLabel}
-              className="eoi-cta__button"
-            />
+            <CmsButton button={button} className="eoi-cta__button" />
           </div>
         ) : null}
       </div>
