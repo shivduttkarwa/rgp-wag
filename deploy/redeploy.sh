@@ -20,9 +20,9 @@ echo "======================================================"
 echo ""
 echo "[ 1 ] Pulling latest code..."
 cd $PROJECT
-git checkout -- .
-git pull
-git clean -f backend/apps/*/migrations/
+git fetch origin
+git reset --hard origin/master
+git clean -fd
 
 # ── 2. Backend: install deps + migrate + collectstatic ───────────────────────
 echo ""
