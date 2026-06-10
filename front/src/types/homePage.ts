@@ -56,9 +56,7 @@ export type EoiCtaSection = {
   button_label: string;
   button_href: string;
   background_image: WagtailImage | null;
-  background_image_url: string;
   mobile_background_image: WagtailImage | null;
-  mobile_background_image_url: string;
   min_height: string;
   mobile_min_height: string;
 };

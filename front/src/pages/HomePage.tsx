@@ -104,10 +104,8 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
           text={eoiCta.text}
           buttonLabel={eoiCta.button_label}
           buttonTo={eoiCta.button_href}
-          bgImage={eoiCta.background_image?.url ?? eoiCta.background_image_url}
-          mobileBgImage={
-            eoiCta.mobile_background_image?.url ?? eoiCta.mobile_background_image_url
-          }
+          bgImage={eoiCta.background_image?.url}
+          mobileBgImage={eoiCta.mobile_background_image?.url}
           minHeight={eoiCta.min_height}
           mobileMinHeight={eoiCta.mobile_min_height}
         />

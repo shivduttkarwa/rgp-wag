@@ -246,19 +246,11 @@ class EoiCtaSectionBlock(StructBlock):
     button_href = CharBlock(required=False, default="/expressions-of-interest", help_text="Relative path (e.g. /expressions-of-interest) or full URL")
     background_image = ImageChooserBlock(
         required=False,
-        help_text="Desktop background image. Takes priority over URL fallback.",
-    )
-    background_image_url = CharBlock(
-        required=False,
-        help_text="Optional full URL only if no image is chosen above.",
+        help_text="Desktop background image. Pick from media library.",
     )
     mobile_background_image = ImageChooserBlock(
         required=False,
-        help_text="Mobile background image. Takes priority over URL fallback.",
-    )
-    mobile_background_image_url = CharBlock(
-        required=False,
-        help_text="Optional full URL only if no image is chosen above.",
+        help_text="Mobile background image. Pick from media library.",
     )
     min_height = CharBlock(required=False, default="100vh")
     mobile_min_height = CharBlock(required=False, default="70vh")

@@ -62,8 +62,8 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
           text={sections.eoi_cta.text}
           buttonLabel={sections.eoi_cta.button_label}
           buttonTo={sections.eoi_cta.button_href}
-          bgImage={sections.eoi_cta.background_image?.url ?? sections.eoi_cta.background_image_url}
-          mobileBgImage={sections.eoi_cta.mobile_background_image?.url ?? sections.eoi_cta.mobile_background_image_url}
+          bgImage={sections.eoi_cta.background_image?.url}
+          mobileBgImage={sections.eoi_cta.mobile_background_image?.url}
           minHeight={sections.eoi_cta.min_height}
           mobileMinHeight={sections.eoi_cta.mobile_min_height}
         />
