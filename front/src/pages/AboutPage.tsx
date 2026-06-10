@@ -142,7 +142,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
     });
   }, [sections.intro?.statement]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const renderSection = (type: string, i: number) => {
+  const renderSection = (type: string) => {
     switch (type) {
       case "intro":
         return sections.intro ? (
@@ -305,7 +305,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
     <>
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
       <main className="about-page" ref={pageRef}>
-        {orderedMain.map((type, i) => renderSection(type, i))}
+        {orderedMain.map((type) => renderSection(type))}
       </main>
       {sections.cta && (
         <RgpCta
