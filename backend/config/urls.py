@@ -11,7 +11,7 @@ from wagtail.images.api.v2.views import ImagesAPIViewSet
 from wagtail.documents.api.v2.views import DocumentsAPIViewSet
 
 from apps.home.api import (
-    AboutPageAPIView, ContactPageAPIView, EoiPageAPIView,
+    AboutPageAPIView, CmsAuthView, ContactPageAPIView, EoiPageAPIView,
     HomePageAPIView, PropertiesPageAPIView, ServicesPageAPIView,
     TeamPageAPIView, TestimonialsPageAPIView,
 )
@@ -42,6 +42,7 @@ urlpatterns = [
     path("api/v2/", wagtail_api_router.urls),
 
     # ── Custom headless API endpoints ─────────────────────────────────────
+    path("api/cms-auth/",              CmsAuthView.as_view(),                name="api-cms-auth"),
     path("api/pages/home/",            HomePageAPIView.as_view(),            name="api-home-page"),
     path("api/pages/contact/",         ContactPageAPIView.as_view(),         name="api-contact-page"),
     path("api/pages/team/",            TeamPageAPIView.as_view(),            name="api-team-page"),

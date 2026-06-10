@@ -7,6 +7,7 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useServicesPage } from "@/hooks/useServicesPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import assetUrl from "@/lib/assetUrl";
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
@@ -149,6 +150,7 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <CmsEditBar pageId={data.id} />
       {data.hero ? <InternalPageHero ready={ready} hero={data.hero} /> : null}
       <main className="about-page" ref={pageRef}>
         {/* 2) STATEMENT */}

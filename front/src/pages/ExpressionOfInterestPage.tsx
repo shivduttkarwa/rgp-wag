@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { useEoiPage } from "@/hooks/useEoiPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -389,6 +390,7 @@ export default function ExpressionOfInterestPage({
 
   return (
     <main className="eoi-page" ref={pageRef}>
+      <CmsEditBar pageId={eoiData.id} />
       {eoiData.hero ? (
         <InternalPageHero
           ready={ready}

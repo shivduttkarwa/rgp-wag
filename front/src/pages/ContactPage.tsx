@@ -5,6 +5,7 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { submitContactForm } from "@/lib/api/forms";
 import { useContactPage } from "@/hooks/useContactPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./ContactPage.css";
@@ -142,7 +143,9 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   };
 
   return (
-    <main className="contact-page" ref={pageRef}>
+    <>
+      <CmsEditBar pageId={data.id} />
+      <main className="contact-page" ref={pageRef}>
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       {contactInfo || contactForm ? (
@@ -475,5 +478,6 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
         </div>
       </div>
     </main>
+    </>
   );
 }

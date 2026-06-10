@@ -22,6 +22,7 @@ import PropertyMarqee from "@/components/reusable/PropertyMarqee";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import { usePropertiesPage } from "@/hooks/usePropertiesPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -283,6 +284,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <div className={pageClassName} ref={pageRef}>
+      <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       {propertyListing ? (

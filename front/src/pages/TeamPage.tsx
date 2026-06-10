@@ -3,6 +3,7 @@ import InternalPageHero from "@/sections/InternalPageHero";
 import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { useTeamPage } from "@/hooks/useTeamPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./TeamPage.css";
@@ -33,6 +34,7 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       <main className="team-page" ref={pageRef}>

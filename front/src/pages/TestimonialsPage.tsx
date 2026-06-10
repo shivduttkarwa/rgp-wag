@@ -7,6 +7,7 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import type {
   CmsFeaturedTestimonial,
   CmsTestimonial,
@@ -268,6 +269,7 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
 
   return (
     <div ref={pageRef}>
+      <CmsEditBar pageId={data.id} />
       <main className="testimonial-page">
         {sections.hero ? (
           <InternalPageHero ready={ready} hero={sections.hero} />

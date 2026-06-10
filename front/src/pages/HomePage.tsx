@@ -12,6 +12,7 @@ import EoiCta from "@/components/reusable/eoi-cta";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useHomePage } from "@/hooks/useHomePage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import { Building2 } from "lucide-react";
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
@@ -24,7 +25,7 @@ const toRgpLink = (label: string, href: string) => {
 export default function HomePage({ ready = false }: { ready?: boolean }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { sections, status } = useHomePage();
+  const { sections, status, id } = useHomePage();
 
   useEffect(() => {
     if (status === "loading") return;
@@ -67,6 +68,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
 
   return (
     <div ref={pageRef}>
+      <CmsEditBar pageId={id} />
       {hero ? (
         <HeroSection
           ready={ready}

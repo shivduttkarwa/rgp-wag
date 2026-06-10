@@ -6,6 +6,15 @@ from rest_framework.views import APIView
 from .models import AboutPage, ContactPage, EoiPage, HomePage, PropertiesPage, ServicesPage, TeamPage, TestimonialsPage
 
 
+class CmsAuthView(APIView):
+    """GET /api/cms-auth/ — returns is_staff based on the current session cookie."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        return Response({"is_staff": bool(request.user and request.user.is_authenticated and request.user.is_staff)})
+
+
 class HomePageAPIView(APIView):
     """
     GET /api/pages/home/

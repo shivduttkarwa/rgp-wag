@@ -4,11 +4,13 @@ import type { HomePageSections } from "@/types/homePage";
 
 type Status = "loading" | "ready" | "error";
 let cachedSections: HomePageSections | null = null;
+let cachedId = 0;
 
-export function useHomePage(): { sections: HomePageSections; status: Status } {
+export function useHomePage(): { sections: HomePageSections; status: Status; id: number } {
   const [sections, setSections] = useState<HomePageSections>(
     cachedSections ?? {},
   );
+  const [id, setId] = useState<number>(cachedId);
   const [status, setStatus] = useState<Status>(cachedSections ? "ready" : "loading");
 
   useEffect(() => {
@@ -21,7 +23,9 @@ export function useHomePage(): { sections: HomePageSections; status: Status } {
         startTransition(() => {
           const cmsSections = data.sections ?? {};
           cachedSections = cmsSections;
+          cachedId = data.id;
           setSections(cmsSections);
+          setId(data.id);
           setStatus("ready");
         });
       })
@@ -37,5 +41,5 @@ export function useHomePage(): { sections: HomePageSections; status: Status } {
     return () => controller.abort();
   }, []);
 
-  return { sections, status };
+  return { sections, status, id };
 }

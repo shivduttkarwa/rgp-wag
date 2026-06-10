@@ -9,6 +9,7 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAboutPage } from "@/hooks/useAboutPage";
+import CmsEditBar from "@/components/reusable/CmsEditBar";
 import assetUrl from "@/lib/assetUrl";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
@@ -303,6 +304,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
       <main className="about-page" ref={pageRef}>
         {orderedMain.map((type) => renderSection(type))}
