@@ -46,4 +46,5 @@ export type AboutPageData = {
   slug: string;
   updated_at: string | null;
   sections: AboutPageSections;
+  section_order: string[];
 };

@@ -621,6 +621,7 @@ class AboutPage(Page):
 
     def get_api_representation(self) -> dict[str, Any]:
         sections: dict[str, Any] = {}
+        section_order: list[str] = []
         for block in self.body:
             btype = block.block_type
             raw = _serialise_block_value(block.value)
@@ -628,9 +629,11 @@ class AboutPage(Page):
 
             if btype == "hero":
                 sections["hero"] = _normalise_internal_hero_config(cfg)
+                section_order.append("hero")
 
             elif btype == "intro":
                 sections["intro"] = {"statement": cfg.get("statement") or ""}
+                section_order.append("intro")
 
             elif btype == "property_marquee":
                 sections["property_marquee"] = {
@@ -641,6 +644,7 @@ class AboutPage(Page):
                     "cta_label": cfg.get("cta_label") or "View All Properties",
                     "properties": _get_properties_page_listing_items(),
                 }
+                section_order.append("property_marquee")
 
             elif btype == "split":
                 doc_url = cfg.get("video")
@@ -654,6 +658,7 @@ class AboutPage(Page):
                     "cta_label": cfg.get("cta_label") or "",
                     "cta_href": cfg.get("cta_href") or "/contact",
                 }
+                section_order.append("split")
 
             elif btype == "overlay":
                 image = cfg.get("image")
@@ -668,6 +673,7 @@ class AboutPage(Page):
                     "image_url": image_url,
                     "steps": cfg.get("steps") or [],
                 }
+                section_order.append("overlay")
 
             elif btype == "avail":
                 image = cfg.get("image")
@@ -684,12 +690,15 @@ class AboutPage(Page):
                     "cta_label": cfg.get("cta_label") or "",
                     "cta_href": cfg.get("cta_href") or "/contact",
                 }
+                section_order.append("avail")
 
             elif btype == "cta":
                 sections["cta"] = cfg
+                section_order.append("cta")
 
             elif btype == "eoi_cta":
                 sections["eoi_cta"] = cfg
+                section_order.append("eoi_cta")
 
         return {
             "id": self.pk,
@@ -697,6 +706,7 @@ class AboutPage(Page):
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
             "sections": sections,
+            "section_order": section_order,
         }
 
 

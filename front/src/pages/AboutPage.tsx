@@ -15,7 +15,7 @@ import EoiCta from "@/components/reusable/eoi-cta";
 
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
   const { data, status } = useAboutPage();
-  const { sections } = data;
+  const { sections, section_order } = data;
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
   const splitVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -142,24 +142,22 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
     });
   }, [sections.intro?.statement]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <>
-      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
-      <main className="about-page" ref={pageRef}>
-        {/* 2) STATEMENT */}
-        {sections.intro && (
-          <section className="section section-spacious">
+  const renderSection = (type: string, i: number) => {
+    switch (type) {
+      case "intro":
+        return sections.intro ? (
+          <section key={type} className="section section-spacious">
             <div className="container center stack">
               <h2 className="intro-statement lead" ref={introRef}>
                 {renderHeroAccentTokens(sections.intro.statement)}
               </h2>
             </div>
           </section>
-        )}
+        ) : null;
 
-        {/* 4) GREEN SPLIT */}
-        {sections.split && (
-          <section className="split-green">
+      case "split":
+        return sections.split ? (
+          <section key={type} className="split-green">
             <div className="container">
               <div className="wrap">
                 <div className="img-card">
@@ -191,13 +189,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                         aria-label="Play property video"
                       >
                         <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                          <circle
-                            cx="24"
-                            cy="24"
-                            r="23"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                          />
+                          <circle cx="24" cy="24" r="23" stroke="currentColor" strokeWidth="1.5" />
                           <path d="M19 16l14 8-14 8V16z" fill="currentColor" />
                         </svg>
                       </button>
@@ -215,8 +207,8 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
                     {sections.split.p2}
                   </p>
                   <ul className="rahul-points" data-gsap="fade-up" data-gsap-delay="0.32">
-                    {sections.split.bullets.map((bullet, i) => (
-                      <li key={i}>{bullet}</li>
+                    {sections.split.bullets.map((bullet, j) => (
+                      <li key={j}>{bullet}</li>
                     ))}
                   </ul>
                   <div className="split-cta">
@@ -232,11 +224,11 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               </div>
             </div>
           </section>
-        )}
+        ) : null;
 
-        {/* 4) TURN-KEY */}
-        {sections.overlay && (
-          <section className="img-overlay">
+      case "overlay":
+        return sections.overlay ? (
+          <section key={type} className="img-overlay">
             {sections.overlay.image_url ? (
               <img alt="" src={assetUrl(sections.overlay.image_url)} />
             ) : null}
@@ -244,26 +236,22 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               <h3 className="h-serif">{sections.overlay.heading}</h3>
               <p>{sections.overlay.text}</p>
               <ul className="overlay-list">
-                {sections.overlay.steps.map((step, i) => (
-                  <li key={i}>
-                    <span className="step">{String(i + 1).padStart(2, "0")}</span>
+                {sections.overlay.steps.map((step, j) => (
+                  <li key={j}>
+                    <span className="step">{String(j + 1).padStart(2, "0")}</span>
                     {step}
                   </li>
                 ))}
               </ul>
             </div>
           </section>
-        )}
+        ) : null;
 
-        {/* 5) AVAILABILITY */}
-        {sections.avail && (
-          <section className="avail">
+      case "avail":
+        return sections.avail ? (
+          <section key={type} className="avail">
             <div className="grid">
-              <div
-                className="photo"
-                data-gsap="clip-reveal-left"
-                data-gsap-mobile="clip-smooth-down"
-              >
+              <div className="photo" data-gsap="clip-reveal-left" data-gsap-mobile="clip-smooth-down">
                 {sections.avail.image_url ? (
                   <img alt="" src={assetUrl(sections.avail.image_url)} />
                 ) : null}
@@ -287,10 +275,12 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
               </div>
             </div>
           </section>
-        )}
-        {/* 6) PROPERTY MARQUEE */}
-        {sections.property_marquee && (
+        ) : null;
+
+      case "property_marquee":
+        return sections.property_marquee ? (
           <PropertyMarquee
+            key={type}
             properties={sections.property_marquee.properties}
             eyebrow={sections.property_marquee.eyebrow}
             title={sections.property_marquee.title}
@@ -298,7 +288,24 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
             subtitle={sections.property_marquee.subtitle}
             ctaLabel={sections.property_marquee.cta_label}
           />
-        )}
+        ) : null;
+
+      default:
+        return null;
+    }
+  };
+
+  // Main content types rendered inside <main> in CMS order
+  const MAIN_SECTIONS = ["intro", "split", "overlay", "avail", "property_marquee"];
+  const orderedMain = section_order.length
+    ? section_order.filter((t) => MAIN_SECTIONS.includes(t))
+    : MAIN_SECTIONS;
+
+  return (
+    <>
+      {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
+      <main className="about-page" ref={pageRef}>
+        {orderedMain.map((type, i) => renderSection(type, i))}
       </main>
       {sections.cta && (
         <RgpCta

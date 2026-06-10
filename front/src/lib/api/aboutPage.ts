@@ -12,6 +12,7 @@ export const DEFAULT_ABOUT_PAGE_DATA: AboutPageData = {
   slug: "about",
   updated_at: null,
   sections: {},
+  section_order: [],
 };
 
 export async function fetchAboutPage(signal?: AbortSignal): Promise<AboutPageData> {
