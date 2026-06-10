@@ -367,7 +367,7 @@ class ServiceCardBlock(StructBlock):
     title       = CharBlock(default="Buyer Guidance")
     subtitle    = CharBlock(default="And Strategy")
     description = TextBlock()
-    cta_label   = CharBlock(default="Contact the Team")
+    cta         = ButtonBlock(required=False)
 
     class Meta:
         icon  = "pick"

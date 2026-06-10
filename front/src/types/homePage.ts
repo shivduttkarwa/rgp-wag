@@ -88,7 +88,7 @@ export type ServiceCard = {
   title: string;
   subtitle: string;
   description: string;
-  cta_label: string;
+  cta?: import("@/types/shared").ButtonBlockData;
 };
 
 export type ServicesSection = {
