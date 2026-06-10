@@ -4,7 +4,6 @@ import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
 import type { SlideContent } from "../components/reusable/SplitSlider";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
-import RgButton from "@/components/reusable/RgButton";
 import CmsButton from "@/components/reusable/CmsButton";
 import type { ButtonBlockData } from "@/types/shared";
 import "./TestimonialPage.css";
