@@ -29,7 +29,6 @@ echo "[ 2 ] Updating backend..."
 cd $BACKEND
 source .venv/bin/activate
 pip install -q -r requirements.txt
-python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput -v 0
 
