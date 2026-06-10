@@ -131,7 +131,6 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
   const [activeId, setActiveId] = useState<string | null>(null);
   const desktopSwiperRef = useRef<SwiperType | null>(null);
   const [swiperIndex, setSwiperIndex] = useState(0);
-  const totalSwiperSlides = testimonials.length;
 
   if (!section?.items.length) return null;
 
@@ -144,6 +143,7 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
       tintVar: item.tint,
     }));
   const useDesktopSlider = testimonials.length > 3;
+  const totalSwiperSlides = testimonials.length;
 
   return (
     <section className="rg-philo" aria-label="Client Testimonials">
