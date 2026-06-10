@@ -53,6 +53,7 @@ class HomePage(Page):
 
         _normalise_services_and_cta_sections(sections)
         _inject_cms_video_testimonials(sections)
+        _inject_featured_portfolio_properties(sections)
 
         return {
             "id":         self.pk,
@@ -332,6 +333,49 @@ def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
     if not isinstance(video_section, dict):
         return
     video_section["items"] = _get_active_video_testimonial_items()
+
+
+def _inject_featured_portfolio_properties(sections: dict[str, Any]) -> None:
+    """Populate portfolio.projects from featured Property snippets."""
+    portfolio = sections.get("portfolio")
+    if not isinstance(portfolio, dict):
+        return
+    portfolio["projects"] = _get_featured_property_items()
+
+
+def _get_featured_property_items() -> list[dict[str, Any]]:
+    try:
+        from apps.properties.models import Property
+    except Exception:
+        return []
+
+    try:
+        queryset = (
+            Property.objects.filter(featured=True)
+            .select_related("card_image")
+            .order_by("order", "-created_at")
+        )
+        items = []
+        for p in queryset:
+            img_url = (
+                p.card_image.file.url
+                if p.card_image and getattr(p.card_image, "file", None)
+                else ""
+            )
+            items.append({
+                "title": p.title,
+                "location": f"{p.city}, {p.state}",
+                "price": str(int(p.price)) if p.price else "",
+                "status": p.get_status_display(),
+                "image": {"url": img_url, "width": 0, "height": 0, "alt": p.title} if img_url else None,
+                "beds": str(p.bedrooms),
+                "baths": str(p.bathrooms),
+                "area": str(p.area_sqft),
+                "property_slug": p.slug,
+            })
+        return items
+    except Exception:
+        return []
 
 
 def _get_active_team_member_items() -> list[dict[str, Any]]:

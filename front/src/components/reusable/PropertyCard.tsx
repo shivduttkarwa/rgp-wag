@@ -30,6 +30,7 @@ export interface Property {
   daysOnMarket?: number;
   deposit?: number;
   minLease?: string;
+  featured?: boolean;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────

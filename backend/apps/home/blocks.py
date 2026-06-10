@@ -401,32 +401,11 @@ class VideoTestimonialsSectionBlock(StructBlock):
         label = "Video Testimonials Section"
 
 
-class ShowcasePropertyItemBlock(StructBlock):
-    title         = CharBlock()
-    location      = CharBlock()
-    price         = CharBlock()
-    status        = CharBlock(default="For Sale")
-    image         = ImageChooserBlock(
-        required=False,
-        help_text="Pick property image from media library. Takes priority over URL fallback.",
-    )
-    image_url     = CharBlock(help_text="Path relative to public/ folder or full URL")
-    beds          = CharBlock(required=False)
-    baths         = CharBlock(required=False)
-    area          = CharBlock(required=False, help_text="e.g. 2,400")
-    property_slug = CharBlock(required=False, help_text="Links to /properties/<slug>")
-
-    class Meta:
-        icon  = "home"
-        label = "Showcase Property"
-
-
 class PortfolioSectionBlock(StructBlock):
     eyebrow   = CharBlock(default="PROPERTY PORTFOLIO")
     heading   = CharBlock(default="Selected")
     heading_em = CharBlock(default="Homes")
     subtitle  = TextBlock(default="A focused collection of properties chosen for location, presentation, and long-term appeal.")
-    projects  = ListBlock(ShowcasePropertyItemBlock())
 
     class Meta:
         icon  = "folder-open-inverse"
