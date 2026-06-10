@@ -5,18 +5,15 @@
   z-index: 9999;
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 1rem 0.55rem 0.85rem;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
   background: var(--rg-navy, #0f1870);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 100px;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  border: none;
+  border-radius: 50%;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
   cursor: pointer;
 }
@@ -24,11 +21,6 @@
 .cms-edit-bar:hover {
   background: var(--rg-gold, #f9c206);
   color: var(--rg-text-dark, #0c0903);
-  border-color: transparent;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(249, 194, 6, 0.35);
-}
-
-.cms-edit-bar svg {
-  flex-shrink: 0;
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 8px 28px rgba(249, 194, 6, 0.4);
 }

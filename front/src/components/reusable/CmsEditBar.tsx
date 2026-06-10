@@ -28,8 +28,7 @@ export default function CmsEditBar({ pageId }: { pageId: number }) {
       rel="noreferrer"
       aria-label="Edit this page in CMS"
     >
-      <Pencil size={14} strokeWidth={2.5} />
-      <span>Edit Page</span>
+      <Pencil size={15} strokeWidth={2.5} />
     </a>
   );
 }
