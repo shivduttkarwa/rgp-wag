@@ -327,17 +327,11 @@ def _normalise_services_and_cta_sections(sections: dict[str, Any]) -> None:
 
 
 def _inject_cms_video_testimonials(sections: dict[str, Any]) -> None:
-    """
-    Replace HomePage video testimonial items with active snippet entries, if any.
-    Falls back to manually-entered StreamField items when no snippet entries exist.
-    """
+    """Populate video_testimonials.items from active VideoTestimonial snippets."""
     video_section = sections.get("video_testimonials")
     if not isinstance(video_section, dict):
         return
-
-    cms_items = _get_active_video_testimonial_items()
-    if cms_items:
-        video_section["items"] = cms_items
+    video_section["items"] = _get_active_video_testimonial_items()
 
 
 def _get_active_team_member_items() -> list[dict[str, Any]]:

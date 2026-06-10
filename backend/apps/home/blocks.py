@@ -391,35 +391,10 @@ class PropertyCtaBlock(StructBlock):
         label = "Property CTA Block"
 
 
-class VideoTestimonialItemBlock(StructBlock):
-    kicker    = CharBlock(help_text="e.g. SUNNYBANK · SOLD")
-    name      = CharBlock(help_text="Client name shown on the card")
-    video_url = CharBlock(help_text="Path relative to public/ or full URL")
-    poster_image = ImageChooserBlock(
-        required=False,
-        help_text="Pick poster image from media library. Takes priority over URL fallback.",
-    )
-    poster_url = CharBlock(help_text="Thumbnail image URL")
-    tint      = ChoiceBlock(choices=[("gold", "Gold"), ("amber", "Amber"), ("crimson", "Crimson")], default="gold")
-
-    class Meta:
-        icon  = "media"
-        label = "Video Testimonial"
-
-
 class VideoTestimonialsSectionBlock(StructBlock):
     section_label = CharBlock(default="Client Stories")
     heading       = CharBlock(default="Hear From")
     heading_em    = CharBlock(default="Our Clients")
-    items         = ListBlock(
-        VideoTestimonialItemBlock(),
-        required=False,
-        help_text=(
-            "Optional manual fallback only. "
-            "If active records exist in CMS sidebar -> Testimonial -> Video Testimonial, "
-            "those are used automatically on the homepage API."
-        ),
-    )
 
     class Meta:
         icon  = "media"
