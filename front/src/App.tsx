@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./sections/Footer";
 import Preloader from "./components/Preloader";
+import PageSkeleton from "./components/reusable/PageSkeleton";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -31,30 +32,28 @@ function App() {
       <Preloader onComplete={() => setLoaded(true)} />
       <div>
         <Header ready={loaded} />
-        <div style={{ minHeight: "100vh" }}>
-          <Suspense fallback={null}>
-            <Routes>
-              <Route path="/" element={<HomePage ready={loaded} />} />
-              <Route path="/about" element={<AboutPage ready={loaded} />} />
-              <Route path="/services" element={<ServicesPage ready={loaded} />} />
-              <Route
-                path="/testimonials"
-                element={<TestimonialsPage ready={loaded} />}
-              />
-              <Route path="/contact" element={<ContactPage ready={loaded} />} />
-              <Route path="/properties" element={<PropertiesPage ready={loaded} />} />
-              <Route path="/properties/:id" element={<PropertyPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<CollectionNoticePage />} />
-              <Route path="/cookies" element={<CookiesPage />} />
-              <Route path="/team" element={<TeamPage ready={loaded} />} />
-              <Route
-                path="/expressions-of-interest"
-                element={<ExpressionOfInterestPage ready={loaded} />}
-              />
-            </Routes>
-          </Suspense>
-        </div>
+        <Suspense fallback={<PageSkeleton />}>
+          <Routes>
+            <Route path="/" element={<HomePage ready={loaded} />} />
+            <Route path="/about" element={<AboutPage ready={loaded} />} />
+            <Route path="/services" element={<ServicesPage ready={loaded} />} />
+            <Route
+              path="/testimonials"
+              element={<TestimonialsPage ready={loaded} />}
+            />
+            <Route path="/contact" element={<ContactPage ready={loaded} />} />
+            <Route path="/properties" element={<PropertiesPage ready={loaded} />} />
+            <Route path="/properties/:id" element={<PropertyPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<CollectionNoticePage />} />
+            <Route path="/cookies" element={<CookiesPage />} />
+            <Route path="/team" element={<TeamPage ready={loaded} />} />
+            <Route
+              path="/expressions-of-interest"
+              element={<ExpressionOfInterestPage ready={loaded} />}
+            />
+          </Routes>
+        </Suspense>
         <Footer ready={loaded} />
       </div>
     </>

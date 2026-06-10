@@ -8,6 +8,7 @@ import RgButton from "@/components/reusable/RgButton";
 import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import type {
   CmsFeaturedTestimonial,
   CmsTestimonial,
@@ -233,7 +234,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({
 );
 
 const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
-  const { data } = useTestimonialsPage();
+  const { data, status } = useTestimonialsPage();
   const pageRef = useRef<HTMLDivElement>(null);
   const { sections } = data;
 
@@ -266,6 +267,8 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return cleanup;
   }, [data.updated_at]);
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <div ref={pageRef}>

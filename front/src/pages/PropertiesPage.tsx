@@ -23,6 +23,7 @@ import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import { usePropertiesPage } from "@/hooks/usePropertiesPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -281,6 +282,8 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     activeFilters.price !== "all" ||
     activeFilters.beds !== "any" ||
     activeFilters.baths !== "any";
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <div className={pageClassName} ref={pageRef}>

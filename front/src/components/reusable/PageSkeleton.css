@@ -1,0 +1,29 @@
+.page-skeleton {
+  min-height: 100vh;
+  background: var(--rg-navy);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: page-skeleton-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes page-skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}

@@ -4,6 +4,7 @@ import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { useTeamPage } from "@/hooks/useTeamPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./TeamPage.css";
@@ -31,6 +32,8 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return () => cleanup?.();
   }, [status, data.updated_at]);
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <>

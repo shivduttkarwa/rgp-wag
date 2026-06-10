@@ -13,6 +13,7 @@ import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useHomePage } from "@/hooks/useHomePage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import { Building2 } from "lucide-react";
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
@@ -65,6 +66,8 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
     ctaSection?.secondary.label || "",
     ctaSection?.secondary.href || "",
   );
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <div ref={pageRef}>

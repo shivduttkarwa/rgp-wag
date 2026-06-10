@@ -8,10 +8,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useServicesPage } from "@/hooks/useServicesPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import assetUrl from "@/lib/assetUrl";
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
-  const { data } = useServicesPage();
+  const { data, status } = useServicesPage();
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
   const introMaxProgressRef = useRef(0);
@@ -147,6 +148,8 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
       },
     });
   }, []);
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <>

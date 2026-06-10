@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { useEoiPage } from "@/hooks/useEoiPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -297,7 +298,7 @@ export default function ExpressionOfInterestPage({
 }: {
   ready?: boolean;
 }) {
-  const { data: eoiData } = useEoiPage();
+  const { data: eoiData, status } = useEoiPage();
   const pageRef = useRef<HTMLElement>(null);
   const formTopRef = useRef<HTMLDivElement>(null);
   const [success, setSuccess] = useState(false);
@@ -387,6 +388,8 @@ export default function ExpressionOfInterestPage({
       setIsSubmitting(false);
     }
   };
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <main className="eoi-page" ref={pageRef}>

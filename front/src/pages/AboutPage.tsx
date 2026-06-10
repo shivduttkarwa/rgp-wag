@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAboutPage } from "@/hooks/useAboutPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import assetUrl from "@/lib/assetUrl";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
@@ -301,6 +302,8 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
   const orderedMain = section_order.length
     ? section_order.filter((t) => MAIN_SECTIONS.includes(t))
     : MAIN_SECTIONS;
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <>

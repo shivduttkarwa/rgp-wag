@@ -6,6 +6,7 @@ import RgButton from "@/components/reusable/RgButton";
 import { submitContactForm } from "@/lib/api/forms";
 import { useContactPage } from "@/hooks/useContactPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
+import PageSkeleton from "@/components/reusable/PageSkeleton";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./ContactPage.css";
@@ -141,6 +142,8 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
     }
     return `A$ ${(value / 1000).toFixed(0)}K`;
   };
+
+  if (status === "loading") return <PageSkeleton />;
 
   return (
     <>
