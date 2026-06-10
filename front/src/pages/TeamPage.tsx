@@ -36,9 +36,53 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 
       <main className="team-page" ref={pageRef}>
-        {/* ── Expanding cards ── */}
         {sections.team_section && (
           <Team section={sections.team_section} members={sections.team_section.members} />
+        )}
+
+        {sections.core_values && sections.core_values.values.length > 0 && (
+          <section className="tp-core-values">
+            <div className="tp-core-values__inner">
+              {(sections.core_values.eyebrow || sections.core_values.heading) && (
+                <div className="tp-core-values__header">
+                  {sections.core_values.eyebrow && (
+                    <span className="tp-core-values__eyebrow" data-gsap="fade-up">
+                      {sections.core_values.eyebrow}
+                    </span>
+                  )}
+                  {sections.core_values.heading && (
+                    <h2 className="tp-core-values__heading" data-gsap="char-reveal" data-gsap-start="top 85%">
+                      {sections.core_values.heading}{" "}
+                      {sections.core_values.heading_em && (
+                        <em>{sections.core_values.heading_em}</em>
+                      )}
+                    </h2>
+                  )}
+                  {sections.core_values.subtitle && (
+                    <p className="tp-core-values__subtitle" data-gsap="fade-up" data-gsap-delay="0.15">
+                      {sections.core_values.subtitle}
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="tp-core-values__grid">
+                {sections.core_values.values.map((val, i) => (
+                  <article
+                    key={i}
+                    className="tp-core-values__card"
+                    data-gsap="fade-up"
+                    data-gsap-delay={`${i * 0.08}`}
+                  >
+                    <span className="tp-core-values__icon" aria-hidden="true">
+                      {val.icon}
+                    </span>
+                    <h3 className="tp-core-values__card-title">{val.title}</h3>
+                    <p className="tp-core-values__card-desc">{val.description}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
         )}
       </main>
       {sections.cta && (

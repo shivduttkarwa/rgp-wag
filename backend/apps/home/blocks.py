@@ -690,9 +690,44 @@ class TeamSectionBlock(StructBlock):
         label = "Team Section Heading"
 
 
+class CoreValueItemBlock(StructBlock):
+    icon = CharBlock(
+        required=False,
+        default="★",
+        help_text="Emoji or symbol shown as the value icon (e.g. ★, 🏡, 💡, ⚡).",
+    )
+    title = CharBlock(default="Integrity")
+    description = TextBlock(
+        default="We give honest advice even when it's not what clients want to hear.",
+    )
+
+    class Meta:
+        icon = "pick"
+        label = "Core Value"
+
+
+class CoreValuesBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="WHAT DRIVES US")
+    heading = CharBlock(default="Our Core")
+    heading_em = CharBlock(required=False, default="Values")
+    subtitle = TextBlock(
+        required=False,
+        default="The principles that guide every conversation, every campaign, and every result.",
+    )
+    values = ListBlock(
+        CoreValueItemBlock(),
+        help_text="Add each core value — icon, title, and short description.",
+    )
+
+    class Meta:
+        icon = "list-ul"
+        label = "What Drives Us (Core Values)"
+
+
 class TeamPageStreamBlock(StreamBlock):
     hero = InternalPageHeroBlock()
     team_section = TeamSectionBlock()
+    core_values = CoreValuesBlock()
     cta = CtaSectionBlock()
     eoi_cta = EoiCtaSectionBlock()
 
@@ -700,6 +735,7 @@ class TeamPageStreamBlock(StreamBlock):
         block_counts = {
             "hero": {"min_num": 0, "max_num": 1},
             "team_section": {"min_num": 0, "max_num": 1},
+            "core_values": {"min_num": 0, "max_num": 1},
             "cta": {"min_num": 0, "max_num": 1},
             "eoi_cta": {"min_num": 0, "max_num": 1},
         }

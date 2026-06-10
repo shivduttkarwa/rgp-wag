@@ -186,6 +186,23 @@ class TeamPage(Page):
                     "members": _get_active_team_member_items(),
                 }
 
+            elif btype == "core_values":
+                sections["core_values"] = {
+                    "eyebrow": cfg.get("eyebrow") or "",
+                    "heading": cfg.get("heading") or "",
+                    "heading_em": cfg.get("heading_em") or "",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "values": [
+                        {
+                            "icon": v.get("icon") or "★",
+                            "title": v.get("title") or "",
+                            "description": v.get("description") or "",
+                        }
+                        for v in (cfg.get("values") or [])
+                        if isinstance(v, dict)
+                    ],
+                }
+
             elif btype == "cta":
                 sections["cta"] = cfg
 

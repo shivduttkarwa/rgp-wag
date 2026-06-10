@@ -31,9 +31,24 @@ export type TeamSectionData = {
   subtitle: string;
 };
 
+export type CoreValueItem = {
+  icon: string;
+  title: string;
+  description: string;
+};
+
+export type CoreValuesData = {
+  eyebrow: string;
+  heading: string;
+  heading_em: string;
+  subtitle: string;
+  values: CoreValueItem[];
+};
+
 export type TeamPageSections = {
   hero?: InternalPageHeroData;
   team_section?: TeamSectionData & { members: TeamMemberData[] };
+  core_values?: CoreValuesData;
   cta?: CtaSection;
   eoi_cta?: EoiCtaSection;
 };
