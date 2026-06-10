@@ -1,10 +1,18 @@
 import type { InternalPageHeroData } from "@/types/internalPageHero";
 import type { CtaSection, EoiCtaSection } from "@/types/homePage";
+import type { Property } from "@/components/reusable/PropertyCard";
 
 export type AboutPageSections = {
   hero?: InternalPageHeroData;
   intro?: { statement: string };
-  marquee?: { items: string[]; speed: number };
+  property_marquee?: {
+    eyebrow: string;
+    title: string;
+    title_em: string;
+    subtitle: string;
+    cta_label: string;
+    properties: Property[];
+  };
   split?: {
     heading: string;
     p1: string;

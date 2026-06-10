@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
-import Marquee from "@/sections/Marquee";
+import PropertyMarquee from "@/components/reusable/PropertyMarqee";
 
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -157,9 +157,16 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
           </section>
         )}
 
-        {/* 3) MARQUEE */}
-        {sections.marquee && (
-          <Marquee items={sections.marquee.items} speed={sections.marquee.speed} />
+        {/* 3) PROPERTY MARQUEE */}
+        {sections.property_marquee && (
+          <PropertyMarquee
+            properties={sections.property_marquee.properties}
+            eyebrow={sections.property_marquee.eyebrow}
+            title={sections.property_marquee.title}
+            titleEm={sections.property_marquee.title_em}
+            subtitle={sections.property_marquee.subtitle}
+            ctaLabel={sections.property_marquee.cta_label}
+          />
         )}
 
         {/* 4) GREEN SPLIT */}

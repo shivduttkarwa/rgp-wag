@@ -632,10 +632,14 @@ class AboutPage(Page):
             elif btype == "intro":
                 sections["intro"] = {"statement": cfg.get("statement") or ""}
 
-            elif btype == "marquee":
-                sections["marquee"] = {
-                    "items": cfg.get("items") or [],
-                    "speed": int(cfg.get("speed") or 40),
+            elif btype == "property_marquee":
+                sections["property_marquee"] = {
+                    "eyebrow": cfg.get("eyebrow") or "",
+                    "title": cfg.get("title") or "",
+                    "title_em": cfg.get("title_em") or "",
+                    "subtitle": cfg.get("subtitle") or "",
+                    "cta_label": cfg.get("cta_label") or "View All Properties",
+                    "properties": _get_properties_page_listing_items(),
                 }
 
             elif btype == "split":

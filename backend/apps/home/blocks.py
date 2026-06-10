@@ -631,26 +631,23 @@ class AboutAvailabilityBlock(StructBlock):
         label = "Availability / Appraisal CTA"
 
 
-class MarqueeBlock(StructBlock):
-    items = ListBlock(
-        CharBlock(),
-        help_text="Text items to scroll across the marquee ticker.",
-    )
-    speed = IntegerBlock(
-        default=40,
-        required=False,
-        help_text="Scroll speed in seconds for one full loop (lower = faster). Default 40.",
-    )
+class PropertyMarqueeBlock(StructBlock):
+    eyebrow = CharBlock(required=False, default="")
+    title = CharBlock(required=False, default="")
+    title_em = CharBlock(required=False, default="")
+    subtitle = CharBlock(required=False, default="")
+    cta_label = CharBlock(required=False, default="View All Properties")
 
     class Meta:
         icon = "arrow-right"
-        label = "Marquee Ticker"
+        label = "Property Marquee Slider"
+        help_text = "Auto-injects all properties from the listings app. No manual entry needed."
 
 
 class AboutPageStreamBlock(StreamBlock):
     hero = InternalPageHeroBlock()
     intro = AboutIntroBlock()
-    marquee = MarqueeBlock()
+    property_marquee = PropertyMarqueeBlock()
     split = AboutSplitBlock()
     overlay = AboutOverlayBlock()
     avail = AboutAvailabilityBlock()
@@ -661,7 +658,7 @@ class AboutPageStreamBlock(StreamBlock):
         block_counts = {
             "hero": {"min_num": 0, "max_num": 1},
             "intro": {"min_num": 0, "max_num": 1},
-            "marquee": {"min_num": 0, "max_num": 1},
+            "property_marquee": {"min_num": 0, "max_num": 1},
             "split": {"min_num": 0, "max_num": 1},
             "overlay": {"min_num": 0, "max_num": 1},
             "avail": {"min_num": 0, "max_num": 1},
