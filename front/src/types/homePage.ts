@@ -137,7 +137,8 @@ export type ShowcasePropertyItem = {
   location: string;
   price: string;
   status: string;
-  image: WagtailImage | null;
+  bg_image: WagtailImage | null;
+  thumbnail: WagtailImage | null;
   beds: string;
   baths: string;
   area: string;

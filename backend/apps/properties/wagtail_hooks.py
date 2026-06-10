@@ -1,7 +1,7 @@
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
-from .models import Property, PropertyAgent
+from .models import Property, PropertyAgent, PortfolioShowcaseItem
 
 
 class ListingViewSet(SnippetViewSet):
@@ -27,5 +27,18 @@ class PropertyAgentViewSet(SnippetViewSet):
     search_fields = ("name", "email")
 
 
+class PortfolioShowcaseViewSet(SnippetViewSet):
+    model = PortfolioShowcaseItem
+    menu_label = "Portfolio Showcase"
+    menu_name = "portfolio_showcase"
+    menu_icon = "folder-open-inverse"
+    menu_order = 260
+    add_to_admin_menu = True
+    list_display = ("title", "location", "status", "price", "is_active", "order")
+    list_filter = ("is_active", "status")
+    search_fields = ("title", "location")
+
+
 register_snippet(ListingViewSet)
 register_snippet(PropertyAgentViewSet)
+register_snippet(PortfolioShowcaseViewSet)

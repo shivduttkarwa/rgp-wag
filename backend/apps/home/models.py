@@ -340,38 +340,39 @@ def _inject_featured_portfolio_properties(sections: dict[str, Any]) -> None:
     portfolio = sections.get("portfolio")
     if not isinstance(portfolio, dict):
         return
-    portfolio["projects"] = _get_featured_property_items()
+    portfolio["projects"] = _get_portfolio_showcase_items()
 
 
-def _get_featured_property_items() -> list[dict[str, Any]]:
+def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
     try:
-        from apps.properties.models import Property
+        from apps.properties.models import PortfolioShowcaseItem
     except Exception:
         return []
 
+    def _img(obj):
+        return obj.file.url if obj and getattr(obj, "file", None) else None
+
     try:
         queryset = (
-            Property.objects.filter(featured=True)
-            .select_related("card_image")
-            .order_by("order", "-created_at")
+            PortfolioShowcaseItem.objects.filter(is_active=True)
+            .select_related("background_image", "thumbnail")
+            .order_by("order", "id")
         )
         items = []
-        for p in queryset:
-            img_url = (
-                p.card_image.file.url
-                if p.card_image and getattr(p.card_image, "file", None)
-                else ""
-            )
+        for item in queryset:
+            bg_url = _img(item.background_image)
+            thumb_url = _img(item.thumbnail) or bg_url
             items.append({
-                "title": p.title,
-                "location": f"{p.city}, {p.state}",
-                "price": str(int(p.price)) if p.price else "",
-                "status": p.get_status_display(),
-                "image": {"url": img_url, "width": 0, "height": 0, "alt": p.title} if img_url else None,
-                "beds": str(p.bedrooms),
-                "baths": str(p.bathrooms),
-                "area": str(p.area_sqft),
-                "property_slug": p.slug,
+                "title": item.title,
+                "location": item.location,
+                "price": item.price,
+                "status": item.status,
+                "bg_image": {"url": bg_url, "width": 0, "height": 0, "alt": item.title} if bg_url else None,
+                "thumbnail": {"url": thumb_url, "width": 0, "height": 0, "alt": item.title} if thumb_url else None,
+                "beds": str(item.beds),
+                "baths": str(item.baths),
+                "area": item.area,
+                "property_slug": item.property_slug,
             })
         return items
     except Exception:

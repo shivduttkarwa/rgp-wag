@@ -38,15 +38,16 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
   const projects = useMemo<ShowcaseProject[]>(() => {
     if (!section?.projects.length) return [];
     return section.projects.map((project, index) => {
-      const image = assetUrl(project.image?.url);
+      const bg = assetUrl(project.bg_image?.url);
+      const thumb = assetUrl(project.thumbnail?.url ?? project.bg_image?.url);
       return {
         id: project.property_slug || `project-${index + 1}`,
         title: project.title,
         location: project.location,
         price: project.price,
         status: project.status,
-        thumb: image,
-        bg: image,
+        thumb,
+        bg,
         beds: Number(project.beds || 0),
         baths: Number(project.baths || 0),
         area: project.area,

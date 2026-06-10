@@ -238,3 +238,58 @@ class PropertyNearbyLocation(Orderable):
 
     class Meta(Orderable.Meta):
         verbose_name = "Nearby Location"
+
+
+class PortfolioShowcaseItem(models.Model):
+    """
+    A curated showcase entry for the homepage Portfolio section.
+    Separate from Property listings — has its own background + thumbnail images
+    for the parallax showcase design.
+    """
+
+    title = models.CharField(max_length=300)
+    location = models.CharField(max_length=200, help_text="e.g. Forest Lake, Brisbane QLD")
+    price = models.CharField(max_length=100, help_text="e.g. $1.2M, $850,000, Contact Agent")
+    status = models.CharField(max_length=80, default="For Sale", help_text="e.g. For Sale, Sold, For Rent")
+    background_image = models.ForeignKey(
+        settings.WAGTAILIMAGES_IMAGE_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Full-screen parallax background image shown behind the section.",
+    )
+    thumbnail = models.ForeignKey(
+        settings.WAGTAILIMAGES_IMAGE_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Card thumbnail image. Falls back to background image if not set.",
+    )
+    beds = models.PositiveSmallIntegerField(default=0)
+    baths = models.PositiveSmallIntegerField(default=0)
+    area = models.CharField(max_length=50, blank=True, help_text="e.g. 2,400")
+    property_slug = models.SlugField(
+        blank=True,
+        help_text="Slug of a property listing to link to (e.g. 'forest-lake-villa'). Leave blank if no listing exists.",
+    )
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, help_text="Sort order in the showcase.")
+
+    panels = [
+        FieldRowPanel([FieldPanel("title"), FieldPanel("status")]),
+        FieldRowPanel([FieldPanel("location"), FieldPanel("price")]),
+        FieldPanel("background_image"),
+        FieldPanel("thumbnail"),
+        FieldRowPanel([FieldPanel("beds"), FieldPanel("baths"), FieldPanel("area")]),
+        FieldRowPanel([FieldPanel("property_slug"), FieldPanel("order"), FieldPanel("is_active")]),
+    ]
+
+    class Meta:
+        verbose_name = "Portfolio Showcase Item"
+        verbose_name_plural = "Portfolio Showcase Items"
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.title} — {self.location}"
