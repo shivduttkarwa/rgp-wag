@@ -87,7 +87,7 @@ export default function InternalPageHero({ hero, ready = false }: InternalPageHe
       </div>
     ) : undefined;
 
-  const backgroundImage = hero.background_image?.url ?? hero.background_image_url;
+  const backgroundImage = hero.background_image?.url;
 
   return (
     <HeroSection

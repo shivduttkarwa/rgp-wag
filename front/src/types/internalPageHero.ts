@@ -20,7 +20,6 @@ export type InternalPageHeroData = {
   title_line_2: string;
   subtitle: string;
   background_image: WagtailImage | null;
-  background_image_url: string;
   show_video?: boolean;
   background_video_url?: string;
   mode?: InternalPageHeroMode;

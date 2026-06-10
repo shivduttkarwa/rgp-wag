@@ -516,6 +516,22 @@ def _parse_csv_options(raw: str) -> list[str]:
     return [item.strip() for item in (raw or "").split(",") if item.strip()]
 
 
+def _resolve_hero_button(btn: dict) -> dict:
+    """Convert new page-chooser button structure to {label, href, style, open_in_new_tab}."""
+    if btn.get("is_external") and btn.get("external_url"):
+        href = btn["external_url"]
+    elif btn.get("page"):
+        href = btn["page"]  # already resolved to URL string by _serialise_block_value
+    else:
+        href = btn.get("href") or ""  # legacy fallback
+    return {
+        "label": btn.get("label") or "",
+        "href": href,
+        "style": btn.get("style") or "gold",
+        "open_in_new_tab": bool(btn.get("open_in_new_tab")),
+    }
+
+
 def _normalise_internal_hero_config(hero: dict[str, Any]) -> dict[str, Any]:
     mode = hero.get("mode")
     if mode not in {"none", "buttons", "stats"}:
@@ -527,7 +543,7 @@ def _normalise_internal_hero_config(hero: dict[str, Any]) -> dict[str, Any]:
     hero["mode"] = mode
     hero["buttons"] = (
         [
-            button
+            _resolve_hero_button(button)
             for button in buttons
             if isinstance(button, dict) and (button.get("label") or "").strip()
         ]
@@ -547,6 +563,8 @@ def _normalise_internal_hero_config(hero: dict[str, Any]) -> dict[str, Any]:
         if mode == "stats"
         else []
     )
+    # Resolve video: prefer uploaded document URL, fall back to text URL field
+    hero["background_video_url"] = hero.get("background_video") or hero.get("background_video_url") or ""
     return hero
 
 

@@ -52,9 +52,18 @@ class CtaBlock(StructBlock):
 
 class InternalHeroButtonBlock(StructBlock):
     label = CharBlock(required=False)
-    href = CharBlock(
+    page = PageChooserBlock(
         required=False,
-        help_text="Relative path (e.g. /contact), tel:/mailto:, or full URL",
+        help_text="Choose an internal page to link to.",
+    )
+    is_external = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to link to an external URL instead of a page above.",
+    )
+    external_url = CharBlock(
+        required=False,
+        help_text="Full URL — only used when 'External URL' is checked above.",
     )
     style = ChoiceBlock(
         choices=[
@@ -95,20 +104,19 @@ class InternalPageHeroBlock(StructBlock):
         required=False,
         help_text="Pick hero background image from media library.",
     )
-    background_image_url = CharBlock(
-        required=False,
-        default="",
-        help_text="Fallback image path relative to public/ or full URL.",
-    )
     show_video = BooleanBlock(
         required=False,
         default=False,
         help_text="Enable to use the optional hero background video.",
     )
+    background_video = DocumentChooserBlock(
+        required=False,
+        help_text="Upload or choose a video file (mp4 recommended). Takes priority over URL below.",
+    )
     background_video_url = CharBlock(
         required=False,
         default="",
-        help_text="Video path relative to public/ or full URL (used when video is enabled).",
+        help_text="Fallback video URL — only used if no document is chosen above.",
     )
     mode = ChoiceBlock(
         choices=[
