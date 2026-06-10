@@ -109,10 +109,10 @@
 
 .c-key {
   font-size: 0.72rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--rg-text-light);
+  color: var(--rg-navy);
   margin-bottom: 0.3rem;
 }
 
@@ -382,10 +382,10 @@
 
 .fg label {
   font-size: 0.66rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--rg-text-light);
+  color: var(--rg-navy);
   transition: color 0.2s;
 }
 

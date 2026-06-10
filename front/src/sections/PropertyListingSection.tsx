@@ -119,7 +119,7 @@ const PropertyListingSection = ({
           <>
             <div
               className="filter-wrapper"
-              data-gsap="fade-in"
+              data-gsap="fade-up"
               data-gsap-delay="0.1"
             >
               <div className="filter-tabs">
@@ -146,7 +146,12 @@ const PropertyListingSection = ({
               </div>
             </div>
 
-            <div className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}>
+            <div
+              className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}
+              data-gsap="clip-smooth-down"
+              data-gsap-stagger="0.12"
+              data-gsap-start="top 82%"
+            >
               {displayed.slice(0, 3).map((property, index) => (
                 <div
                   key={property.id}

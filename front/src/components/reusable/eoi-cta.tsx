@@ -56,22 +56,24 @@ export default function EoiCta({
       <div className="eoi-cta__inner">
         <div className="eoi-cta__copy">
           {badgeText || badgeIcon ? (
-            <div className="eoi-cta__badge">
+            <div className="eoi-cta__badge" data-gsap="fade-up">
               {badgeIcon ? <span className="eoi-cta__badge-icon">{badgeIcon}</span> : null}
               {badgeText ? <span>{badgeText}</span> : null}
             </div>
           ) : null}
-          <h3 className="eoi-cta__title">{title}</h3>
-          <p className="eoi-cta__text">{text}</p>
+          <h3 className="eoi-cta__title" data-gsap="char-reveal" data-gsap-start="top 85%">{title}</h3>
+          <p className="eoi-cta__text" data-gsap="fade-up" data-gsap-delay="0.12">{text}</p>
         </div>
 
         {buttonLabel ? (
-          <RgButton
-            variant="gold"
-            to={buttonTo}
-            label={buttonLabel}
-            className="eoi-cta__button"
-          />
+          <div data-gsap="fade-up" data-gsap-delay="0.22">
+            <RgButton
+              variant="gold"
+              to={buttonTo}
+              label={buttonLabel}
+              className="eoi-cta__button"
+            />
+          </div>
         ) : null}
       </div>
     </section>
