@@ -41,43 +41,45 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
         )}
 
         {sections.core_values && sections.core_values.values.length > 0 && (
-          <section className="tp-core-values">
-            <div className="tp-core-values__inner">
-              {(sections.core_values.eyebrow || sections.core_values.heading) && (
-                <div className="tp-core-values__header">
+          <section className="tp-values">
+            <div className="tp-container">
+              <div className="tp-values__header">
+                <div className="tp-values__header-left">
                   {sections.core_values.eyebrow && (
-                    <span className="tp-core-values__eyebrow" data-gsap="fade-up">
+                    <span className="tp-eyebrow" data-gsap="fade-up">
                       {sections.core_values.eyebrow}
                     </span>
                   )}
                   {sections.core_values.heading && (
-                    <h2 className="tp-core-values__heading" data-gsap="char-reveal" data-gsap-start="top 85%">
+                    <h2 className="tp-heading" data-gsap="char-reveal" data-gsap-start="top 85%">
                       {sections.core_values.heading}{" "}
                       {sections.core_values.heading_em && (
                         <em>{sections.core_values.heading_em}</em>
                       )}
                     </h2>
                   )}
-                  {sections.core_values.subtitle && (
-                    <p className="tp-core-values__subtitle" data-gsap="fade-up" data-gsap-delay="0.15">
-                      {sections.core_values.subtitle}
-                    </p>
-                  )}
                 </div>
-              )}
-              <div className="tp-core-values__grid">
+                {sections.core_values.subtitle && (
+                  <p className="tp-values__desc" data-gsap="fade-up" data-gsap-delay="0.15">
+                    {sections.core_values.subtitle}
+                  </p>
+                )}
+              </div>
+              <div className="tp-values__grid">
                 {sections.core_values.values.map((val, i) => (
                   <article
                     key={i}
-                    className="tp-core-values__card"
+                    className="tp-vc"
                     data-gsap="fade-up"
                     data-gsap-delay={`${i * 0.08}`}
                   >
-                    <span className="tp-core-values__num" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="tp-core-values__card-title">{val.title}</h3>
-                    <p className="tp-core-values__card-desc">{val.description}</p>
+                    <div className="tp-vc__icon" aria-hidden="true">
+                      <span>{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <div className="tp-vc__content">
+                      <h3 className="tp-vc__title">{val.title}</h3>
+                      <p className="tp-vc__body">{val.description}</p>
+                    </div>
                   </article>
                 ))}
               </div>
