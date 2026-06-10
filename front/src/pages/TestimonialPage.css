@@ -595,10 +595,13 @@
 
 .tp-mosaic__card-rating {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--mc);
+  color: var(--rg-gold);
   white-space: nowrap;
   flex-shrink: 0;
 }
