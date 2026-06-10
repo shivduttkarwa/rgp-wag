@@ -4,6 +4,7 @@ import type { CtaSection, EoiCtaSection } from "@/types/homePage";
 export type AboutPageSections = {
   hero?: InternalPageHeroData;
   intro?: { statement: string };
+  marquee?: { items: string[]; speed: number };
   split?: {
     heading: string;
     p1: string;

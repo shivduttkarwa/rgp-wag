@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RgButton from "@/components/reusable/RgButton";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
+import Marquee from "@/sections/Marquee";
 
 import "./AboutPage.css";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -13,7 +14,7 @@ import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 
 export default function AboutPage({ ready = false }: { ready?: boolean }) {
-  const { data } = useAboutPage();
+  const { data, status } = useAboutPage();
   const { sections } = data;
   const pageRef = useRef<HTMLDivElement | null>(null);
   const introRef = useRef<HTMLHeadingElement | null>(null);
@@ -51,7 +52,8 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
   };
 
   useEffect(() => {
-    // Clear one-time init guards so StrictMode's double-invoke doesn't skip animations
+    if (status !== "ready") return;
+    // Clear one-time init guards so re-runs after data load don't skip animations
     const guards = [
       "clipRevealInit",
       "clipRevealRtlInit",
@@ -74,7 +76,7 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
     const cleanup = initGsapSwitchAnimations(pageRef.current);
     return () => cleanup?.();
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     if (!sections.intro?.statement) return;
@@ -155,7 +157,12 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
           </section>
         )}
 
-        {/* 3) GREEN SPLIT */}
+        {/* 3) MARQUEE */}
+        {sections.marquee && (
+          <Marquee items={sections.marquee.items} speed={sections.marquee.speed} />
+        )}
+
+        {/* 4) GREEN SPLIT */}
         {sections.split && (
           <section className="split-green">
             <div className="container">

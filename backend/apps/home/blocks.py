@@ -631,9 +631,26 @@ class AboutAvailabilityBlock(StructBlock):
         label = "Availability / Appraisal CTA"
 
 
+class MarqueeBlock(StructBlock):
+    items = ListBlock(
+        CharBlock(),
+        help_text="Text items to scroll across the marquee ticker.",
+    )
+    speed = IntegerBlock(
+        default=40,
+        required=False,
+        help_text="Scroll speed in seconds for one full loop (lower = faster). Default 40.",
+    )
+
+    class Meta:
+        icon = "arrow-right"
+        label = "Marquee Ticker"
+
+
 class AboutPageStreamBlock(StreamBlock):
     hero = InternalPageHeroBlock()
     intro = AboutIntroBlock()
+    marquee = MarqueeBlock()
     split = AboutSplitBlock()
     overlay = AboutOverlayBlock()
     avail = AboutAvailabilityBlock()
@@ -644,6 +661,7 @@ class AboutPageStreamBlock(StreamBlock):
         block_counts = {
             "hero": {"min_num": 0, "max_num": 1},
             "intro": {"min_num": 0, "max_num": 1},
+            "marquee": {"min_num": 0, "max_num": 1},
             "split": {"min_num": 0, "max_num": 1},
             "overlay": {"min_num": 0, "max_num": 1},
             "avail": {"min_num": 0, "max_num": 1},

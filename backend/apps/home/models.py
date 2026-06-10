@@ -632,12 +632,15 @@ class AboutPage(Page):
             elif btype == "intro":
                 sections["intro"] = {"statement": cfg.get("statement") or ""}
 
+            elif btype == "marquee":
+                sections["marquee"] = {
+                    "items": cfg.get("items") or [],
+                    "speed": int(cfg.get("speed") or 40),
+                }
+
             elif btype == "split":
-                doc = cfg.get("video")
-                video_url = (
-                    doc.get("url") if isinstance(doc, dict) and doc.get("url")
-                    else cfg.get("video_url") or ""
-                )
+                doc_url = cfg.get("video")
+                video_url = doc_url if isinstance(doc_url, str) and doc_url else cfg.get("video_url") or ""
                 sections["split"] = {
                     "heading": cfg.get("heading") or "",
                     "p1": cfg.get("p1") or "",
