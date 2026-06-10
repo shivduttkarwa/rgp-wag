@@ -504,6 +504,7 @@ def _serialise_block_value(value):
 
     if isinstance(value, StructValue):
         result = {key: _serialise_block_value(val) for key, val in value.items()}
+
         # Auto-resolve CtaBlock {label, page, is_external, external_url} → {label, href}
         if set(result.keys()) == {"label", "page", "is_external", "external_url"}:
             if result.get("is_external") and result.get("external_url"):
@@ -513,6 +514,55 @@ def _serialise_block_value(value):
             else:
                 href = ""
             return {"label": result.get("label") or "", "href": href}
+
+        # Auto-resolve SearchTabBlock {label, icon, page, section_anchor, is_external, external_url} → {label, icon, href, open_in_new_tab}
+        if set(result.keys()) == {"label", "icon", "page", "section_anchor", "is_external", "external_url"}:
+            if result.get("is_external") and result.get("external_url"):
+                href = result["external_url"]
+                open_in_new_tab = True
+            elif result.get("page"):
+                href = result["page"]
+                anchor = (result.get("section_anchor") or "").strip()
+                if anchor:
+                    href = f"{href.rstrip('/')}#{anchor}"
+                open_in_new_tab = False
+            elif result.get("section_anchor"):
+                href = f"#{(result['section_anchor']).strip()}"
+                open_in_new_tab = False
+            else:
+                href = ""
+                open_in_new_tab = False
+            return {
+                "label": result.get("label") or "",
+                "icon": result.get("icon") or "",
+                "href": href,
+                "open_in_new_tab": open_in_new_tab,
+            }
+
+        # Auto-resolve ButtonBlock → {label, href, style, open_in_new_tab}
+        if "section_anchor" in result and "style" in result and "is_external" in result:
+            if result.get("is_external") and result.get("external_url"):
+                href = result["external_url"]
+                open_in_new_tab = True
+            elif result.get("page"):
+                href = result["page"]
+                anchor = (result.get("section_anchor") or "").strip()
+                if anchor:
+                    href = f"{href.rstrip('/')}#{anchor}"
+                open_in_new_tab = False
+            elif result.get("section_anchor"):
+                href = f"#{(result['section_anchor']).strip()}"
+                open_in_new_tab = False
+            else:
+                href = ""
+                open_in_new_tab = False
+            return {
+                "label": result.get("label") or "",
+                "href": href,
+                "style": result.get("style") or "gold",
+                "open_in_new_tab": open_in_new_tab,
+            }
+
         return result
 
     if isinstance(value, list):

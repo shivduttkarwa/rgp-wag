@@ -16,6 +16,7 @@ export type SearchTab = {
   label: string | null;
   icon: "buy" | "rent" | "sold" | "agent" | null;
   href: string | null;
+  open_in_new_tab?: boolean;
 };
 
 export type HeroSection = {

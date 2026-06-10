@@ -27,7 +27,11 @@ export default function HeroSearchPanel({ tabs }: HeroSearchPanelProps) {
   const navigate = useNavigate();
   const visibleTabs = tabs.filter(isVisibleTab);
 
-  const openHref = (href: string) => {
+  const openHref = (href: string, openInNewTab?: boolean) => {
+    if (openInNewTab) {
+      window.open(href, "_blank", "noreferrer");
+      return;
+    }
     if (/^[a-z][a-z0-9+.-]*:/i.test(href)) {
       window.location.assign(href);
       return;
@@ -39,14 +43,14 @@ export default function HeroSearchPanel({ tabs }: HeroSearchPanelProps) {
 
   return (
     <div className="hsp">
-      {visibleTabs.map(({ label, icon, href }, index) => {
+      {visibleTabs.map(({ label, icon, href, open_in_new_tab }, index) => {
         const Icon = icon ? ICONS[icon] : Home;
 
         return (
           <button
             key={`${label}-${href}-${index}`}
             className="hsp__tab"
-            onClick={() => openHref(href)}
+            onClick={() => openHref(href, open_in_new_tab)}
             type="button"
           >
             <span className="hsp__tab-badge">

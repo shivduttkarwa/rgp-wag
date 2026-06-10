@@ -81,6 +81,52 @@ class InternalHeroButtonBlock(StructBlock):
         label = "Hero Button"
 
 
+class ButtonBlock(StructBlock):
+    """
+    Reusable button block. Editor can choose an internal page, add an optional
+    section anchor (#id), OR toggle 'external' and paste any URL.
+    External links always open in a new tab.
+    """
+    label = CharBlock(
+        required=True,
+        help_text="Button label, e.g. 'Learn More'",
+    )
+    page = PageChooserBlock(
+        required=False,
+        help_text="Select an internal page to link to.",
+    )
+    section_anchor = CharBlock(
+        required=False,
+        help_text=(
+            "Optional section ID on the target page — e.g. 'team' links to /about#team. "
+            "Leave blank to link to the top of the page. "
+            "Can be used without a page selected to link to a section on the same page."
+        ),
+    )
+    is_external = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to use a custom URL instead of selecting a page above.",
+    )
+    external_url = CharBlock(
+        required=False,
+        help_text="Full URL (https://…) — always opens in a new tab. Only used when 'Is external' is checked.",
+    )
+    style = ChoiceBlock(
+        choices=[
+            ("gold", "Gold"),
+            ("blue", "Blue"),
+            ("outline", "Outline"),
+        ],
+        default="gold",
+        required=False,
+    )
+
+    class Meta:
+        icon  = "link"
+        label = "Button"
+
+
 class InternalHeroStatBlock(StructBlock):
     value = CharBlock(required=False, help_text="e.g. 5, 100%, 350+")
     label = CharBlock(required=False, help_text="e.g. Avg. Rating")
@@ -156,7 +202,23 @@ class SearchTabBlock(StructBlock):
         ],
         help_text="Icon shown above the label",
     )
-    href = CharBlock(help_text="e.g. /properties?cat=for-sale")
+    page = PageChooserBlock(
+        required=False,
+        help_text="Select an internal page to link to.",
+    )
+    section_anchor = CharBlock(
+        required=False,
+        help_text="Optional section ID on the target page — e.g. 'listings' links to /properties#listings.",
+    )
+    is_external = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Check to use a custom URL instead of selecting a page above.",
+    )
+    external_url = CharBlock(
+        required=False,
+        help_text="Full URL — opens in a new tab. Only used when 'Is external' is checked.",
+    )
 
     class Meta:
         icon  = "link"
