@@ -234,14 +234,13 @@
 
 /* Isotope requires position:relative — it positions items absolutely */
 .ap-grid {
-  position: relative;
-  margin: 0 -0.75rem; /* compensates for item padding to keep edge alignment */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
-/* Each card slot — padding creates gutters; Isotope reads the outerWidth */
 .ap-card-wrap {
-  width: 33.333%;
-  padding: 0 0.75rem 1.5rem;
+  min-width: 0;
 }
 
 /* Exit: all cards leave at once */
@@ -319,8 +318,8 @@
 
 /* ─── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .ap-card-wrap {
-    width: 50%;
+  .ap-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -459,12 +458,12 @@
 
 @media (max-width: 640px) {
   .ap-grid {
-    margin: 0;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .ap-card-wrap {
     width: 100%;
-    padding: 0 0.75rem 1.25rem;
   }
 
   .ap-grid-section {

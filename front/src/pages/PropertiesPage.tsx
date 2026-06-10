@@ -118,27 +118,6 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     event.preventDefault();
   };
 
-  const finalizeGridTransition = () => {
-    if (gridContainerRef.current) {
-      gridContainerRef.current.style.minHeight = "";
-    }
-
-    const pendingScroll = pendingScrollRef.current;
-    if (!pendingScroll) return;
-
-    if (pendingScroll.mode === "preserve") {
-      window.scrollTo({ top: pendingScroll.scrollY, behavior: "auto" });
-    }
-
-    if (pendingScroll.mode === "gridTop") {
-      window.scrollTo({
-        top: Math.max(0, pendingScroll.gridTop - 110),
-        behavior: "auto",
-      });
-    }
-
-    pendingScrollRef.current = null;
-  };
 
   useEffect(() => {
     if (status === "loading") return;
@@ -189,7 +168,6 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const pendingRef = useRef<Filters>(DEFAULT_FILTERS);
   const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const isoRef = useRef<any>(null);
   const filterTabsRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLDivElement>(null);
   const pillInitialized = useRef(false);
@@ -249,22 +227,17 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     exitTimerRef.current = setTimeout(() => {
       setDisplayedFilters({ ...next });
       setIsExiting(false);
+      if (gridContainerRef.current) gridContainerRef.current.style.minHeight = "";
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const pendingScroll = pendingScrollRef.current;
           if (!pendingScroll) return;
-
           if (pendingScroll.mode === "preserve") {
             window.scrollTo({ top: pendingScroll.scrollY, behavior: "auto" });
           }
-
           if (pendingScroll.mode === "gridTop") {
-            window.scrollTo({
-              top: Math.max(0, pendingScroll.gridTop - 110),
-              behavior: "auto",
-            });
+            window.scrollTo({ top: Math.max(0, pendingScroll.gridTop - 110), behavior: "auto" });
           }
-
           pendingScrollRef.current = null;
         });
       });
@@ -299,42 +272,8 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     : filtered.slice(0, INITIAL_COUNT);
   const hasMore = !displayedFilters.showAll && filtered.length > INITIAL_COUNT;
 
-  // isoKey drives Isotope reinit — changes only after animation completes
-  const isoKey = `${displayedFilters.cat}-${displayedFilters.price}-${displayedFilters.beds}-${displayedFilters.baths}-${displayedFilters.showAll}`;
-
-  // ── Isotope ──────────────────────────────────────────────────────────────
-  // transitionDuration:0 — CSS animations handle all visual transitions
-  useLayoutEffect(() => {
-    if (!gridRef.current || displayed.length === 0) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => finalizeGridTransition());
-      });
-      return;
-    }
-
-    let iso: any = null;
-    const timer = setTimeout(() => {
-      if (!gridRef.current) return;
-      import("isotope-layout").then(({ default: Isotope }) => {
-        if (!gridRef.current) return;
-        iso = new Isotope(gridRef.current, {
-          itemSelector: ".ap-card-wrap",
-          layoutMode: "fitRows",
-          transitionDuration: 0,
-        });
-        isoRef.current = iso;
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => finalizeGridTransition());
-        });
-      });
-    }, 60);
-
-    return () => {
-      clearTimeout(timer);
-      iso?.destroy();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isoKey, status]);
+  // gridKey forces grid remount after each filter animation completes
+  const gridKey = `${displayedFilters.cat}-${displayedFilters.price}-${displayedFilters.beds}-${displayedFilters.baths}-${displayedFilters.showAll}`;
 
   const hasActiveFilters =
     activeFilters.cat !== "all" ||
@@ -461,7 +400,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           ) : (
             <>
               <div
-                key={isoKey}
+                key={gridKey}
                 ref={gridRef}
                 className={`ap-grid ${isExiting ? "grid-exiting" : "grid-entering"}`}
               >
