@@ -22,6 +22,7 @@ echo "[ 1 ] Pulling latest code..."
 cd $PROJECT
 git checkout -- .
 git pull
+git clean -f backend/apps/*/migrations/
 
 # ── 2. Backend: install deps + migrate + collectstatic ───────────────────────
 echo ""
