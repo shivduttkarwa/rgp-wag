@@ -44,9 +44,7 @@ export type IntroSection = {
 };
 
 export type PropertyListingSection = {
-  eyebrow: string;
-  heading: string;
-  subtitle: string;
+  section_title?: import("@/types/shared").SectionTitleData;
   cards?: (HomeListingCard | null)[];
 };
 

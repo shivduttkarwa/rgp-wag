@@ -225,6 +225,30 @@ class SearchTabBlock(StructBlock):
         label = "Search Tab"
 
 
+class SectionTitleBlock(StructBlock):
+    """
+    Reusable section header. Drop into any section that needs an eyebrow,
+    title, and optional description. Use [gold]word[/gold] in the title for
+    the gold accent colour (same syntax as hero titles).
+    """
+    eyebrow = CharBlock(
+        required=False,
+        help_text="Small label above the title, e.g. 'Our Services'",
+    )
+    title = CharBlock(
+        required=True,
+        help_text="Section heading. Use [gold]word[/gold] for gold accent colour.",
+    )
+    description = TextBlock(
+        required=False,
+        help_text="Optional supporting text shown below the title.",
+    )
+
+    class Meta:
+        icon  = "title"
+        label = "Section Title"
+
+
 # ─── Section blocks ──────────────────────────────────────────────────────────
 
 class HeroBlock(StructBlock):
@@ -298,13 +322,8 @@ class IntroBlock(StructBlock):
 
 
 class PropertyListingSectionBlock(StructBlock):
-    eyebrow  = CharBlock(required=False, default="Current Opportunities")
-    heading  = CharBlock(required=False, default="Featured Properties")
-    subtitle = TextBlock(
-        required=False,
-        default="Browse selected listings and recent results from the local market.",
-    )
-    cards    = ListBlock(
+    section_title = SectionTitleBlock(required=False)
+    cards         = ListBlock(
         SnippetChooserBlock("properties.Property"),
         required=False,
         help_text="Select listing cards shown in this section. Filters use each card's listing category.",

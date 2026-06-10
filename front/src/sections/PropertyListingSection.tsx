@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
 import assetUrl from "@/lib/assetUrl";
+import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import type { PropertyListingSection as PropertyListingSectionData } from "@/types/homePage";
 import {
   PropertyCard,
@@ -89,28 +90,28 @@ const PropertyListingSection = ({
     <section className="property-section">
       <div className="property-container">
         <header className="section-header">
-          {data.eyebrow ? (
+          {data.section_title?.eyebrow ? (
             <div className="section-badge" data-gsap="fade-up">
               <Building2 size={16} />
-              <span>{data.eyebrow}</span>
+              <span>{data.section_title.eyebrow}</span>
             </div>
           ) : null}
-          {data.heading ? (
+          {data.section_title?.title ? (
             <h2
               className="section-title"
               data-gsap="char-reveal"
               data-gsap-start="top 85%"
             >
-              {data.heading}
+              {renderHeroAccentTokens(data.section_title.title)}
             </h2>
           ) : null}
-          {data.subtitle ? (
+          {data.section_title?.description ? (
             <p
               className="section-subtitle"
               data-gsap="fade-up"
               data-gsap-delay="0.15"
             >
-              {data.subtitle}
+              {data.section_title.description}
             </p>
           ) : null}
         </header>
