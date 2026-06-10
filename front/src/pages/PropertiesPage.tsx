@@ -334,7 +334,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
       iso?.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isoKey]);
+  }, [isoKey, status]);
 
   const hasActiveFilters =
     activeFilters.cat !== "all" ||
@@ -355,12 +355,6 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           data-gsap="fade-up"
           data-gsap-start="top 95%"
         >
-          <div className="ap-filter-head">
-            <span className="ap-filter-head__eyebrow">{propertyListing.eyebrow}</span>
-            <h2 className="ap-filter-head__title">{propertyListing.heading}</h2>
-            <p className="ap-filter-head__subtitle">{propertyListing.subtitle}</p>
-          </div>
-
           {hasListings ? (
           <div className="ap-filter-row">
             <div className="ap-filter-wrapper">
