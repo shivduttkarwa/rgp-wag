@@ -414,19 +414,9 @@ def _get_active_team_member_items() -> list[dict[str, Any]]:
 
 def _get_properties_page_listing_items() -> list[dict[str, Any]]:
     try:
-        from apps.properties.models import Property
-        from apps.properties.serializers import PropertyListSerializer
+        from apps.properties.vaultre import get_listings, normalise_list
+        return [normalise_list(p) for p in get_listings()]
     except Exception:
-        return []
-
-    try:
-        queryset = (
-            Property.objects.select_related("card_image", "agent")
-            .prefetch_related("features")
-            .all()
-        )
-        return list(PropertyListSerializer(queryset, many=True).data)
-    except DatabaseError:
         return []
 
 

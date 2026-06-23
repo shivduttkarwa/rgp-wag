@@ -68,6 +68,63 @@ Adding a new field means touching all 5 layers + the TypeScript type.
 
 ---
 
+## VaultRE Integration
+
+Properties are fetched **live from VaultRE API** — nothing stored in the DB.
+
+### Key files
+| File | Purpose |
+|---|---|
+| `backend/apps/properties/vaultre.py` | API client + 5-min memory cache + response normaliser |
+| `backend/apps/properties/api.py` | DRF views — proxies VaultRE to frontend |
+
+### How it works
+1. Frontend hits `/api/properties/` or `/api/properties/<vaultreId>/`
+2. Django calls VaultRE API (cached 5 min in-process)
+3. Response normalised to match frontend's existing shape — **no frontend changes needed**
+4. Images served directly from VaultRE CDN
+
+### Endpoints fetched
+```python
+("residential/sale",  "for-sale", "listingOrConditional")
+("residential/sale",  "sold",     "settled")
+("residential/lease", "for-rent", "listingOrConditional")
+("commercial/sale",   "for-sale", "listingOrConditional")
+("commercial/lease",  "for-rent", "listingOrConditional")
+```
+Endpoints returning errors are silently skipped.
+
+### Credentials (backend/.env + EC2 .env)
+```
+VAULTRE_API_KEY=...
+VAULTRE_ACCESS_TOKEN=...    # token value only, Bearer prefix added in code
+```
+
+### Filtering
+`GET /api/properties/?category=for-sale` — filters by category.  
+VaultRE property count = what client has in VaultRE. New listings appear automatically.
+
+---
+
+## Local Dev Setup
+
+```bash
+# Backend (PowerShell, venv already at backend/.venv)
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py runserver        # http://localhost:8000/cms/
+
+# Frontend
+cd front && npm run dev            # http://localhost:5173
+```
+
+SSH to EC2:
+```bash
+ssh -i ~/.ssh/rgp-demo.pem ubuntu@54.252.235.169
+```
+
+---
+
 ## Common Errors & Fixes
 
 | Error | Fix |
@@ -77,3 +134,4 @@ Adding a new field means touching all 5 layers + the TypeScript type.
 | `No migrations to apply` + model drift warning | Run `makemigrations home` on EC2, commit result |
 | Two `0032` migrations conflict | `makemigrations --merge home`, commit merge file |
 | `git pull` rejected (non-fast-forward) | `git pull --rebase` then `git push` |
+| `/api/properties/` returns `[]` | Check `VAULTRE_API_KEY` and `VAULTRE_ACCESS_TOKEN` in `.env`, restart server |

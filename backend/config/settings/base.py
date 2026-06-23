@@ -186,3 +186,31 @@ CORS_ALLOWED_ORIGINS = csv_env(
     default="http://localhost:5173,http://127.0.0.1:5173",
 )
 CORS_ALLOW_CREDENTIALS = True
+
+# ─── VaultRE ──────────────────────────────────────────────────────────────────
+
+VAULTRE_API_KEY = config("VAULTRE_API_KEY", default="")
+VAULTRE_ACCESS_TOKEN = config("VAULTRE_ACCESS_TOKEN", default="")
+
+# ─── Logging ──────────────────────────────────────────────────────────────────
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "apps.properties.vaultre": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
