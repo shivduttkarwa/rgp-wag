@@ -31,6 +31,7 @@ export interface Property {
   deposit?: number;
   minLease?: string;
   featured?: boolean;
+  type?: string;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -121,6 +122,9 @@ export const PropertyCard = ({
       {/* ── Body ── */}
       <div className="card-body">
         <div className="card-header">
+          {property.type && (
+            <span className="card-type-tag">{property.type}</span>
+          )}
           <h3 className="card-title">{property.title}</h3>
           <div className="card-location">
             <MapPin size={14} />

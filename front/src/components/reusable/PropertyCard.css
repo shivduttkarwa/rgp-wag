@@ -196,6 +196,21 @@
   margin-bottom: 1rem;
 }
 
+.property-card .card-type-tag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rg-gold-dark, #a07a00);
+  background: rgba(249, 195, 7, 0.12);
+  border: 1px solid rgba(249, 195, 7, 0.35);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  margin-bottom: 0.45rem;
+}
+
 .property-card .card-title {
   font-family: var(--font-title);
   font-size: 1.125rem;

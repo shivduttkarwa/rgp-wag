@@ -30,6 +30,7 @@ type RawProperty = {
   daysOnMarket?: number | string | null;
   deposit?: number | string | null;
   minLease?: string | null;
+  type?: string | null;
 };
 
 const isCategory = (value: string): value is Category =>
@@ -79,6 +80,7 @@ const mapRawListing = (item: RawProperty): Property => {
     daysOnMarket: item.daysOnMarket == null ? undefined : toNumber(item.daysOnMarket),
     deposit: item.deposit == null ? undefined : toNumber(item.deposit),
     minLease: (item.minLease ?? "").trim() || undefined,
+    type: (item.type ?? "").trim() || undefined,
   };
 };
 
