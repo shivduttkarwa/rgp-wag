@@ -126,8 +126,9 @@
 }
 
 .ap-filter-tab.active {
-  background-color: transparent;
+  background-color: var(--rg-gold);
   color: var(--rg-navy);
+  font-weight: 700;
 }
 
 .ap-filter-tab svg {
@@ -195,6 +196,9 @@
   border: 1.5px solid var(--rg-beige-darker);
   border-radius: 2rem;
   margin-left: auto;
+  min-width: 10rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Clear Button (empty state) ─────────────────────────────────────────── */

@@ -6,7 +6,6 @@ import {
   Tag,
   CheckCircle,
   Key,
-  Star,
   ChevronDown,
   X,
   ArrowRight,
@@ -30,7 +29,7 @@ import "./PropertiesPage.css";
 const INITIAL_COUNT = 6;
 
 type Filters = {
-  cat: "all" | "featured" | Category;
+  cat: "all" | Category;
   price: string;
   beds: string;
   baths: string;
@@ -49,7 +48,6 @@ const DEFAULT_FILTERS: Filters = {
 
 const categoryTabs = [
   { id: "all", label: "All" },
-  { id: "featured", label: "Featured", icon: Star },
   { id: "for-sale", label: "For Sale", icon: Tag },
   { id: "sold", label: "Sold", icon: CheckCircle },
   { id: "for-rent", label: "For Rent", icon: Key },
@@ -57,8 +55,7 @@ const categoryTabs = [
 
 const applyFilters = (items: Property[], f: Filters) =>
   items.filter((p) => {
-    if (f.cat === "featured" && !p.featured) return false;
-    if (f.cat !== "all" && f.cat !== "featured" && p.category !== f.cat) return false;
+    if (f.cat !== "all" && p.category !== f.cat) return false;
     if (f.price === "contact" && p.price !== 0) return false;
     if (f.price === "under500" && (p.price === 0 || p.price >= 500000))
       return false;
@@ -208,7 +205,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     const next = { ...pendingRef.current, ...patch };
     pendingRef.current = next;
 
-    if (gridContainerRef.current && scrollAction !== "none") {
+    if (gridContainerRef.current) {
       gridContainerRef.current.style.minHeight = `${gridContainerRef.current.offsetHeight}px`;
     }
 
@@ -294,13 +291,14 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
       <>
       {/* ── Filter Slab ───────────────────────────────────────────────── */}
       <div className="ap-filter-slab">
-        <div
-          className="ap-filter-slab__inner"
-          data-gsap="fade-up"
-          data-gsap-start="top 95%"
-        >
+        <div className="ap-filter-slab__inner">
           {hasListings ? (
-          <div className="ap-filter-row">
+          <div
+            className="ap-filter-row"
+            data-gsap="fade-in"
+            data-gsap-stagger="0.12"
+            data-gsap-start="top 95%"
+          >
             <div className="ap-filter-wrapper">
               <div ref={filterTabsRef} className="ap-filter-tabs">
                 <div ref={pillRef} className="ap-filter-pill" />
