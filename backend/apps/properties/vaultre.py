@@ -76,7 +76,7 @@ def _get_page(url: str, params: dict | None = None) -> dict:
 def _fetch_endpoint(path: str, prop_class: str, listing_category: str) -> list[dict]:
     """Fetch every page of one endpoint, walk urls.next, tag each item."""
     url: str | None = f"{BASE_URL}/properties/{path}"
-    params: dict | None = None
+    params: dict | None = {"published": "true"}
     items: list[dict] = []
     first_page = True
 
