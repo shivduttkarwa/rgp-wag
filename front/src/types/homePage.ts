@@ -80,6 +80,7 @@ export type HomeListingCard = {
   daysOnMarket?: number | null;
   deposit?: number | null;
   minLease?: string;
+  type?: string;
 };
 
 export type ServiceCard = {

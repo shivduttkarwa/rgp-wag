@@ -99,8 +99,16 @@ def _fetch_endpoint(path: str, prop_class: str, listing_category: str) -> list[d
 
             for item in page_items:
                 item["_class"] = prop_class
-                item["_category"] = listing_category
                 item["_sourceEndpoint"] = path
+                # Use portalStatus to determine true category — an "unconditional"
+                # or "settled" property is sold regardless of which endpoint returned it.
+                portal = (item.get("portalStatus") or "").lower()
+                if portal in {"unconditional", "settled"}:
+                    item["_category"] = "sold"
+                elif portal in {"leased"}:
+                    item["_category"] = "for-rent"
+                else:
+                    item["_category"] = listing_category
 
             items.extend(page_items)
             url = next_url
@@ -250,6 +258,7 @@ def normalise_list(p: dict) -> dict:
         "address": p.get("displayAddress", ""),
         "city": suburb.get("name", ""),
         "state": state,
+        "location": ", ".join(filter(None, [suburb.get("name", ""), state])) or p.get("displayAddress", ""),
         "price": p.get("searchPrice"),
         "price_label": p.get("displayPrice", ""),
         "status": _display_status(p),
@@ -259,7 +268,7 @@ def normalise_list(p: dict) -> dict:
         "beds": p.get("bed", 0),
         "baths": p.get("bath", 0),
         "sqft": int(p["floorArea"]["value"]) if p.get("floorArea") else 0,
-        "garage": p.get("garages", 0),
+        "garage": (p.get("garages") or 0) + (p.get("carports") or 0) + (p.get("openSpaces") or 0),
         "badge": "House & Land" if p.get("isHouseLandPackage") else "",
         "isNew": False,
         "featured": False,
@@ -277,7 +286,7 @@ def normalise_list(p: dict) -> dict:
         "displayPrice": p.get("displayPrice", ""),
         "bed": p.get("bed", 0),
         "bath": p.get("bath", 0),
-        "garages": p.get("garages", 0),
+        "garages": (p.get("garages") or 0) + (p.get("carports") or 0) + (p.get("openSpaces") or 0),
         "landArea": _area_obj(p.get("landArea")),
         "floorArea": _area_obj(p.get("floorArea")),
         "photos": _pub_photos(p),
@@ -350,7 +359,7 @@ def normalise_detail(p: dict) -> dict:
         "displayPrice": p.get("displayPrice", ""),
         "bed": p.get("bed", 0),
         "bath": p.get("bath", 0),
-        "garages": p.get("garages", 0),
+        "garages": (p.get("garages") or 0) + (p.get("carports") or 0) + (p.get("openSpaces") or 0),
         "landArea": _area_obj(p.get("landArea")),
         "floorArea": _area_obj(p.get("floorArea")),
         "photos": _pub_photos(p),

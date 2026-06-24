@@ -38,7 +38,7 @@ export interface Property {
 export const formatPrice = (price: number, isRent = false): string => {
   if (price === 0) return "Contact Agent";
   if (price >= 1000000) return `$${(price / 1000000).toFixed(1)}M`;
-  return `$${price.toLocaleString()}${isRent ? "/mo" : ""}`;
+  return `$${price.toLocaleString()}${isRent ? "/wk" : ""}`;
 };
 
 const badgeClass = (badge: string): string => {

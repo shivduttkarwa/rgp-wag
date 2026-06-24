@@ -47,6 +47,7 @@ const mapCards = (
         card.daysOnMarket == null ? undefined : Number(card.daysOnMarket),
       deposit: card.deposit == null ? undefined : Number(card.deposit),
       minLease: card.minLease || undefined,
+      type: card.type || undefined,
     }));
 
 const PropertyListingSection = ({

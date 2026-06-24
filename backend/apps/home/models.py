@@ -54,6 +54,7 @@ class HomePage(Page):
         _normalise_services_and_cta_sections(sections)
         _inject_cms_video_testimonials(sections)
         _inject_featured_portfolio_properties(sections)
+        _inject_home_property_listing_cards(sections)
 
         return {
             "id":         self.pk,
@@ -260,6 +261,7 @@ class PropertiesPage(Page):
                     "eyebrow": cfg.get("eyebrow") or "Browse Listings",
                     "heading": cfg.get("heading") or "Discover Your Next Property",
                     "subtitle": cfg.get("subtitle") or "",
+                    "cards": _get_properties_page_listing_items(),
                 }
 
             elif btype == "property_marquee":
@@ -410,6 +412,26 @@ def _get_active_team_member_items() -> list[dict[str, Any]]:
         return [member.to_api_item() for member in queryset]
     except DatabaseError:
         return []
+
+
+def _inject_home_property_listing_cards(sections: dict[str, Any]) -> None:
+    """Replace homepage property_listing cards with 3 per category from VaultRE."""
+    pl = sections.get("property_listing")
+    if not isinstance(pl, dict):
+        return
+    try:
+        from collections import defaultdict
+        from apps.properties.vaultre import get_listings, normalise_list
+        by_cat: dict[str, list] = defaultdict(list)
+        for p in get_listings():
+            item = normalise_list(p)
+            by_cat[item["category"]].append(item)
+        cards: list[dict] = []
+        for cat in ("for-sale", "sold", "for-rent"):
+            cards.extend(by_cat[cat][:3])
+        pl["cards"] = cards
+    except Exception:
+        pl.setdefault("cards", [])
 
 
 def _get_properties_page_listing_items() -> list[dict[str, Any]]:
