@@ -1,10 +1,53 @@
 from django.db import models
 from django.conf import settings
+from django.forms import Select
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+
+
+class VaultPropertySelectWidget(Select):
+    """Select widget that populates choices from VaultRE and embeds auto-fill data attributes."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._vault_data: dict = {}
+
+    def _load_choices(self):
+        try:
+            from apps.properties.vaultre import get_listings, normalise_list
+            self.choices = [("", "── Select a VaultRE property ──")]
+            for p in get_listings():
+                n = normalise_list(p)
+                vid = str(p["id"])
+                self._vault_data[vid] = n
+                label = f"{n.get('title') or n.get('address', '')}  |  {n.get('location', '')}  |  {n.get('status', '')}"
+                self.choices.append((vid, label))
+        except Exception:
+            self.choices = [("", "── VaultRE unavailable ──")]
+
+    def optgroups(self, name, value, attrs=None):
+        self._load_choices()
+        return super().optgroups(name, value, attrs)
+
+    def create_option(self, name, value, label, selected, index, **kwargs):
+        option = super().create_option(name, value, label, selected, index, **kwargs)
+        vid = str(value)
+        if vid and vid in self._vault_data:
+            n = self._vault_data[vid]
+            option["attrs"].update({
+                "data-title":    n.get("title") or n.get("address", ""),
+                "data-location": n.get("location", ""),
+                "data-price":    n.get("price_label") or str(n.get("price") or ""),
+                "data-status":   n.get("status", ""),
+                "data-beds":     str(n.get("beds") or n.get("bed") or 0),
+                "data-baths":    str(n.get("baths") or n.get("bath") or 0),
+                "data-area":     str(n.get("sqft") or ""),
+                "data-slug":     n.get("slug", vid),
+            })
+        return option
 
 
 class PropertyStatus(models.TextChoices):
@@ -270,14 +313,21 @@ class PortfolioShowcaseItem(models.Model):
     beds = models.PositiveSmallIntegerField(default=0)
     baths = models.PositiveSmallIntegerField(default=0)
     area = models.CharField(max_length=50, blank=True, help_text="e.g. 2,400")
+    vault_property_id = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        help_text="VaultRE property ID (find it in the property URL: /properties/<id>). When set, title/price/photos/beds/baths auto-fill from VaultRE.",
+    )
     property_slug = models.SlugField(
         blank=True,
-        help_text="Slug of a property listing to link to (e.g. 'forest-lake-villa'). Leave blank if no listing exists.",
+        help_text="Slug of a property listing to link to. Leave blank — auto-set from vault_property_id if provided.",
     )
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0, help_text="Sort order in the showcase.")
 
     panels = [
+        FieldPanel("vault_property_id", widget=VaultPropertySelectWidget()),
         FieldRowPanel([FieldPanel("title"), FieldPanel("status")]),
         FieldRowPanel([FieldPanel("location"), FieldPanel("price")]),
         FieldPanel("background_image"),

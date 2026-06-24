@@ -370,6 +370,9 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
     def _img(obj):
         return obj.file.url if obj and getattr(obj, "file", None) else None
 
+    def _img_shape(url: str | None, alt: str) -> dict | None:
+        return {"url": url, "width": 0, "height": 0, "alt": alt} if url else None
+
     try:
         queryset = (
             PortfolioShowcaseItem.objects.filter(is_active=True)
@@ -378,6 +381,39 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
         )
         items = []
         for item in queryset:
+            # ── VaultRE-sourced item ──────────────────────────────────────────
+            if item.vault_property_id:
+                try:
+                    from apps.properties.vaultre import get_listings, normalise_list
+                    vault_id = str(item.vault_property_id).strip()
+                    match = next(
+                        (p for p in get_listings() if str(p.get("id")) == vault_id),
+                        None,
+                    )
+                    if match:
+                        n = normalise_list(match)
+                        photos = match.get("photos") or []
+                        pub_photos = [ph for ph in photos if ph.get("published") and ph.get("type") == "Photograph"]
+                        first_url = pub_photos[0].get("url", "") if pub_photos else ""
+                        thumb_url = (pub_photos[0].get("thumbnails") or {}).get("thumb_1024", first_url) if pub_photos else ""
+                        title = n["title"] or item.title
+                        items.append({
+                            "title": title,
+                            "location": n["location"] or item.location,
+                            "price": n["price_label"] or item.price,
+                            "status": n["status"],
+                            "bg_image": _img_shape(_img(item.background_image) or first_url, title),
+                            "thumbnail": _img_shape(_img(item.thumbnail) or thumb_url, title),
+                            "beds": str(n["beds"]),
+                            "baths": str(n["baths"]),
+                            "area": str(n["sqft"]) if n["sqft"] else item.area,
+                            "property_slug": vault_id,
+                        })
+                        continue
+                except Exception:
+                    pass
+
+            # ── Manual / Wagtail-only item (fallback) ────────────────────────
             bg_url = _img(item.background_image)
             thumb_url = _img(item.thumbnail) or bg_url
             items.append({
@@ -385,8 +421,8 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                 "location": item.location,
                 "price": item.price,
                 "status": item.status,
-                "bg_image": {"url": bg_url, "width": 0, "height": 0, "alt": item.title} if bg_url else None,
-                "thumbnail": {"url": thumb_url, "width": 0, "height": 0, "alt": item.title} if thumb_url else None,
+                "bg_image": _img_shape(bg_url, item.title),
+                "thumbnail": _img_shape(thumb_url, item.title),
                 "beds": str(item.beds),
                 "baths": str(item.baths),
                 "area": item.area,
