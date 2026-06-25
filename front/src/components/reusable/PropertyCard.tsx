@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   MapPin, Bed, Bath, Square, Car,
-  Heart, Tag, CheckCircle, Clock, Eye,
+  Heart, Tag, CheckCircle, Clock, Eye, Key,
 } from "lucide-react";
 import RgButton from "@/components/reusable/RgButton";
 import "./PropertyCard.css";
@@ -84,6 +84,18 @@ export const PropertyCard = ({
           )}
           {property.isNew && (
             <span className="badge badge-new">New Listing</span>
+          )}
+          {!isSold && !isRent && (
+            <span className="badge badge-for-sale">
+              <Tag size={12} />
+              For Sale
+            </span>
+          )}
+          {isRent && (
+            <span className="badge badge-for-rent">
+              <Key size={12} />
+              For Rent
+            </span>
           )}
           {isSold && (
             <span className="badge badge-sold">

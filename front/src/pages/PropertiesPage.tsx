@@ -39,7 +39,7 @@ type Filters = {
 type ScrollAction = "none" | "preserve" | "gridTop";
 
 const DEFAULT_FILTERS: Filters = {
-  cat: "all",
+  cat: "for-sale",
   price: "all",
   beds: "any",
   baths: "any",
@@ -80,6 +80,11 @@ const applyFilters = (items: Property[], f: Filters) =>
     if (f.baths === "3" && p.baths < 3) return false;
     return true;
   });
+
+const CATEGORY_ORDER: Record<string, number> = { "for-sale": 0, "sold": 1, "for-rent": 2 };
+
+const sortAll = (items: Property[]): Property[] =>
+  [...items].sort((a, b) => (CATEGORY_ORDER[a.category] ?? 99) - (CATEGORY_ORDER[b.category] ?? 99));
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
@@ -150,7 +155,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const paramBeds  = searchParams.get("beds")  ?? "any";
   const paramBaths = searchParams.get("baths") ?? "any";
   const initialFilters: Filters = {
-    cat:     paramCat && VALID_CATS.includes(paramCat) ? paramCat : "all",
+    cat:     paramCat && VALID_CATS.includes(paramCat) ? paramCat : "for-sale",
     price:   paramPrice,
     beds:    paramBeds,
     baths:   paramBaths,
@@ -256,15 +261,15 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
 
   // ── Data ─────────────────────────────────────────────────────────────────
   // filtered/displayed are from displayedFilters (what the grid actually shows)
-  const filtered = useMemo(
-    () => applyFilters(sourceProperties, displayedFilters),
-    [sourceProperties, displayedFilters],
-  );
+  const filtered = useMemo(() => {
+    const result = applyFilters(sourceProperties, displayedFilters);
+    return displayedFilters.cat === "all" ? sortAll(result) : result;
+  }, [sourceProperties, displayedFilters]);
   // activeFiltered is for the result count badge (updates immediately)
-  const activeFiltered = useMemo(
-    () => applyFilters(sourceProperties, activeFilters),
-    [sourceProperties, activeFilters],
-  );
+  const activeFiltered = useMemo(() => {
+    const result = applyFilters(sourceProperties, activeFilters);
+    return activeFilters.cat === "all" ? sortAll(result) : result;
+  }, [sourceProperties, activeFilters]);
 
   const displayed = displayedFilters.showAll
     ? filtered
@@ -275,7 +280,6 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const gridKey = `${displayedFilters.cat}-${displayedFilters.price}-${displayedFilters.beds}-${displayedFilters.baths}-${displayedFilters.showAll}`;
 
   const hasActiveFilters =
-    activeFilters.cat !== "all" ||
     activeFilters.price !== "all" ||
     activeFilters.beds !== "any" ||
     activeFilters.baths !== "any";
