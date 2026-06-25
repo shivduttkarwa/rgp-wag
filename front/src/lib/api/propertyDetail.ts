@@ -68,6 +68,38 @@ function normalizeFeatureIcon(icon: string): PropertyData["features"][number]["i
   return "smart-home";
 }
 
+// ─── Shared detail cache (populated by PropertyPage + prefetcher) ─────────────
+
+export const detailCache = new Map<string, PropertyData>();
+
+const _inFlight = new Set<string>();
+
+export function prefetchPropertyDetails(slugs: string[]): void {
+  const CONCURRENCY = 4;
+  const queue = slugs.filter((s) => s && !detailCache.has(s) && !_inFlight.has(s));
+  if (!queue.length) return;
+
+  let active = 0;
+  let idx = 0;
+
+  function next() {
+    while (active < CONCURRENCY && idx < queue.length) {
+      const slug = queue[idx++];
+      active++;
+      _inFlight.add(slug);
+      fetchPropertyDetail(slug)
+        .then((data) => { detailCache.set(slug, data); })
+        .catch(() => {})
+        .finally(() => { _inFlight.delete(slug); active--; next(); });
+    }
+  }
+
+  // Yield to the browser first so the listing render isn't blocked
+  setTimeout(next, 300);
+}
+
+// ─── Fetch ────────────────────────────────────────────────────────────────────
+
 export async function fetchPropertyDetail(slug: string, signal?: AbortSignal): Promise<PropertyData> {
   const res = await fetch(`${API_BASE}/api/properties/${slug}/`, {
     headers: { Accept: "application/json" },

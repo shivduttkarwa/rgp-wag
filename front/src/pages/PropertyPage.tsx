@@ -2,30 +2,31 @@ import { useEffect, startTransition, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import PropDetail from "../components/reusable/PropDetails";
 import type { PropertyData } from "@/components/reusable/PropDetails";
-import { fetchPropertyDetail } from "@/lib/api/propertyDetail";
+import { detailCache, fetchPropertyDetail } from "@/lib/api/propertyDetail";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
-
-const cache = new Map<string, PropertyData>();
 
 export default function PropertyPage() {
   const { id } = useParams<{ id: string }>();
 
   const [property, setProperty] = useState<PropertyData | null>(
-    id ? (cache.get(id) ?? null) : null,
+    id ? (detailCache.get(id) ?? null) : null,
   );
-  const [isLoading, setIsLoading] = useState(id ? !cache.has(id) : false);
+  const [isLoading, setIsLoading] = useState(id ? !detailCache.has(id) : false);
   const [apiFailed, setApiFailed] = useState(false);
 
   useEffect(() => {
     if (!id) { setIsLoading(false); return; }
-    if (cache.has(id)) return;
+    if (detailCache.has(id)) {
+      setProperty(detailCache.get(id)!);
+      return;
+    }
 
     const controller = new AbortController();
     setIsLoading(true);
 
     fetchPropertyDetail(id, controller.signal)
       .then((data) => {
-        cache.set(id, data);
+        detailCache.set(id, data);
         startTransition(() => {
           setProperty(data);
           setApiFailed(false);
@@ -44,7 +45,7 @@ export default function PropertyPage() {
     return () => controller.abort();
   }, [id]);
 
-  if (!property && !isLoading && apiFailed) return <Navigate to="/" replace />;
+  if (!property && !isLoading && apiFailed) return <Navigate to="/properties" replace />;
   if (isLoading) return <PageSkeleton />;
   if (!property) return null;
 

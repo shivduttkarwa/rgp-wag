@@ -3,6 +3,7 @@ import {
   DEFAULT_PROPERTIES_PAGE_DATA,
   fetchPropertiesPage,
 } from "@/lib/api/propertiesPage";
+import { prefetchPropertyDetails } from "@/lib/api/propertyDetail";
 import type { PropertiesPageData } from "@/types/propertiesPage";
 
 type Status = "loading" | "ready" | "fallback";
@@ -27,6 +28,8 @@ export function usePropertiesPage(): { data: PropertiesPageData; status: Status 
           setData(payload);
           setStatus("ready");
         });
+        // Silently pre-warm detail cache for every listing
+        prefetchPropertyDetails(payload.listings.map((p) => p.slug));
       })
       .catch((err) => {
         if (controller.signal.aborted) return;
