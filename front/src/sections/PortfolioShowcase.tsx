@@ -20,6 +20,7 @@ export interface ShowcaseProject {
   status: string;
   thumb: string;
   bg: string;
+  interior: string;
   beds: number;
   baths: number;
   area: string;
@@ -40,6 +41,7 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
     return section.projects.map((project, index) => {
       const bg = assetUrl(project.bg_image?.url);
       const thumb = assetUrl(project.thumbnail?.url ?? project.bg_image?.url);
+      const interior = assetUrl(project.interior_image?.url ?? project.thumbnail?.url ?? project.bg_image?.url);
       return {
         id: project.property_slug || `project-${index + 1}`,
         title: project.title,
@@ -48,6 +50,7 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
         status: project.status,
         thumb,
         bg,
+        interior,
         beds: Number(project.beds || 0),
         baths: Number(project.baths || 0),
         area: project.area,
@@ -247,11 +250,11 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
                   <div className="pc-corner" aria-hidden="true" />
                 </article>
 
-                {/* ── Thumbnail ── */}
+                {/* ── Interior image (second VaultRE photo if available) ── */}
                 <div className="image-wrapper">
                   <figure>
                     <img
-                      src={project.thumb}
+                      src={project.interior}
                       alt={`${project.title} interior`}
                     />
                   </figure>

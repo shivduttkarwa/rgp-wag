@@ -395,6 +395,7 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                         photos = match.get("photos") or []
                         pub_photos = [ph for ph in photos if ph.get("published") and ph.get("type") == "Photograph"]
                         first_url = pub_photos[0].get("url", "") if pub_photos else ""
+                        second_url = pub_photos[1].get("url", first_url) if len(pub_photos) > 1 else first_url
                         thumb_url = (pub_photos[0].get("thumbnails") or {}).get("thumb_1024", first_url) if pub_photos else ""
                         title = n["title"] or item.title
                         items.append({
@@ -404,6 +405,7 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                             "status": n["status"],
                             "bg_image": _img_shape(_img(item.background_image) or first_url, title),
                             "thumbnail": _img_shape(_img(item.thumbnail) or thumb_url, title),
+                            "interior_image": _img_shape(second_url, title),
                             "beds": str(n["beds"]),
                             "baths": str(n["baths"]),
                             "area": str(n["sqft"]) if n["sqft"] else item.area,
@@ -423,6 +425,7 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                 "status": item.status,
                 "bg_image": _img_shape(bg_url, item.title),
                 "thumbnail": _img_shape(thumb_url, item.title),
+                "interior_image": None,
                 "beds": str(item.beds),
                 "baths": str(item.baths),
                 "area": item.area,
