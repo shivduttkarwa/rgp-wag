@@ -1,6 +1,8 @@
 import logging
+import threading
 import time
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from django.conf import settings
@@ -8,13 +10,19 @@ from django.conf import settings
 logger = logging.getLogger("apps.properties.vaultre")
 
 BASE_URL = "https://ap-southeast-2.api.vaultre.com.au/api/v1.3"
-CACHE_TTL = 300  # 5 minutes
+CACHE_TTL = 300        # 5 minutes
+_REFRESH_INTERVAL = 240  # refresh every 4 min so cache never expires
+_MAX_WORKERS = 8         # concurrent VaultRE endpoint fetches
 
 # Per-page response cache:  (url, frozen-params) → (timestamp, data)
 _page_cache: dict = {}
 
 # Merged all-listings cache: "all" → (timestamp, [items])
 _listings_cache: dict = {}
+
+# Background refresh guard
+_refresh_lock = threading.Lock()
+_refresh_started = False
 
 
 def _headers() -> dict:
@@ -125,26 +133,42 @@ def _fetch_endpoint(path: str, prop_class: str, listing_category: str) -> list[d
 
 
 def _fetch_all_listings() -> list[dict]:
-    """Fetch all endpoints, deduplicate by id, log a summary table."""
+    """Fetch all endpoints in parallel, deduplicate by id, log a summary table."""
+    logger.info("[VaultRE] ══ Starting parallel fetch (%d endpoints, %d workers) ══", len(LISTING_ENDPOINTS), _MAX_WORKERS)
+
+    # Fan out — all endpoints fetched concurrently
+    with ThreadPoolExecutor(max_workers=_MAX_WORKERS) as pool:
+        futures = {
+            pool.submit(_fetch_endpoint, path, prop_class, listing_category): (path, prop_class, listing_category)
+            for path, prop_class, listing_category in LISTING_ENDPOINTS
+        }
+        raw_by_endpoint: dict = {}
+        for future in as_completed(futures):
+            key = futures[future]
+            try:
+                raw_by_endpoint[key] = future.result()
+            except Exception as exc:
+                logger.warning("[VaultRE] %s unhandled error: %s — skipped", key[0], exc)
+                raw_by_endpoint[key] = []
+
+    # Merge in original order so deduplication is deterministic
     seen: set = set()
     results: list[dict] = []
     summary: dict = defaultdict(lambda: defaultdict(int))
 
-    logger.info("[VaultRE] ══ Starting full property fetch (%d endpoints) ══", len(LISTING_ENDPOINTS))
-
-    for path, prop_class, listing_category in LISTING_ENDPOINTS:
-        raw = _fetch_endpoint(path, prop_class, listing_category)
+    for endpoint in LISTING_ENDPOINTS:
+        raw = raw_by_endpoint.get(endpoint, [])
         added = 0
         for item in raw:
             pid = item.get("id")
             if pid not in seen:
                 seen.add(pid)
                 results.append(item)
-                summary[prop_class][listing_category] += 1
+                summary[endpoint[1]][endpoint[2]] += 1
                 added += 1
         dupes = len(raw) - added
         if dupes:
-            logger.info("[VaultRE] %-45s  %d duplicate(s) dropped", path, dupes)
+            logger.info("[VaultRE] %-45s  %d duplicate(s) dropped", endpoint[0], dupes)
 
     total = sum(c for cats in summary.values() for c in cats.values())
     logger.info("[VaultRE] ══ Fetch complete — %d unique properties ══", total)
@@ -175,6 +199,46 @@ def get_listing(vault_id: str) -> dict:
         if str(item.get("id")) == str(vault_id):
             return item
     raise ValueError(f"Property {vault_id} not found")
+
+
+def _refresh_loop() -> None:
+    """Runs forever in a daemon thread, keeping the cache warm."""
+    while True:
+        time.sleep(_REFRESH_INTERVAL)
+        try:
+            logger.info("[VaultRE] Scheduled refresh starting …")
+            data = _fetch_all_listings()
+            _listings_cache["all"] = (time.time(), data)
+            logger.info("[VaultRE] Scheduled refresh done — %d properties cached.", len(data))
+        except Exception as exc:
+            logger.warning("[VaultRE] Scheduled refresh failed: %s", exc)
+
+
+def start_background_refresh() -> None:
+    """Warm the cache immediately on startup, then keep it fresh every 4 min.
+
+    Called once from PropertiesConfig.ready(). The _refresh_started guard
+    prevents a double-start when Django's dev-server reloader forks the process.
+    """
+    global _refresh_started
+    with _refresh_lock:
+        if _refresh_started:
+            return
+        _refresh_started = True
+
+    def _warmup_then_loop() -> None:
+        try:
+            logger.info("[VaultRE] Cache warmup starting …")
+            data = _fetch_all_listings()
+            _listings_cache["all"] = (time.time(), data)
+            logger.info("[VaultRE] Cache warmup done — %d properties ready.", len(data))
+        except Exception as exc:
+            logger.warning("[VaultRE] Cache warmup failed: %s", exc)
+        _refresh_loop()
+
+    t = threading.Thread(target=_warmup_then_loop, daemon=True, name="vaultre-refresh")
+    t.start()
+    logger.info("[VaultRE] Background refresh thread started.")
 
 
 # ─── Normalisation helpers ────────────────────────────────────────────────────
