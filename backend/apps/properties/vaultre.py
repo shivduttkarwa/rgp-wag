@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,6 +16,12 @@ _MAX_WORKERS = 5
 
 # JSON file written by `python manage.py sync_properties` (cron, hourly)
 CACHE_FILE = Path(__file__).resolve().parent.parent.parent / "cache" / "properties.json"
+
+# In-process cache for hot API requests. The file mtime invalidates it after
+# sync_properties writes a fresh cache file.
+_cache_lock = threading.RLock()
+_mem_cache: list[dict] | None = None
+_mem_cache_mtime: float | None = None
 
 
 def _headers() -> dict:
@@ -147,22 +154,54 @@ def _fetch_all_listings() -> list[dict]:
 # ─── File cache (written by `sync_properties` management command) ─────────────
 
 def _load_cache() -> list[dict]:
-    """Read properties from the JSON file. Falls back to a live fetch if missing."""
+    """Read cached properties, falling back to a live fetch only if needed."""
+    global _mem_cache, _mem_cache_mtime
+
     if CACHE_FILE.exists():
         try:
-            return json.loads(CACHE_FILE.read_text()).get("items", [])
+            mtime = CACHE_FILE.stat().st_mtime
+            with _cache_lock:
+                if _mem_cache is not None and _mem_cache_mtime == mtime:
+                    return _mem_cache
+
+            data = json.loads(CACHE_FILE.read_text(encoding="utf-8")).get("items", [])
+            if not isinstance(data, list):
+                raise ValueError("cache payload missing items list")
+
+            with _cache_lock:
+                _mem_cache = data
+                _mem_cache_mtime = mtime
+            return data
         except Exception as exc:
-            logger.warning("[VaultRE] Cache file unreadable (%s) — fetching live", exc)
-    logger.warning("[VaultRE] No cache file found — fetching live from VaultRE (run sync_properties)")
-    data = _fetch_all_listings()
-    save_cache(data)
-    return data
+            logger.warning("[VaultRE] Cache file unreadable (%s)", exc)
+            with _cache_lock:
+                if _mem_cache is not None:
+                    logger.warning("[VaultRE] Using in-memory cache while file cache is unavailable")
+                    return _mem_cache
+    else:
+        logger.warning("[VaultRE] No cache file found (run sync_properties)")
+
+    with _cache_lock:
+        if _mem_cache is not None:
+            return _mem_cache
+
+    logger.error("[VaultRE] Cache unavailable — returning no listings without calling VaultRE")
+    return []
 
 
 def save_cache(data: list[dict]) -> None:
     """Persist fetched listings to CACHE_FILE. Called by sync_properties command."""
+    global _mem_cache, _mem_cache_mtime
+
     CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    CACHE_FILE.write_text(json.dumps({"updated_at": time.time(), "items": data}))
+    tmp_file = CACHE_FILE.with_name(f"{CACHE_FILE.name}.{time.time_ns()}.tmp")
+    tmp_file.write_text(json.dumps({"updated_at": time.time(), "items": data}), encoding="utf-8")
+    tmp_file.replace(CACHE_FILE)
+
+    with _cache_lock:
+        _mem_cache = data
+        _mem_cache_mtime = CACHE_FILE.stat().st_mtime
+
     logger.info("[VaultRE] Saved %d properties to %s", len(data), CACHE_FILE)
 
 

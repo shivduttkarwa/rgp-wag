@@ -248,6 +248,14 @@ class PropertiesPage(Page):
 
     def get_api_representation(self) -> dict[str, Any]:
         sections: dict[str, Any] = {}
+        listing_items: list[dict[str, Any]] | None = None
+
+        def get_listing_items() -> list[dict[str, Any]]:
+            nonlocal listing_items
+            if listing_items is None:
+                listing_items = _get_properties_page_listing_items()
+            return listing_items
+
         for block in self.body:
             btype = block.block_type
             raw = _serialise_block_value(block.value)
@@ -261,7 +269,7 @@ class PropertiesPage(Page):
                     "eyebrow": cfg.get("eyebrow") or "Browse Listings",
                     "heading": cfg.get("heading") or "Discover Your Next Property",
                     "subtitle": cfg.get("subtitle") or "",
-                    "cards": _get_properties_page_listing_items(),
+                    "cards": get_listing_items(),
                 }
 
             elif btype == "property_marquee":
@@ -296,7 +304,7 @@ class PropertiesPage(Page):
             "slug": self.slug,
             "updated_at": self.last_published_at.isoformat() if self.last_published_at else None,
             "sections": sections,
-            "listings": _get_properties_page_listing_items(),
+            "listings": get_listing_items(),
         }
 
 
