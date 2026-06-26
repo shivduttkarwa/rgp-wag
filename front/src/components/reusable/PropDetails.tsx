@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./PropDetails.css";
 import RgButton from "./RgButton";
@@ -94,7 +94,7 @@ const PropertyHero: React.FC<{
       <RgButton
         to="/properties"
         variant="blue"
-        label="Back"
+        label="Back to All Properties"
         startIcon={<Icons.chevronLeft />}
         withArrow={false}
         className="pd-hero__back"
@@ -142,6 +142,7 @@ const PropertyHero: React.FC<{
 
 const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const touchStartX = useRef(0);
 
   const close = useCallback(() => setLightboxIdx(null), []);
   const prev  = useCallback((e: React.MouseEvent) => {
@@ -151,6 +152,21 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
   const next  = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     setLightboxIdx(i => i !== null ? (i + 1) % images.length : 0);
+  }, [images.length]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 40) return;
+    setLightboxIdx(i => {
+      if (i === null) return i;
+      return diff > 0
+        ? (i + 1) % images.length
+        : (i - 1 + images.length) % images.length;
+    });
   }, [images.length]);
 
   useEffect(() => {
@@ -164,7 +180,7 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxIdx, images.length, close]);
 
-  if (!images.length) return null;
+  if (images.length <= 1) return null;
 
   const mosaic     = images.slice(0, 5);
   const sideGrid   = mosaic.slice(1);
@@ -200,18 +216,23 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
         )}
       </div>
 
-      {images.length > 1 && (
-        <div className="pd-gallery__foot">
-          <button className="pd-gallery__viewall" onClick={() => open(0)}>
-            <Icons.camera />
-            View all {images.length} photos
-          </button>
-        </div>
-      )}
+      <div className="pd-gallery__foot">
+        <button className="pd-gallery__viewall" onClick={() => open(0)}>
+          <Icons.camera />
+          View all {images.length} photos
+        </button>
+      </div>
 
       {/* Lightbox */}
       {lightboxIdx !== null && (
-        <div className="pd-lightbox" onClick={close} role="dialog" aria-modal="true">
+        <div
+          className="pd-lightbox"
+          onClick={close}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          role="dialog"
+          aria-modal="true"
+        >
           <button className="pd-lightbox__close" onClick={close} aria-label="Close"><Icons.close /></button>
           <button className="pd-lightbox__nav pd-lightbox__nav--prev" onClick={prev} aria-label="Previous"><Icons.chevronLeft /></button>
           <div className="pd-lightbox__wrap" onClick={e => e.stopPropagation()}>
@@ -227,9 +248,8 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
 
 // ─── Section heading helper ────────────────────────────────────────────────────
 
-const SectionHead: React.FC<{ eyebrow: string; title: string }> = ({ eyebrow, title }) => (
+const SectionHead: React.FC<{ eyebrow: string; title: string }> = ({ title }) => (
   <div className="pd-sechead">
-    <span className="rg-eyebrow">{eyebrow}</span>
     <h2 className="pd-sechead__title">{title}</h2>
   </div>
 );
@@ -541,7 +561,7 @@ const PropDetail: React.FC<PropDetailProps> = ({
       <section className="pd-cta">
         <div className="pd-cta__inner">
           <div>
-            <span className="rg-eyebrow">Explore More</span>
+
             <h2 className="pd-cta__title">Discover More Properties</h2>
             <p className="pd-cta__sub">Browse our full collection of premium listings.</p>
           </div>
