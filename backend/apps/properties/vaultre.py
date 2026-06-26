@@ -391,7 +391,7 @@ def normalise_list(p: dict) -> dict:
         "thumbnail": thumb or None,
         "beds": p.get("bed", 0),
         "baths": p.get("bath", 0),
-        "sqft": int(p["floorArea"]["value"]) if p.get("floorArea") else 0,
+        "sqft": int((p.get("floorArea") or p.get("landArea") or {}).get("value") or 0),
         "garage": (p.get("garages") or 0) + (p.get("carports") or 0) + (p.get("openSpaces") or 0),
         "badge": "House & Land" if p.get("isHouseLandPackage") else "",
         "isNew": False,

@@ -149,28 +149,28 @@ export const PropertyCard = ({
           <div className="stat">
             <div className="stat-icon"><Bed size={14} /></div>
             <div className="stat-content">
-              <span className="stat-value">{property.beds}</span>
+              <span className="stat-value">{property.beds > 0 ? property.beds : "—"}</span>
               <span className="stat-label">Beds</span>
             </div>
           </div>
           <div className="stat">
             <div className="stat-icon"><Bath size={14} /></div>
             <div className="stat-content">
-              <span className="stat-value">{property.baths}</span>
+              <span className="stat-value">{property.baths > 0 ? property.baths : "—"}</span>
               <span className="stat-label">Baths</span>
             </div>
           </div>
           <div className="stat">
             <div className="stat-icon"><Square size={14} /></div>
             <div className="stat-content">
-              <span className="stat-value">{(property.sqft / 1000).toFixed(1)}k</span>
-              <span className="stat-label">Sq Ft</span>
+              <span className="stat-value">{property.sqft > 0 ? property.sqft : "—"}</span>
+              <span className="stat-label">m²</span>
             </div>
           </div>
           <div className="stat">
             <div className="stat-icon"><Car size={14} /></div>
             <div className="stat-content">
-              <span className="stat-value">{property.garage}</span>
+              <span className="stat-value">{property.garage > 0 ? property.garage : "—"}</span>
               <span className="stat-label">Garage</span>
             </div>
           </div>
