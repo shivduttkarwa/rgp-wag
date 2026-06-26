@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import "./PropDetails.css";
+import RgButton from "./RgButton";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -96,10 +97,14 @@ const PropertyHero: React.FC<{
       <div className="pd-hero__overlay" />
 
       {/* Back link — just below header */}
-      <Link to="/properties" className="pd-hero__back">
-        <Icons.chevronLeft />
-        <span>Properties</span>
-      </Link>
+      <RgButton
+        to="/properties"
+        variant="blue"
+        label="Back"
+        startIcon={<Icons.chevronLeft />}
+        withArrow={false}
+        className="pd-hero__back"
+      />
 
       {/* Photo count — top right */}
       {images.length > 1 && (
