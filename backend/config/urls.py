@@ -16,7 +16,7 @@ from apps.home.api import (
     TeamPageAPIView, TestimonialsPageAPIView,
 )
 from apps.properties.api import PropertyListAPIView, PropertyDetailAPIView
-from apps.forms.api import ContactFormAPIView, ExpressionOfInterestAPIView
+from apps.forms.api import ContactFormAPIView, ExpressionOfInterestAPIView, PropertyEnquiryAPIView
 from apps.testimonials.api import FeaturedTestimonialListAPIView, VideoTestimonialListAPIView, TextTestimonialListAPIView
 
 # ─── Wagtail headless API router ─────────────────────────────────────────────
@@ -55,8 +55,9 @@ urlpatterns = [
     path("api/properties/",            PropertyListAPIView.as_view(),        name="api-property-list"),
     path("api/properties/<slug:slug>/", PropertyDetailAPIView.as_view(),     name="api-property-detail"),
 
-    path("api/forms/contact/",         ContactFormAPIView.as_view(),         name="api-contact-form"),
+    path("api/forms/contact/",          ContactFormAPIView.as_view(),          name="api-contact-form"),
     path("api/forms/eoi/",             ExpressionOfInterestAPIView.as_view(), name="api-eoi-form"),
+    path("api/forms/property-enquiry/", PropertyEnquiryAPIView.as_view(),    name="api-property-enquiry"),
 
     path("api/testimonials/video/",    VideoTestimonialListAPIView.as_view(),    name="api-video-testimonial-list"),
     path("api/testimonials/text/",     TextTestimonialListAPIView.as_view(),     name="api-text-testimonial-list"),

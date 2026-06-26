@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import ContactSubmission, ExpressionOfInterestSubmission
+from .models import ContactSubmission, ExpressionOfInterestSubmission, PropertyEnquirySubmission
+
+
+class PropertyEnquirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyEnquirySubmission
+        fields = ["name", "email", "phone", "message", "property_id", "property_title"]
 
 
 class ContactFormSerializer(serializers.ModelSerializer):

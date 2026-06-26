@@ -1,6 +1,25 @@
 from django.db import models
 
 
+class PropertyEnquirySubmission(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=50, blank=True)
+    message = models.TextField(blank=True)
+    property_id = models.CharField(max_length=200, blank=True)
+    property_title = models.CharField(max_length=300, blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Property Enquiry"
+        verbose_name_plural = "Property Enquiries"
+        ordering = ["-submitted_at"]
+
+    def __str__(self):
+        return f"{self.name} — {self.property_title or self.property_id} ({self.submitted_at:%Y-%m-%d})"
+
+
 class ContactSubmission(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField()

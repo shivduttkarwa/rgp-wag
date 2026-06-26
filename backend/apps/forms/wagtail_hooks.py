@@ -1,7 +1,30 @@
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet, SnippetViewSetGroup
 
-from .models import ContactSubmission, ExpressionOfInterestSubmission
+from .models import ContactSubmission, ExpressionOfInterestSubmission, PropertyEnquirySubmission
+
+
+class PropertyEnquirySubmissionViewSet(SnippetViewSet):
+    model = PropertyEnquirySubmission
+    icon = "home"
+    menu_label = "Property Enquiries"
+    menu_name = "property_enquiries"
+    add_to_admin_menu = False
+    list_display = ("name", "email", "phone", "property_title", "submitted_at", "is_read")
+    list_filter = ("is_read", "submitted_at")
+    search_fields = ("name", "email", "phone", "property_title", "property_id", "message")
+    list_export = ("submitted_at", "is_read", "name", "email", "phone", "message", "property_id", "property_title")
+    export_headings = {
+        "submitted_at": "Submitted At",
+        "is_read": "Read",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message",
+        "property_id": "Property ID",
+        "property_title": "Property Title",
+    }
+    export_filename = "property-enquiries"
 
 
 class ContactSubmissionViewSet(SnippetViewSet):
@@ -108,7 +131,7 @@ class FormsViewSetGroup(SnippetViewSetGroup):
     menu_name = "form_submissions"
     menu_icon = "mail"
     menu_order = 245
-    items = (ContactSubmissionViewSet, EoiSubmissionViewSet)
+    items = (PropertyEnquirySubmissionViewSet, ContactSubmissionViewSet, EoiSubmissionViewSet)
 
 
 register_snippet(FormsViewSetGroup)

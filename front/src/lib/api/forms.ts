@@ -62,6 +62,19 @@ async function postJson<TPayload extends object>(
   }
 }
 
+type PropertyEnquiryPayload = {
+  name: string;
+  email: string;
+  phone?: string;
+  message?: string;
+  property_id?: string;
+  property_title?: string;
+};
+
+export async function submitPropertyEnquiry(payload: PropertyEnquiryPayload): Promise<void> {
+  await postJson(`${API_BASE}/api/forms/property-enquiry/`, payload);
+}
+
 export async function submitContactForm(payload: ContactPayload): Promise<void> {
   await postJson(`${API_BASE}/api/forms/contact/`, payload);
 }

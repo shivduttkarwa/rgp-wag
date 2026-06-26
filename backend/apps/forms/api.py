@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import ContactFormSerializer, ExpressionOfInterestSerializer
+from .serializers import ContactFormSerializer, ExpressionOfInterestSerializer, PropertyEnquirySerializer
 
 
 class ContactFormAPIView(APIView):
@@ -32,4 +32,18 @@ class ExpressionOfInterestAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"detail": "Expression of interest received. We'll be in touch soon."}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PropertyEnquiryAPIView(APIView):
+    """POST /api/forms/property-enquiry/"""
+
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request: Request) -> Response:
+        serializer = PropertyEnquirySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Enquiry received. We'll be in touch soon."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

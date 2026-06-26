@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./PropDetails.css";
 import RgButton from "./RgButton";
+import { submitPropertyEnquiry } from "../../lib/api/forms";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -346,18 +347,36 @@ const VideoSection: React.FC<{ videoUrl?: string; thumbnail?: string }> = ({ vid
 // ─── Enquiry Card ─────────────────────────────────────────────────────────────
 
 const EnquiryCard: React.FC<{
-  agent: Agent; propertyId: string; onSubmit?: (d: ContactFormData) => void;
-}> = ({ agent, propertyId, onSubmit }) => {
+  agent: Agent; propertyId: string; propertyTitle?: string; onSubmit?: (d: ContactFormData) => void;
+}> = ({ agent, propertyId, propertyTitle, onSubmit }) => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.({ ...form, propertyId });
-    setSent(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitPropertyEnquiry({
+        name: form.name,
+        email: form.email,
+        phone: form.phone || undefined,
+        message: form.message || undefined,
+        property_id: propertyId,
+        property_title: propertyTitle,
+      });
+      onSubmit?.({ ...form, propertyId });
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -411,8 +430,9 @@ const EnquiryCard: React.FC<{
             <label>Message</label>
             <textarea name="message" rows={3} placeholder="I'd like to enquire about this property…" value={form.message} onChange={onChange} />
           </div>
-          <button type="submit" className="pd-form__submit">
-            Send Enquiry <Icons.arrow />
+          {error && <p className="pd-enquiry__error">{error}</p>}
+          <button type="submit" className="pd-form__submit" disabled={submitting}>
+            {submitting ? "Sending…" : <><span>Send Enquiry</span> <Icons.arrow /></>}
           </button>
         </form>
       )}
@@ -509,12 +529,8 @@ const PropDetail: React.FC<PropDetailProps> = ({
                 <VideoSection videoUrl={property.videoTourUrl} thumbnail={videoThumbnail} />
               </section>
             )}
-          </div>
 
-          {/* Right sticky sidebar */}
-          <aside className="pd-sidebar">
-
-            {/* Price card */}
+            {/* Price card — bottom of content column */}
             <div className="pd-price-card">
               <div className="pd-price-card__status">{property.status}</div>
               <div className="pd-price-card__amount">{displayPrice}</div>
@@ -549,10 +565,11 @@ const PropDetail: React.FC<PropDetailProps> = ({
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Agent enquiry card */}
-            <EnquiryCard agent={property.agent} propertyId={property.id} onSubmit={onContactSubmit} />
-
+          {/* Right sticky sidebar */}
+          <aside className="pd-sidebar">
+            <EnquiryCard agent={property.agent} propertyId={property.id} propertyTitle={property.title} onSubmit={onContactSubmit} />
           </aside>
         </div>
       </div>
