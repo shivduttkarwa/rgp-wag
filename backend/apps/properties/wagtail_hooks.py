@@ -58,7 +58,7 @@ def register_sync_url():
 
 @hooks.register("register_admin_menu_item")
 def register_sync_menu_item():
-    return MenuItem("Sync Properties", "/cms/sync-properties/", icon_name="upload", order=270)
+    return MenuItem("Sync Properties", "/cms/sync-properties/", icon_name="upload", order=105)
 
 
 # ─── Portfolio admin CSS / JS ────────────────────────────────────────────────
@@ -67,23 +67,6 @@ def register_sync_menu_item():
 def vault_portfolio_css():
     return mark_safe("""
 <style>
-/* Sync Properties button */
-a[href="/cms/sync-properties/"] {
-  background: #1a6be5 !important;
-  color: #fff !important;
-  border-radius: 6px !important;
-  font-weight: 600 !important;
-  margin-top: 0.5rem !important;
-}
-a[href="/cms/sync-properties/"]:hover {
-  background: #1558c0 !important;
-  color: #fff !important;
-}
-a[href="/cms/sync-properties/"] svg,
-a[href="/cms/sync-properties/"] .icon {
-  color: #fff !important;
-  fill: #fff !important;
-}
 
 #id_vault_property_id {
   width: 100% !important;
