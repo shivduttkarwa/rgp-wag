@@ -1,5 +1,6 @@
 # Backend
 backend/.env
+backend/cache/properties.json
 backend/db.sqlite3
 backend/media/
 backend/staticfiles/

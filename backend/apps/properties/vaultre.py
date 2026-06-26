@@ -1,8 +1,9 @@
+import json
 import logging
-import threading
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 import requests
 from django.conf import settings
@@ -10,19 +11,10 @@ from django.conf import settings
 logger = logging.getLogger("apps.properties.vaultre")
 
 BASE_URL = "https://ap-southeast-2.api.vaultre.com.au/api/v1.3"
-CACHE_TTL = 300        # 5 minutes
-_REFRESH_INTERVAL = 240  # refresh every 4 min so cache never expires
-_MAX_WORKERS = 8         # concurrent VaultRE endpoint fetches
+_MAX_WORKERS = 5
 
-# Per-page response cache:  (url, frozen-params) → (timestamp, data)
-_page_cache: dict = {}
-
-# Merged all-listings cache: "all" → (timestamp, [items])
-_listings_cache: dict = {}
-
-# Background refresh guard
-_refresh_lock = threading.Lock()
-_refresh_started = False
+# JSON file written by `python manage.py sync_properties` (cron, hourly)
+CACHE_FILE = Path(__file__).resolve().parent.parent.parent / "cache" / "properties.json"
 
 
 def _headers() -> dict:
@@ -34,51 +26,24 @@ def _headers() -> dict:
 
 
 # (path, prop_class, listing_category)
+# 5 endpoints = 5 × 24 = 120 calls/day, well inside the 200/day VaultRE limit.
+# /available and /sold sub-endpoints are removed — duplicates are filtered by
+# portalStatus in _fetch_endpoint, so a single base endpoint per type is enough.
 LISTING_ENDPOINTS = [
-    # ── Residential ───────────────────────────────────────────────────────────
-    ("residential/sale",              "residential",    "for-sale"),
-    ("residential/sale/available",    "residential",    "for-sale"),
-    ("residential/sale/sold",         "residential",    "sold"),
-    ("residential/lease",             "residential",    "for-rent"),
-    ("residential/lease/available",   "residential",    "for-rent"),
-    # ── Commercial ────────────────────────────────────────────────────────────
-    ("commercial/sale",               "commercial",     "for-sale"),
-    ("commercial/sale/available",     "commercial",     "for-sale"),
-    ("commercial/sale/sold",          "commercial",     "sold"),
-    ("commercial/lease",              "commercial",     "for-rent"),
-    ("commercial/lease/available",    "commercial",     "for-rent"),
-    ("commercial/lease/leased",       "commercial",     "for-rent"),
-    # ── Land ──────────────────────────────────────────────────────────────────
-    ("land/sale",                     "land",           "for-sale"),
-    ("land/sale/available",           "land",           "for-sale"),
-    ("land/sale/sold",                "land",           "sold"),
-    # ── Business ──────────────────────────────────────────────────────────────
-    ("business/sale",                 "business",       "for-sale"),
-    ("business/sale/available",       "business",       "for-sale"),
-    ("business/sale/sold",            "business",       "sold"),
-    # ── Rural ─────────────────────────────────────────────────────────────────
-    ("rural/sale",                    "rural",          "for-sale"),
-    ("rural/sale/available",          "rural",          "for-sale"),
-    ("rural/sale/sold",               "rural",          "sold"),
-    # ── Holiday Rental ────────────────────────────────────────────────────────
-    ("holidayRental/lease",           "holidayRental",  "for-rent"),
-    ("holidayRental/lease/available", "holidayRental",  "for-rent"),
+    ("residential/sale",  "residential", "for-sale"),
+    ("residential/lease", "residential", "for-rent"),
+    ("commercial/sale",   "commercial",  "for-sale"),
+    ("commercial/lease",  "commercial",  "for-rent"),
+    ("land/sale",         "land",        "for-sale"),
 ]
 
 
-# ─── HTTP / Cache helpers ─────────────────────────────────────────────────────
+# ─── HTTP helper ─────────────────────────────────────────────────────────────
 
 def _get_page(url: str, params: dict | None = None) -> dict:
-    """Fetch one API page; cache the raw response for CACHE_TTL seconds."""
-    cache_key = (url, tuple(sorted((params or {}).items())))
-    now = time.time()
-    if cache_key in _page_cache and now - _page_cache[cache_key][0] < CACHE_TTL:
-        return _page_cache[cache_key][1]
     resp = requests.get(url, headers=_headers(), params=params, timeout=15)
     resp.raise_for_status()
-    data = resp.json()
-    _page_cache[cache_key] = (now, data)
-    return data
+    return resp.json()
 
 
 def _fetch_endpoint(path: str, prop_class: str, listing_category: str) -> list[dict]:
@@ -179,18 +144,32 @@ def _fetch_all_listings() -> list[dict]:
     return results
 
 
+# ─── File cache (written by `sync_properties` management command) ─────────────
+
+def _load_cache() -> list[dict]:
+    """Read properties from the JSON file. Falls back to a live fetch if missing."""
+    if CACHE_FILE.exists():
+        try:
+            return json.loads(CACHE_FILE.read_text()).get("items", [])
+        except Exception as exc:
+            logger.warning("[VaultRE] Cache file unreadable (%s) — fetching live", exc)
+    logger.warning("[VaultRE] No cache file found — fetching live from VaultRE (run sync_properties)")
+    data = _fetch_all_listings()
+    save_cache(data)
+    return data
+
+
+def save_cache(data: list[dict]) -> None:
+    """Persist fetched listings to CACHE_FILE. Called by sync_properties command."""
+    CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    CACHE_FILE.write_text(json.dumps({"updated_at": time.time(), "items": data}))
+    logger.info("[VaultRE] Saved %d properties to %s", len(data), CACHE_FILE)
+
+
 # ─── Public API ──────────────────────────────────────────────────────────────
 
 def get_listings(category: str | None = None) -> list[dict]:
-    """Return all listings (optionally filtered by category). 5-min in-process cache."""
-    now = time.time()
-    cached = _listings_cache.get("all")
-    if cached and now - cached[0] < CACHE_TTL:
-        data = cached[1]
-    else:
-        data = _fetch_all_listings()
-        _listings_cache["all"] = (now, data)
-
+    data = _load_cache()
     return [i for i in data if i.get("_category") == category] if category else data
 
 
@@ -199,46 +178,6 @@ def get_listing(vault_id: str) -> dict:
         if str(item.get("id")) == str(vault_id):
             return item
     raise ValueError(f"Property {vault_id} not found")
-
-
-def _refresh_loop() -> None:
-    """Runs forever in a daemon thread, keeping the cache warm."""
-    while True:
-        time.sleep(_REFRESH_INTERVAL)
-        try:
-            logger.info("[VaultRE] Scheduled refresh starting …")
-            data = _fetch_all_listings()
-            _listings_cache["all"] = (time.time(), data)
-            logger.info("[VaultRE] Scheduled refresh done — %d properties cached.", len(data))
-        except Exception as exc:
-            logger.warning("[VaultRE] Scheduled refresh failed: %s", exc)
-
-
-def start_background_refresh() -> None:
-    """Warm the cache immediately on startup, then keep it fresh every 4 min.
-
-    Called once from PropertiesConfig.ready(). The _refresh_started guard
-    prevents a double-start when Django's dev-server reloader forks the process.
-    """
-    global _refresh_started
-    with _refresh_lock:
-        if _refresh_started:
-            return
-        _refresh_started = True
-
-    def _warmup_then_loop() -> None:
-        try:
-            logger.info("[VaultRE] Cache warmup starting …")
-            data = _fetch_all_listings()
-            _listings_cache["all"] = (time.time(), data)
-            logger.info("[VaultRE] Cache warmup done — %d properties ready.", len(data))
-        except Exception as exc:
-            logger.warning("[VaultRE] Cache warmup failed: %s", exc)
-        _refresh_loop()
-
-    t = threading.Thread(target=_warmup_then_loop, daemon=True, name="vaultre-refresh")
-    t.start()
-    logger.info("[VaultRE] Background refresh thread started.")
 
 
 # ─── Normalisation helpers ────────────────────────────────────────────────────
