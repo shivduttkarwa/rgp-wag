@@ -100,6 +100,16 @@ export const DEFAULT_PROPERTIES_PAGE_DATA: PropertiesPageData = {
   listings: [],
 };
 
+export async function fetchPropertyList(signal?: AbortSignal): Promise<Property[]> {
+  const res = await fetch(`${API_BASE}/api/properties/`, {
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  if (!res.ok) throw new Error(`Property list fetch failed: ${res.status}`);
+  const items = await res.json();
+  return mapListings(items);
+}
+
 export async function fetchPropertiesPage(signal?: AbortSignal): Promise<PropertiesPageData> {
   const res = await fetch(`${API_BASE}/api/pages/properties/`, {
     headers: { Accept: "application/json" },

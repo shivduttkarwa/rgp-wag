@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
 import "./PropDetails.css";
 import RgButton from "./RgButton";
 import { submitPropertyEnquiry } from "../../lib/api/forms";
@@ -595,17 +594,6 @@ const PropDetail: React.FC<PropDetailProps> = ({
         </div>
       </div>
 
-      {/* 4 — Bottom CTA */}
-      <section className="pd-cta">
-        <div className="pd-cta__inner">
-          <div>
-
-            <h2 className="pd-cta__title">Discover More Properties</h2>
-            <p className="pd-cta__sub">Browse our full collection of premium listings.</p>
-          </div>
-          <Link to="/properties" className="rg-btn rg-btn--gold">View All Properties</Link>
-        </div>
-      </section>
 
     </div>
   );

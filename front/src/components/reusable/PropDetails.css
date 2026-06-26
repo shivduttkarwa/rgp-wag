@@ -785,8 +785,7 @@
   border: 1px solid var(--pd-border);
   box-shadow: var(--pd-shadow);
   overflow: hidden;
-  height: 80vh;
-  overflow-y: auto;
+  max-height: 80vh;
 }
 
 .pd-enquiry__agent {
@@ -991,43 +990,6 @@
 .pd-form__submit:hover { background: #e8b400; }
 .pd-form__submit:hover svg { transform: translateX(3px); }
 
-/* ═══════════════════════════════════════════════════════════
-   BOTTOM CTA
-   ═══════════════════════════════════════════════════════════ */
-
-.pd-cta {
-  background: var(--pd-navy);
-  padding: 4.5rem var(--pd-pad);
-  margin-top: 1.5rem;
-}
-
-.pd-cta__inner {
-  max-width: 90rem;
-  margin: 0 auto;
-  padding: 0 clamp(1rem, 5vw, 8rem);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-}
-
-.pd-cta .rg-eyebrow { color: var(--pd-gold); }
-
-.pd-cta__title {
-  font-family: var(--font-title, "Bona Nova SC", serif);
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 700;
-  color: #fff;
-  margin: 0.35rem 0 0.5rem;
-}
-
-.pd-cta__sub {
-  color: rgba(255,255,255,0.55);
-  font-size: 0.95rem;
-  margin: 0;
-}
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE
@@ -1120,7 +1082,8 @@
   .pd-gallery,
   .pd-sidebar,
   .pd-price-card__actions,
-  .pd-cta,
+  .rgp-cta,
+  .pd-related,
   .pd-lightbox {
     display: none !important;
   }
