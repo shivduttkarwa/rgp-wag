@@ -190,49 +190,76 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
 
   if (!images.length) return null;
 
-  const maxVisible  = Math.min(images.length, 5);
-  const visible     = images.slice(0, maxVisible);
-  const extraCount  = images.length - maxVisible;
-  const thumbs      = visible.slice(1);
+  // Zone 1: large hero + 2×2 side grid (up to 5 images)
+  const mosaic     = images.slice(0, 5);
+  const sideGrid   = mosaic.slice(1);          // 0–4 items
+  // Zone 2: strip of up to 3 more images below
+  const strip      = images.slice(5, 8);
+  const extraCount = Math.max(0, images.length - 8);
+
+  const open = (idx: number) => setLightboxIdx(idx);
 
   return (
     <section className="pd-gallery">
-      <div className={`pd-gallery__grid pd-gallery__grid--${Math.min(thumbs.length, 4)}`}>
-        <div className="pd-gallery__main" onClick={() => setLightboxIdx(0)} role="button" aria-label="Open photo gallery">
-          <img src={visible[0].url} alt={visible[0].alt || "Property photo"} />
-          <div className="pd-gallery__main-hint">
-            <Icons.camera />
-            <span>{images.length} Photo{images.length !== 1 ? "s" : ""}</span>
-          </div>
+
+      {/* ── Zone 1: mosaic ─────────────────────────────── */}
+      <div className="pd-gallery__mosaic">
+        {/* Hero / main image */}
+        <div className="pd-gallery__hero" onClick={() => open(0)} role="button" tabIndex={0} aria-label="Open gallery">
+          <img src={mosaic[0].url} alt={mosaic[0].alt || "Property photo"} />
         </div>
-        {thumbs.length > 0 && (
-          <div className="pd-gallery__thumbs">
-            {thumbs.map((img, i) => {
-              const isLast = i === thumbs.length - 1 && extraCount > 0;
-              return (
-                <div key={i} className="pd-gallery__thumb" onClick={() => setLightboxIdx(i + 1)} role="button" aria-label={`Photo ${i + 2}`}>
-                  <img src={img.url} alt={img.alt || `Property photo ${i + 2}`} />
-                  {isLast && (
-                    <div className="pd-gallery__more">
-                      <span>+{extraCount}</span>
-                      <small>more</small>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+
+        {/* 2×2 side grid */}
+        {sideGrid.length > 0 && (
+          <div className={`pd-gallery__side pd-gallery__side--${sideGrid.length}`}>
+            {sideGrid.map((img, i) => (
+              <div key={i} className="pd-gallery__cell" onClick={() => open(i + 1)} role="button" tabIndex={0} aria-label={`Photo ${i + 2}`}>
+                <img src={img.url} alt={img.alt || `Property photo ${i + 2}`} />
+              </div>
+            ))}
           </div>
         )}
       </div>
 
+      {/* ── Zone 2: strip ──────────────────────────────── */}
+      {strip.length > 0 && (
+        <div className={`pd-gallery__strip pd-gallery__strip--${strip.length}`}>
+          {strip.map((img, i) => {
+            const isLast = i === strip.length - 1 && extraCount > 0;
+            return (
+              <div key={i} className="pd-gallery__strip-cell" onClick={() => open(i + 5)} role="button" tabIndex={0} aria-label={`Photo ${i + 6}`}>
+                <img src={img.url} alt={img.alt || `Property photo ${i + 6}`} />
+                {isLast && (
+                  <div className="pd-gallery__more">
+                    <span className="pd-gallery__more-num">+{extraCount}</span>
+                    <span className="pd-gallery__more-txt">more photos</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── View all button ─────────────────────────────── */}
+      {images.length > 1 && (
+        <div className="pd-gallery__bar">
+          <button className="pd-gallery__view-all" onClick={() => open(0)}>
+            <Icons.camera />
+            View all {images.length} photos
+          </button>
+        </div>
+      )}
+
+      {/* ── Lightbox ────────────────────────────────────── */}
       {lightboxIdx !== null && (
         <div className="pd-lightbox" onClick={close} role="dialog" aria-modal="true">
           <button className="pd-lightbox__close" onClick={close} aria-label="Close"><Icons.close /></button>
-          <button className="pd-lightbox__nav pd-lightbox__nav--prev" onClick={prev} aria-label="Previous photo"><Icons.chevronLeft /></button>
+          <button className="pd-lightbox__nav pd-lightbox__nav--prev" onClick={prev} aria-label="Previous"><Icons.chevronLeft /></button>
           <div className="pd-lightbox__img-wrap" onClick={e => e.stopPropagation()}>
             <img src={images[lightboxIdx].url} alt={images[lightboxIdx].alt || "Property photo"} />
           </div>
-          <button className="pd-lightbox__nav pd-lightbox__nav--next" onClick={next} aria-label="Next photo"><Icons.chevronRight /></button>
+          <button className="pd-lightbox__nav pd-lightbox__nav--next" onClick={next} aria-label="Next"><Icons.chevronRight /></button>
           <div className="pd-lightbox__counter">{lightboxIdx + 1} / {images.length}</div>
         </div>
       )}
