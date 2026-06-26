@@ -67,22 +67,22 @@ def register_sync_menu_item():
 def vault_portfolio_css():
     return mark_safe("""
 <style>
-/* Sync Properties button — gold highlight */
+/* Sync Properties button */
 a[href="/cms/sync-properties/"] {
-  background: #f9c206 !important;
-  color: #001f49 !important;
+  background: #1a6be5 !important;
+  color: #fff !important;
   border-radius: 6px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   margin-top: 0.5rem !important;
 }
 a[href="/cms/sync-properties/"]:hover {
-  background: #fad840 !important;
-  color: #001f49 !important;
+  background: #1558c0 !important;
+  color: #fff !important;
 }
 a[href="/cms/sync-properties/"] svg,
 a[href="/cms/sync-properties/"] .icon {
-  color: #001f49 !important;
-  fill: #001f49 !important;
+  color: #fff !important;
+  fill: #fff !important;
 }
 
 #id_vault_property_id {
