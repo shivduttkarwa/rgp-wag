@@ -65,10 +65,6 @@ export default function PropertyPage() {
       <PropDetail
         property={property}
         onContactSubmit={handleContactSubmit}
-        onSaveProperty={() => {}}
-        onShareProperty={() => {}}
-        onScheduleViewing={() => {}}
-        onDownloadBrochure={() => {}}
       />
     </>
   );

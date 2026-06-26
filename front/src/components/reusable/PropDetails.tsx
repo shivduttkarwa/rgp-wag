@@ -30,10 +30,6 @@ interface PropertyData {
 interface PropDetailProps {
   property: PropertyData;
   onContactSubmit?: (data: ContactFormData) => void;
-  onSaveProperty?: () => void;
-  onShareProperty?: () => void;
-  onScheduleViewing?: () => void;
-  onDownloadBrochure?: () => void;
 }
 
 interface ContactFormData { name: string; email: string; phone: string; message: string; propertyId: string; }
@@ -381,7 +377,7 @@ const EnquiryCard: React.FC<{
   };
 
   return (
-    <div className="pd-enquiry">
+    <div className="pd-enquiry" id="pd-enquiry-anchor">
       <div className="pd-enquiry__agent">
         {agent.image ? (
           <img src={agent.image} alt={agent.name} className="pd-enquiry__avatar" />
@@ -453,7 +449,7 @@ const EnquiryCard: React.FC<{
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const PropDetail: React.FC<PropDetailProps> = ({
-  property, onContactSubmit, onSaveProperty, onShareProperty, onScheduleViewing, onDownloadBrochure,
+  property, onContactSubmit,
 }) => {
   const fullAddress = [property.address, property.city, property.state, property.zipCode]
     .filter(Boolean).join(", ");
@@ -542,11 +538,13 @@ const PropDetail: React.FC<PropDetailProps> = ({
 
             {/* Price card — bottom of content column */}
             <div className="pd-price-card">
-              <div className="pd-price-card__status">{property.status}</div>
-              <div className="pd-price-card__amount">{displayPrice}</div>
-              {property.priceLabel && numericPrice && property.priceLabel !== numericPrice && (
-                <div className="pd-price-card__note">{property.priceLabel}</div>
-              )}
+              <div className="pd-price-card__top">
+                <span className="pd-price-card__status">{property.status}</span>
+                <div className="pd-price-card__amount">{displayPrice}</div>
+                {property.priceLabel && numericPrice && property.priceLabel !== numericPrice && (
+                  <div className="pd-price-card__note">{property.priceLabel}</div>
+                )}
+              </div>
 
               {property.stats.length > 0 && (
                 <div className="pd-price-card__stats">
@@ -554,8 +552,11 @@ const PropDetail: React.FC<PropDetailProps> = ({
                     const Ic = Icons[s.icon] as (() => React.ReactElement) | undefined;
                     return (
                       <div key={i} className="pd-price-card__stat">
-                        {Ic && <Ic />}
-                        <span>{s.value} <em>{s.label}</em></span>
+                        <div className="pd-price-card__stat-icon">{Ic && <Ic />}</div>
+                        <div className="pd-price-card__stat-body">
+                          <strong>{s.value}</strong>
+                          <span>{s.label}</span>
+                        </div>
                       </div>
                     );
                   })}
@@ -563,16 +564,26 @@ const PropDetail: React.FC<PropDetailProps> = ({
               )}
 
               <div className="pd-price-card__actions">
-                <button className="pd-price-card__cta pd-price-card__cta--primary" onClick={onScheduleViewing}>
-                  Schedule a Viewing
+                <a
+                  href={property.agent.phone ? `tel:${property.agent.phone}` : undefined}
+                  className="pd-price-card__cta pd-price-card__cta--primary"
+                  onClick={e => {
+                    if (!property.agent.phone) {
+                      e.preventDefault();
+                      document.getElementById("pd-enquiry-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }}
+                >
+                  <Icons.phone />
+                  {property.agent.phone || "Schedule a Viewing"}
+                </a>
+                <button
+                  className="pd-price-card__cta pd-price-card__cta--outline"
+                  onClick={() => window.print()}
+                >
+                  <Icons.share />
+                  Share
                 </button>
-                <button className="pd-price-card__cta" onClick={onDownloadBrochure}>
-                  Download Brochure
-                </button>
-                <div className="pd-price-card__micro">
-                  <button onClick={onSaveProperty}><Icons.star />Save</button>
-                  <button onClick={onShareProperty}><Icons.share />Share</button>
-                </div>
               </div>
             </div>
           </div>

@@ -119,10 +119,6 @@ export default function Uses() {
     <PropDetail
       property={sampleProperty}
       onContactSubmit={handleContactSubmit}
-      onSaveProperty={handleSave}
-      onShareProperty={() => {}}
-      onScheduleViewing={() => {}}
-      onDownloadBrochure={() => {}}
     />
   );
 }
