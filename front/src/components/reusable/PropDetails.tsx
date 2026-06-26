@@ -23,6 +23,7 @@ interface PropertyData {
   overview: string[]; features: PropertyFeature[]; details: PropertyDetail[];
   mapEmbedUrl?: string; nearbyLocations: NearbyLocation[];
   videoTourUrl?: string; videoThumbnail?: string; agent: Agent;
+  floorplans?: PropertyImage[];
 }
 
 interface PropDetailProps {
@@ -407,7 +408,7 @@ const PropDetail: React.FC<PropDetailProps> = ({
   const fullAddress = [property.address, property.city, property.state, property.zipCode]
     .filter(Boolean).join(", ");
   const videoThumbnail = property.videoThumbnail || property.images[0]?.url;
-  const showVideo  = Boolean(property.videoTourUrl || videoThumbnail);
+  const showVideo  = Boolean(property.videoTourUrl);
   const hasFeatures = property.features.length > 0;
   const hasDetails  = property.details.some(d => d.value?.trim());
   const hasOverview = property.overview.some(p => p.trim());
@@ -470,6 +471,17 @@ const PropDetail: React.FC<PropDetailProps> = ({
                 address={fullAddress}
               />
             </section>
+
+            {property.floorplans && property.floorplans.length > 0 && (
+              <section className="pd-card">
+                <SectionHead eyebrow="Floor Plans" title="Floorplans" />
+                <div className="pd-floorplans">
+                  {property.floorplans.map((fp, i) => (
+                    <img key={i} src={fp.url} alt={fp.alt || `Floorplan ${i + 1}`} className="pd-floorplan__img" />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {showVideo && (
               <section className="pd-card">

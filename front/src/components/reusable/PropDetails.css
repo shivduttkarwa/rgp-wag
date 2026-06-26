@@ -594,6 +594,21 @@
 }
 .pd-video__play svg { width: 28px; height: 28px; }
 
+/* Floorplans */
+.pd-floorplans {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.pd-floorplan__img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--pd-border);
+  display: block;
+  object-fit: contain;
+  background: var(--pd-bg);
+}
+
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR
    ═══════════════════════════════════════════════════════════ */

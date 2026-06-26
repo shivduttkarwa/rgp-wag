@@ -30,6 +30,7 @@ type PropertyDetailApi = {
   }>;
   video_tour_url?: string;
   video_thumbnail_url?: string;
+  floorplans?: Array<{ url: string; alt: string }>;
   agent?: {
     name: string;
     title: string;
@@ -136,6 +137,7 @@ export async function fetchPropertyDetail(slug: string, signal?: AbortSignal): P
     nearbyLocations: data.nearbyLocations || [],
     videoTourUrl: data.video_tour_url || "",
     videoThumbnail: resolveUrl(data.video_thumbnail_url || ""),
+    floorplans: (data.floorplans || []).map((fp) => ({ url: resolveUrl(fp.url), alt: fp.alt || "Floorplan" })),
     agent: {
       name: data.agent?.name || "",
       title: data.agent?.title || "",

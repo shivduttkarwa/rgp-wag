@@ -290,7 +290,89 @@ def _area_obj(raw: dict | None) -> dict | None:
 
 
 def _display_status(p: dict) -> str:
-    return {"for-rent": "For Rent", "sold": "Sold"}.get(p.get("_category", ""), "For Sale")
+    cat = p.get("_category", "")
+    if cat == "for-rent":
+        return "For Rent"
+    if cat == "sold":
+        return "Sold"
+    portal = (p.get("portalStatus") or "").lower()
+    if "conditional" in portal:
+        return "Pending"
+    return "For Sale"
+
+
+def _total_parking(p: dict) -> int:
+    return (p.get("garages") or 0) + (p.get("carports") or 0) + (p.get("openSpaces") or 0)
+
+
+def _make_stats(p: dict, floor_area: dict, land_area: dict) -> list[dict]:
+    parking = _total_parking(p)
+    entries = [
+        ("bed",    str(p.get("bed")) if p.get("bed") else None,       "Bedrooms"),
+        ("bath",   str(p.get("bath")) if p.get("bath") else None,     "Bathrooms"),
+        ("area",   f'{int(floor_area["value"])} sqm' if floor_area.get("value") else None, "Floor Area"),
+        ("garage", str(parking) if parking else None,                  "Garages"),
+        ("year",   str(p.get("yearBuilt")) if p.get("yearBuilt") else None, "Year Built"),
+        ("lot",    f'{int(land_area["value"])} sqm' if land_area.get("value") else None,  "Land Area"),
+    ]
+    return [{"icon": icon, "value": value, "label": label} for icon, value, label in entries if value]
+
+
+def _map_embed_url(p: dict) -> str:
+    geo = p.get("geolocation") or {}
+    lat, lng = geo.get("latitude"), geo.get("longitude")
+    if lat and lng:
+        return f"https://www.google.com/maps?q={lat},{lng}&output=embed"
+    return ""
+
+
+_FEATURE_ICON_MAP = {
+    "pool": "pool", "swimming pool": "pool",
+    "spa": "spa", "hot tub": "spa", "jacuzzi": "spa",
+    "gym": "gym", "fitness": "gym", "exercise room": "gym",
+    "theater": "theater", "theatre": "theater", "cinema": "theater", "home theatre": "theater", "home theater": "theater",
+    "wine": "wine", "wine cellar": "wine", "wine room": "wine",
+    "security": "security", "alarm": "security", "cctv": "security", "security system": "security",
+    "garden": "garden", "landscaped": "garden", "outdoor": "garden",
+    "dock": "dock", "pontoon": "dock", "jetty": "dock",
+    "ocean": "ocean", "water views": "ocean", "sea views": "ocean", "ocean views": "ocean", "waterfront": "ocean",
+    "kitchen": "kitchen", "dishwasher": "kitchen", "gourmet kitchen": "kitchen",
+    "garage": "garage", "carport": "garage", "parking": "garage",
+    "smart home": "smart-home", "air conditioning": "smart-home", "ducted air": "smart-home",
+    "solar": "smart-home", "automation": "smart-home",
+}
+
+
+def _feature_icon(name: str) -> str:
+    key = name.lower().strip()
+    if key in _FEATURE_ICON_MAP:
+        return _FEATURE_ICON_MAP[key]
+    for phrase, icon in _FEATURE_ICON_MAP.items():
+        if phrase in key:
+            return icon
+    return "smart-home"
+
+
+def _parse_features(p: dict) -> list[dict]:
+    raw = p.get("features") or []
+    result = []
+    for item in raw:
+        if isinstance(item, str):
+            name = item.strip()
+        elif isinstance(item, dict):
+            name = (item.get("name") or item.get("title") or "").strip()
+        else:
+            continue
+        if name:
+            result.append({"icon": _feature_icon(name), "title": name, "description": ""})
+    return result
+
+
+def _parse_overview_lines(p: dict) -> list[str]:
+    text = (p.get("description") or "").strip()
+    if not text:
+        return []
+    return [line.strip() for line in text.splitlines() if line.strip()]
 
 
 def _pub_photos(p: dict) -> list[dict]:
@@ -390,26 +472,19 @@ def normalise_detail(p: dict) -> dict:
         "featured": False,
         "category": p.get("_category", "for-sale"),
         "description": p.get("description", ""),
-        "map_embed_url": "",
+        "map_embed_url": _map_embed_url(p),
         "video_tour_url": "",
         "video_thumbnail_url": "",
         "updated_at": p.get("modified", ""),
-        "stats": [
-            {"icon": "bed",    "value": str(p.get("bed", 0)),    "label": "Bedrooms"},
-            {"icon": "bath",   "value": str(p.get("bath", 0)),   "label": "Bathrooms"},
-            {"icon": "area",   "value": f'{int(floor_area["value"])} sqm' if floor_area.get("value") else "N/A", "label": "Floor Area"},
-            {"icon": "garage", "value": str(p.get("garages", 0)), "label": "Garages"},
-            {"icon": "year",   "value": str(p.get("yearBuilt")) if p.get("yearBuilt") else "N/A", "label": "Year Built"},
-            {"icon": "lot",    "value": f'{int(land_area["value"])} sqm' if land_area.get("value") else "N/A", "label": "Land Area"},
-        ],
-        "overview_lines": [],
+        "stats": _make_stats(p, floor_area, land_area),
+        "overview_lines": _parse_overview_lines(p),
         "images": [{"url": ph.get("url", ""), "alt": ph.get("caption", "")} for ph in photographs],
-        "features": [],
+        "features": _parse_features(p),
         "details": [
             {"label": "Type",           "value": _type_name(p)},
             {"label": "Land Area",      "value": f'{int(land_area["value"])} {land_area.get("units", "sqm")}' if land_area.get("value") else ""},
             {"label": "Floor Area",     "value": f'{int(floor_area["value"])} {floor_area.get("units", "sqm")}' if floor_area.get("value") else ""},
-            {"label": "Garages",        "value": str(p.get("garages", 0))},
+            {"label": "Garages",        "value": str(_total_parking(p)) if _total_parking(p) else ""},
             {"label": "Method of Sale", "value": (p.get("methodOfSale") or {}).get("name", "")},
         ],
         "nearbyLocations": [],
