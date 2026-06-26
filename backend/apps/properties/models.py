@@ -8,6 +8,9 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 
 
+
+
+
 class VaultPropertySelectWidget(Select):
     """Select widget that populates choices from VaultRE and embeds auto-fill data attributes."""
 
@@ -62,31 +65,6 @@ class ListingCategory(models.TextChoices):
     SOLD = "sold", "Sold"
     FOR_RENT = "for-rent", "For Rent"
 
-
-class PropertyAgent(models.Model):
-    """Reusable agent/consultant attached to properties."""
-
-    name = models.CharField(max_length=200)
-    title = models.CharField(max_length=200, blank=True)
-    photo_url = models.CharField(max_length=500, blank=True)
-    phone = models.CharField(max_length=50, blank=True)
-    email = models.EmailField(blank=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
-    review_count = models.PositiveIntegerField(default=0)
-
-    panels = [
-        FieldRowPanel([FieldPanel("name"), FieldPanel("title")]),
-        FieldPanel("photo_url"),
-        FieldRowPanel([FieldPanel("phone"), FieldPanel("email")]),
-        FieldRowPanel([FieldPanel("rating"), FieldPanel("review_count")]),
-    ]
-
-    class Meta:
-        verbose_name = "Property Agent"
-        verbose_name_plural = "Property Agents"
-
-    def __str__(self):
-        return self.name
 
 
 class Property(ClusterableModel):
@@ -144,10 +122,6 @@ class Property(ClusterableModel):
     video_tour_url = models.URLField(blank=True)
     video_thumbnail_url = models.CharField(max_length=500, blank=True)
 
-    agent = models.ForeignKey(
-        PropertyAgent, null=True, blank=True, on_delete=models.SET_NULL, related_name="properties"
-    )
-
     # Category (used for filtering on /properties)
     category = models.CharField(
         max_length=100,
@@ -192,7 +166,6 @@ class Property(ClusterableModel):
                     ],
                     heading="Map & Video",
                 ),
-                FieldPanel("agent"),
             ],
             heading="Property Details",
             help_text="Bottom section for detail-page content.",

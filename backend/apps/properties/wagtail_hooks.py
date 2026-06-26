@@ -1,9 +1,13 @@
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 from wagtail import hooks
+from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
-from .models import Property, PropertyAgent, PortfolioShowcaseItem
+from .models import Property, PortfolioShowcaseItem
 
 
 class ListingViewSet(SnippetViewSet):
@@ -16,17 +20,6 @@ class ListingViewSet(SnippetViewSet):
     list_display = ("title", "listing_category", "status", "price", "city", "updated_at")
     list_filter = ("listing_category", "status", "featured", "city")
     search_fields = ("title", "slug", "address", "city")
-
-
-class PropertyAgentViewSet(SnippetViewSet):
-    model = PropertyAgent
-    menu_label = "Property Agents"
-    menu_name = "listing_agents"
-    menu_icon = "user"
-    menu_order = 255
-    add_to_admin_menu = True
-    list_display = ("name", "title", "phone", "email")
-    search_fields = ("name", "email")
 
 
 class PortfolioShowcaseViewSet(SnippetViewSet):
@@ -42,14 +35,56 @@ class PortfolioShowcaseViewSet(SnippetViewSet):
 
 
 register_snippet(ListingViewSet)
-register_snippet(PropertyAgentViewSet)
 register_snippet(PortfolioShowcaseViewSet)
 
+
+# ─── Sync Properties ─────────────────────────────────────────────────────────
+
+def sync_properties_view(request):
+    from apps.properties.vaultre import _fetch_all_listings, save_cache
+    try:
+        data = _fetch_all_listings()
+        save_cache(data)
+        messages.success(request, f"Synced {len(data)} properties from VaultRE.")
+    except Exception as exc:
+        messages.error(request, f"Sync failed: {exc}")
+    return redirect(reverse("wagtailadmin_home"))
+
+
+@hooks.register("register_admin_urls")
+def register_sync_url():
+    return [path("sync-properties/", sync_properties_view, name="sync_properties")]
+
+
+@hooks.register("register_admin_menu_item")
+def register_sync_menu_item():
+    return MenuItem("Sync Properties", "/cms/sync-properties/", icon_name="upload", order=270)
+
+
+# ─── Portfolio admin CSS / JS ────────────────────────────────────────────────
 
 @hooks.register("insert_global_admin_css")
 def vault_portfolio_css():
     return mark_safe("""
 <style>
+/* Sync Properties button — gold highlight */
+a[href="/cms/sync-properties/"] {
+  background: #f9c206 !important;
+  color: #001f49 !important;
+  border-radius: 6px !important;
+  font-weight: 700 !important;
+  margin-top: 0.5rem !important;
+}
+a[href="/cms/sync-properties/"]:hover {
+  background: #fad840 !important;
+  color: #001f49 !important;
+}
+a[href="/cms/sync-properties/"] svg,
+a[href="/cms/sync-properties/"] .icon {
+  color: #001f49 !important;
+  fill: #001f49 !important;
+}
+
 #id_vault_property_id {
   width: 100% !important;
   max-width: 100% !important;
@@ -79,7 +114,6 @@ def vault_portfolio_js():
     if (!sel || sel.dataset.vaultInit) return;
     sel.dataset.vaultInit = '1';
 
-    /* ── Search filter ───────────────────────────────── */
     var allOptions = Array.from(sel.options).map(function (o) {
       return { el: o.cloneNode(true), text: o.text.toLowerCase(), val: o.value };
     });
@@ -92,7 +126,6 @@ def vault_portfolio_js():
 
     search.addEventListener('input', function () {
       var q = this.value.toLowerCase().trim();
-      /* rebuild option list */
       while (sel.options.length) sel.remove(0);
       allOptions.forEach(function (item) {
         if (!q || item.val === '' || item.text.includes(q)) {
@@ -101,7 +134,6 @@ def vault_portfolio_js():
       });
     });
 
-    /* ── Auto-fill sibling fields on selection ───────── */
     sel.addEventListener('change', function () {
       var opt = sel.options[sel.selectedIndex];
       if (!opt || !opt.value) return;
@@ -126,9 +158,7 @@ def vault_portfolio_js():
     });
   }
 
-  /* Run after DOM + Wagtail's own scripts */
   document.addEventListener('DOMContentLoaded', function () { setTimeout(initVaultSelect, 200); });
 })();
 </script>
 """)
-
