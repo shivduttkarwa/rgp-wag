@@ -111,10 +111,6 @@ export default function Uses() {
     console.log("Contact form submitted:", data);
   };
 
-  const handleSave = () => {
-    console.log("Property saved");
-  };
-
   return (
     <PropDetail
       property={sampleProperty}

@@ -112,8 +112,8 @@ export default function PropertyPage() {
         title="Ready to Find Your"
         titleEm="Dream Home?"
         text="Our expert agents are here to guide you through every step — from search to settlement."
-        primary={{ label: "View All Properties", href: "/properties", style: "gold" }}
-        secondary={{ label: "Contact Us", href: "/contact", style: "outline" }}
+        primary={{ label: "View All Properties", href: "/properties", style: "gold", open_in_new_tab: false }}
+        secondary={{ label: "Contact Us", href: "/contact", style: "outline", open_in_new_tab: false }}
         bgImage="/images/prop-hero.jpg"
         minHeight="100vh"
       />
