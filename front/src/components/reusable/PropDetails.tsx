@@ -106,13 +106,6 @@ const PropertyHero: React.FC<{
         className="pd-hero__back"
       />
 
-      {/* Photo count — top right */}
-      {images.length > 1 && (
-        <div className="pd-hero__photo-count">
-          <Icons.camera />
-          <span>{images.length} Photos</span>
-        </div>
-      )}
 
       {/* Classic content block — bottom left */}
       <div className="pd-hero__content">
@@ -206,6 +199,16 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
 
   return (
     <section className="pd-gallery">
+
+      {/* ── Gallery header ──────────────────────────────── */}
+      <div className="pd-gallery__header">
+        <span className="rg-eyebrow">Photo Gallery</span>
+        <h2 className="pd-gallery__title">Property Photos</h2>
+        <span className="pd-gallery__count">
+          <Icons.camera />
+          {images.length} Photos
+        </span>
+      </div>
 
       {/* ── Zone 1: mosaic ─────────────────────────────── */}
       <div className="pd-gallery__mosaic">
