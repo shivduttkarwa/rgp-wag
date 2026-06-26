@@ -10,10 +10,10 @@ class PropertyEnquirySubmissionViewSet(SnippetViewSet):
     menu_label = "Property Enquiries"
     menu_name = "property_enquiries"
     add_to_admin_menu = False
-    list_display = ("name", "email", "phone", "property_title", "submitted_at", "is_read")
+    list_display = ("name", "email", "phone", "property_title", "agent_name", "submitted_at", "is_read")
     list_filter = ("is_read", "submitted_at")
     search_fields = ("name", "email", "phone", "property_title", "property_id", "message")
-    list_export = ("submitted_at", "is_read", "name", "email", "phone", "message", "property_id", "property_title")
+    list_export = ("submitted_at", "is_read", "name", "email", "phone", "message", "property_id", "property_title", "agent_name")
     export_headings = {
         "submitted_at": "Submitted At",
         "is_read": "Read",

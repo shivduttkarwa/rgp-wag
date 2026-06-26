@@ -5,7 +5,7 @@ from .models import ContactSubmission, ExpressionOfInterestSubmission, PropertyE
 class PropertyEnquirySerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyEnquirySubmission
-        fields = ["name", "email", "phone", "message", "property_id", "property_title"]
+        fields = ["name", "email", "phone", "message", "property_id", "property_title", "agent_name"]
 
 
 class ContactFormSerializer(serializers.ModelSerializer):

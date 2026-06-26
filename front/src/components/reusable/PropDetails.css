@@ -807,7 +807,7 @@
   display: flex; align-items: center; gap: 0.5rem;
   padding: 0.55rem 0.85rem;
   border-radius: 0.5rem;
-  font-size: 0.82rem; font-weight: 600;
+  font-size: 0.95rem; font-weight: 600;
   text-decoration: none;
   border: 1px solid var(--pd-border);
   color: var(--pd-text);
@@ -818,6 +818,7 @@
   background: var(--pd-navy);
   color: #fff;
   border-color: var(--pd-navy);
+  justify-content: center;
 }
 .pd-enquiry__btn--primary:hover { background: #002d6e; border-color: #002d6e; }
 .pd-enquiry__btn:not(.pd-enquiry__btn--primary):hover { background: var(--pd-bg); }
@@ -844,11 +845,39 @@
   letter-spacing: 0.08em;
 }
 
-.pd-enquiry__thanks {
-  padding: 1.5rem;
+.pd-enquiry__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  padding: 2rem 1.5rem 2.5rem;
+  gap: 0.6rem;
+}
+
+.pd-enquiry__success-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  color: #1a8a4a;
+  margin-bottom: 0.35rem;
+}
+
+.pd-enquiry__success-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pd-enquiry__success-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--pd-text);
+}
+
+.pd-enquiry__success-text {
+  font-size: 0.88rem;
   color: var(--pd-text-2);
-  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 18rem;
 }
 
 .pd-enquiry__error {

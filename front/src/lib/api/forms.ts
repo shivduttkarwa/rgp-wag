@@ -69,6 +69,7 @@ type PropertyEnquiryPayload = {
   message?: string;
   property_id?: string;
   property_title?: string;
+  agent_name?: string;
 };
 
 export async function submitPropertyEnquiry(payload: PropertyEnquiryPayload): Promise<void> {

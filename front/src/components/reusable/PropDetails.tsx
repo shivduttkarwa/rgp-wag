@@ -369,6 +369,7 @@ const EnquiryCard: React.FC<{
         message: form.message || undefined,
         property_id: propertyId,
         property_title: propertyTitle,
+        agent_name: agent.name || undefined,
       });
       onSubmit?.({ ...form, propertyId });
       setSent(true);
@@ -409,7 +410,16 @@ const EnquiryCard: React.FC<{
       <div className="pd-enquiry__divider"><span>Send a message</span></div>
 
       {sent ? (
-        <p className="pd-enquiry__thanks">Thank you — we'll be in touch shortly.</p>
+        <div className="pd-enquiry__success">
+          <div className="pd-enquiry__success-icon" aria-hidden="true">
+            <svg viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="26" r="25" stroke="currentColor" strokeWidth="2"/>
+              <path d="M14 27l8 8 16-16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <strong className="pd-enquiry__success-title">Enquiry Sent!</strong>
+          <p className="pd-enquiry__success-text">Thank you — one of our agents will be in touch with you shortly.</p>
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="pd-form">
           <div className="pd-form__row">

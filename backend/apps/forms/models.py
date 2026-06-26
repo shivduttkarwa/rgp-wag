@@ -8,6 +8,7 @@ class PropertyEnquirySubmission(models.Model):
     message = models.TextField(blank=True)
     property_id = models.CharField(max_length=200, blank=True)
     property_title = models.CharField(max_length=300, blank=True)
+    agent_name = models.CharField(max_length=200, blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
