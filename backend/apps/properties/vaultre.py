@@ -151,6 +151,55 @@ def _fetch_all_listings() -> list[dict]:
     return results
 
 
+# ─── Staff sync (piggybacks on already-fetched listings) ─────────────────────
+
+def sync_staff_from_listings(listings: list[dict]) -> None:
+    """
+    Extract unique contactStaff objects from fetched listings and upsert them
+    into the TeamMember table.  Only VaultRE-owned fields are written; bio,
+    tags, stats and order are left untouched so the CMS can manage them.
+    """
+    try:
+        from apps.team.models import TeamMember
+    except Exception as exc:
+        logger.warning("[VaultRE] Staff sync — cannot import TeamMember: %s", exc)
+        return
+
+    seen: dict[int, dict] = {}
+    for listing in listings:
+        for staff in listing.get("contactStaff") or []:
+            sid = staff.get("id")
+            if sid and sid not in seen:
+                seen[sid] = staff
+
+    if not seen:
+        logger.info("[VaultRE] Staff sync — no staff found in listings")
+        return
+
+    upserted = 0
+    for sid, staff in seen.items():
+        slug = f"vaultre-{sid}"
+        name = f"{staff.get('firstName', '')} {staff.get('lastName', '')}".strip()
+        phone_numbers = staff.get("phoneNumbers") or []
+        phone = phone_numbers[0].get("number", "") if phone_numbers else ""
+        photo = (staff.get("photo") or {}).get("original", "") or ""
+
+        TeamMember.objects.update_or_create(
+            slug=slug,
+            defaults={
+                "name": name,
+                "role": (staff.get("position") or "").strip() or "Property Specialist",
+                "email": staff.get("email") or "",
+                "phone": phone,
+                "portrait_image_url": photo,
+                "is_active": staff.get("showOnWeb", True),
+            },
+        )
+        upserted += 1
+
+    logger.info("[VaultRE] Staff sync — %d staff upserted", upserted)
+
+
 # ─── File cache (written by `sync_properties` management command) ─────────────
 
 def _load_cache() -> list[dict]:

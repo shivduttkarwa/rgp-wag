@@ -10,7 +10,7 @@ Usage:
 
 import logging
 from django.core.management.base import BaseCommand
-from apps.properties.vaultre import _fetch_all_listings, save_cache, CACHE_FILE
+from apps.properties.vaultre import _fetch_all_listings, save_cache, sync_staff_from_listings, CACHE_FILE
 
 logger = logging.getLogger(__name__)
 
@@ -30,3 +30,11 @@ class Command(BaseCommand):
             logger.exception("sync_properties failed")
             self.stderr.write(self.style.ERROR(f"Failed: {exc}"))
             raise SystemExit(1)
+
+        try:
+            self.stdout.write("Syncing staff from listings …")
+            sync_staff_from_listings(data)
+            self.stdout.write(self.style.SUCCESS("Staff sync complete."))
+        except Exception as exc:
+            logger.exception("Staff sync failed (non-fatal)")
+            self.stderr.write(self.style.WARNING(f"Staff sync failed (non-fatal): {exc}"))
