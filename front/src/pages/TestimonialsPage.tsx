@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
@@ -10,10 +10,7 @@ import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
-import type {
-  CmsFeaturedTestimonial,
-  CmsTestimonial,
-} from "@/types/testimonialsPage";
+import type { CmsFeaturedTestimonial, CmsTestimonial } from "@/types/testimonialsPage";
 import { resolveMediaUrl } from "@/lib/api/config";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
@@ -50,6 +47,8 @@ function cmsFeaturedToSlide(item: CmsFeaturedTestimonial): SlideContent {
   };
 }
 
+// ─── Section Heading ──────────────────────────────────────────────────────────
+
 const SectionHeading = ({
   eyebrow,
   heading,
@@ -60,34 +59,21 @@ const SectionHeading = ({
   subtitle?: string;
 }) => {
   if (!eyebrow && !heading && !subtitle) return null;
-
   return (
     <div className="t-section-heading">
       <header className="t-section-heading__header">
         {eyebrow ? (
-          <span
-            className="t-section-heading__eyebrow"
-            data-gsap="fade-in"
-            data-gsap-start="top 100%"
-          >
+          <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
             {eyebrow}
           </span>
         ) : null}
         {heading ? (
-          <h2
-            className="t-section-heading__title"
-            data-gsap="char-reveal"
-            data-gsap-start="top 85%"
-          >
+          <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
             {heading}
           </h2>
         ) : null}
         {subtitle ? (
-          <p
-            className="t-section-heading__subtitle"
-            data-gsap="fade-up"
-            data-gsap-delay="0.2"
-          >
+          <p className="t-section-heading__subtitle" data-gsap="fade-up" data-gsap-delay="0.2">
             {subtitle}
           </p>
         ) : null}
@@ -96,84 +82,84 @@ const SectionHeading = ({
   );
 };
 
-const VoiceMosaic: React.FC<{ items: Testimonial[] }> = ({ items }) => {
+// ─── Stories Grid (Stories From Our Clients) ──────────────────────────────────
+
+const PAGE_SIZE = 9;
+
+const StoriesGrid: React.FC<{
+  items: Testimonial[];
+  eyebrow?: string;
+  heading?: string;
+  subtitle?: string;
+}> = ({ items, eyebrow, heading, subtitle }) => {
+  const [visible, setVisible] = useState(PAGE_SIZE);
   if (!items.length) return null;
 
+  const shown = items.slice(0, visible);
+  const hasMore = visible < items.length;
+
   return (
-    <section className="tp-mosaic">
-      <div className="tp-mosaic__grid">
-        {items.map((item, index) => (
-          <article
-            key={item.id}
-            className={`tp-mosaic__card tp-mosaic__card--${(index % 9) + 1}`}
-          >
-            <div className="tp-mosaic__card-glow" />
-            <div className="tp-mosaic__corner" aria-hidden="true" />
-            <div className="tp-mosaic__card-header">
-              {item.avatar ? <img src={item.avatar} alt={item.name} /> : null}
-              <div>
-                <h4>{item.name}</h4>
-                <p>{item.location}</p>
+    <section className="tp-stories">
+      <div className="tp-stories__wrap">
+        <SectionHeading eyebrow={eyebrow} heading={heading} subtitle={subtitle} />
+
+        <div className="tp-stories__grid">
+          {shown.map((item) => (
+            <article key={item.id} className="tp-story-card">
+              <div className="tp-story-card__top">
+                <span className="tp-story-card__qmark" aria-hidden="true">"</span>
+                {item.rating > 0 && (
+                  <div className="tp-story-card__stars" aria-label={`${item.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={13}
+                        fill={i < item.rating ? "currentColor" : "none"}
+                        strokeWidth={i < item.rating ? 0 : 1.5}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-              {item.rating ? (
-                <div className="tp-mosaic__card-rating">
-                  <Star size={12} fill="currentColor" />
-                  {item.rating.toFixed(1)}
+
+              <blockquote className="tp-story-card__quote">{item.content}</blockquote>
+
+              <div className="tp-story-card__author">
+                {item.avatar ? (
+                  <img src={item.avatar} alt={item.name} className="tp-story-card__avatar" />
+                ) : (
+                  <div className="tp-story-card__avatar-init" aria-hidden="true">
+                    {item.name.charAt(0)}
+                  </div>
+                )}
+                <div className="tp-story-card__meta">
+                  <strong>{item.name}</strong>
+                  {item.location && <span>{item.location}</span>}
                 </div>
-              ) : null}
-            </div>
-            <blockquote>"{item.content}"</blockquote>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-const TickerWall: React.FC<{ items: Testimonial[] }> = ({ items }) => {
-  if (!items.length) return null;
-
-  return (
-    <section className="tp-ticker">
-      <div className="tp-ticker__container">
-        <div className="tp-ticker__wall">
-          {[0, 1, 2].map((column) => (
-            <div
-              key={column}
-              className={`tp-ticker__col${
-                column === 1 ? " tp-ticker__col--rev" : ""
-              }`}
-              style={{ "--ts": `${32 + column * 6}s` } as React.CSSProperties}
-            >
-              <div className="tp-ticker__inner">
-                {[...items, ...items].map((item, index) => (
-                  <article
-                    key={`${column}-${item.id}-${index}`}
-                    className="tp-ticker__card"
-                  >
-                    <div className="tp-ticker__card-accent" />
-                    <div className="tp-ticker__card-head">
-                      {item.avatar ? (
-                        <img src={item.avatar} alt={item.name} />
-                      ) : null}
-                      <div>
-                        <h4>{item.name}</h4>
-                        <p>{item.location}</p>
-                      </div>
-                    </div>
-                    <p className="tp-ticker__card-text">"{item.content}"</p>
-                  </article>
-                ))}
               </div>
-            </div>
+            </article>
           ))}
         </div>
-        <div className="tp-ticker__fade-top" />
-        <div className="tp-ticker__fade-bottom" />
+
+        {hasMore && (
+          <div className="tp-stories__more">
+            <button
+              className="tp-stories__load-btn"
+              onClick={() => setVisible((v) => v + PAGE_SIZE)}
+            >
+              Load More Stories
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10M3 8l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
 };
+
+// ─── Final CTA ────────────────────────────────────────────────────────────────
 
 interface FinalCTAProps {
   heading: string;
@@ -182,21 +168,12 @@ interface FinalCTAProps {
   secondary?: ButtonBlockData;
 }
 
-const FinalCTA: React.FC<FinalCTAProps> = ({
-  heading,
-  body,
-  primary,
-  secondary,
-}) => (
+const FinalCTA: React.FC<FinalCTAProps> = ({ heading, body, primary, secondary }) => (
   <section className="tp-cta">
     <div className="tp-cta__inner">
       <div className="tp-cta__panel">
         {heading ? (
-          <h2
-            className="tp-cta__heading"
-            data-gsap="char-reveal"
-            data-gsap-start="top 85%"
-          >
+          <h2 className="tp-cta__heading" data-gsap="char-reveal" data-gsap-start="top 85%">
             {heading}
           </h2>
         ) : null}
@@ -207,24 +184,18 @@ const FinalCTA: React.FC<FinalCTAProps> = ({
         ) : null}
         <div className="tp-cta__actions">
           {primary?.label && primary?.href ? (
-            <CmsButton
-              button={primary}
-              data-gsap="btn-clip-reveal"
-              data-gsap-delay="0.2"
-            />
+            <CmsButton button={primary} data-gsap="btn-clip-reveal" data-gsap-delay="0.2" />
           ) : null}
           {secondary?.label && secondary?.href ? (
-            <CmsButton
-              button={secondary}
-              data-gsap="btn-clip-reveal"
-              data-gsap-delay="0.32"
-            />
+            <CmsButton button={secondary} data-gsap="btn-clip-reveal" data-gsap-delay="0.32" />
           ) : null}
         </div>
       </div>
     </div>
   </section>
 );
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   const { data, status } = useTestimonialsPage();
@@ -233,28 +204,18 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
 
   const featuredSlides: SlideContent[] =
     sections.featured_testimonials?.items?.map(cmsFeaturedToSlide) ?? [];
-  const textGridItems =
+  const storyItems =
     sections.text_testimonials_grid?.items?.map(cmsToTestimonial) ?? [];
-  const tickerItems = sections.ticker?.items?.map(cmsToTestimonial) ?? [];
 
   useEffect(() => {
     const guards = [
-      "clipRevealInit",
-      "clipRevealRtlInit",
-      "clipRevealTopInit",
-      "clipRevealLeftInit",
-      "clipRevealRightInit",
-      "wordRevealInit",
-      "wordWriteInit",
-      "clipSmoothInit",
-      "clipSmoothDownInit",
-      "charRevealInit",
+      "clipRevealInit", "clipRevealRtlInit", "clipRevealTopInit",
+      "clipRevealLeftInit", "clipRevealRightInit", "wordRevealInit",
+      "wordWriteInit", "clipSmoothInit", "clipSmoothDownInit", "charRevealInit",
     ];
     guards.forEach((key) => {
       pageRef.current
-        ?.querySelectorAll<HTMLElement>(
-          `[data-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}]`,
-        )
+        ?.querySelectorAll<HTMLElement>(`[data-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}]`)
         .forEach((el) => delete el.dataset[key]);
     });
     const cleanup = initGsapSwitchAnimations(pageRef.current);
@@ -283,25 +244,12 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
         ) : null}
 
         {sections.text_testimonials_grid ? (
-          <>
-            <SectionHeading
-              eyebrow={sections.text_testimonials_grid.eyebrow}
-              heading={sections.text_testimonials_grid.heading}
-              subtitle={sections.text_testimonials_grid.subtitle}
-            />
-            <VoiceMosaic items={textGridItems} />
-          </>
-        ) : null}
-
-        {sections.ticker ? (
-          <>
-            <SectionHeading
-              eyebrow={sections.ticker.eyebrow}
-              heading={sections.ticker.heading}
-              subtitle={sections.ticker.subtitle}
-            />
-            <TickerWall items={tickerItems} />
-          </>
+          <StoriesGrid
+            items={storyItems}
+            eyebrow={sections.text_testimonials_grid.eyebrow}
+            heading={sections.text_testimonials_grid.heading}
+            subtitle={sections.text_testimonials_grid.subtitle}
+          />
         ) : null}
 
         {sections.final_cta ? (

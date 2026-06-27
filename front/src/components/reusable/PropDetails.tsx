@@ -88,15 +88,6 @@ const PropertyHero: React.FC<{
     <section className="pd-hero" style={bgImage ? { backgroundImage: `url(${bgImage})` } : {}}>
       <div className="pd-hero__overlay" />
 
-      <RgButton
-        to="/properties"
-        variant="blue"
-        label="Back to All Properties"
-        startIcon={<Icons.chevronLeft />}
-        withArrow={false}
-        className="pd-hero__back"
-      />
-
       <div className="pd-hero__content">
         <div className="pd-hero__badges">
           <span className={`pd-badge ${status === "Sold" ? "pd-badge--red" : status === "Pending" ? "pd-badge--amber" : "pd-badge--glass"}`}>

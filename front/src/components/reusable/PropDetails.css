@@ -57,26 +57,6 @@
     );
 }
 
-/* Back button — positioning only; rg-btn--blue handles visuals */
-.pd-hero__back {
-  position: absolute;
-  top: 50%;
-  right: var(--pd-pad);
-  left: auto;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-.pd-hero__back:hover {
-  transform: translateY(calc(-50% - 1px));
-}
-.pd-hero__back svg:first-child {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  transition: transform 0.22s;
-}
-.pd-hero__back:hover svg:first-child { transform: translateX(-3px); }
-
 /* Content block — bottom left */
 .pd-hero__content {
   position: absolute;
@@ -415,7 +395,7 @@
 }
 
 .pd-layout {
-  padding: 2.5rem 5rem 0;
+  padding: 2.5rem var(--pd-pad) 0;
   display: grid;
   grid-template-columns: 1fr clamp(20rem, 27%, 26.25rem);
   gap: 2rem;
@@ -1009,6 +989,7 @@
   .pd-hero { height: 100svh; min-height: 35rem; }
   .pd-hero__title { font-size: 1.75rem; }
   .pd-hero__stat { padding-right: 1.25rem; margin-right: 1.25rem; }
+  .pd-sechead__title { font-size: 1.85rem; }
 
   .pd-gallery { padding: 1.25rem var(--pd-pad); }
 
@@ -1068,6 +1049,7 @@
   .pd-hero__stat { padding-right: 0.85rem; margin-right: 0.85rem; }
   .pd-amenities { grid-template-columns: 1fr; }
   .pd-specs { grid-template-columns: 1fr; }
+  .pd-sechead__title { font-size: 1.6rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1077,7 +1059,6 @@
 @media print {
   /* Hide everything except the property content */
   header, nav, footer,
-  .pd-hero__back,
   .pd-hero__statsbar,
   .pd-gallery,
   .pd-sidebar,
