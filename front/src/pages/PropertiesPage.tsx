@@ -23,6 +23,7 @@ import EoiCta from "@/components/reusable/eoi-cta";
 import { usePropertiesPage } from "@/hooks/usePropertiesPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import "./PropertiesPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -285,6 +286,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     activeFilters.baths !== "any";
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <div className={pageClassName} ref={pageRef}>

@@ -1,7 +1,7 @@
 # Pre-Handover Audit Report — RGP-WAG
 
 **Date:** 2026-06-27  
-**Status:** Pending fixes — do not hand over until Critical items resolved
+**Status:** Most items resolved — remaining actions are EC2 server config and image compression
 
 ---
 
@@ -79,10 +79,10 @@ Must fix before handover.
 
 ## Recommended Fix Order
 
-1. **BUG-1** — Rename `PropertyListingsection.css` → `PropertyListingSection.css` (breaks on EC2 right now)
-2. **BUG-2** — Set `MEDIA_ROOT` in EC2 `.env` to a persistent path (Wagtail images lost on restart)
-3. **Dead files** — Delete all 9 unused files/components listed in Section 1
-4. **Security** — Verify EC2 `.env` has `RECAPTCHA_SECRET_KEY`, `CORS_ALLOWED_ORIGINS`, and `chmod 600`
-5. **Images** — Compress hero images to WebP
-6. **Error Boundary** — Add to `App.tsx`
-7. **Error UI** — Add visible error state to pages when API fails
+1. ✅ **BUG-1** — CSS filename renamed `PropertyListingsection.css` → `PropertyListingSection.css`
+2. ⚠️ **BUG-2** — On EC2, add `MEDIA_ROOT=/home/ubuntu/rgp-media` to `backend/.env` then `mkdir -p /home/ubuntu/rgp-media`
+3. ✅ **Dead files** — All 14 unused files deleted
+4. ⚠️ **Security** — On EC2: `chmod 600 backend/.env`, verify `RECAPTCHA_SECRET_KEY` and `CORS_ALLOWED_ORIGINS` are set
+5. ⚠️ **Images** — Compress `front/public/images/*.jpg` to WebP (manual step)
+6. ✅ **Error Boundary** — Added `ErrorBoundary` wrapping all routes in `App.tsx`
+7. ✅ **Error UI** — `PageError` component added to all 8 CMS-driven pages

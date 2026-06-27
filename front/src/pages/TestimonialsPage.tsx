@@ -10,6 +10,7 @@ import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import type { CmsFeaturedTestimonial, CmsTestimonial } from "@/types/testimonialsPage";
 import { resolveMediaUrl } from "@/lib/api/config";
 import RgpCta from "@/components/reusable/RgpCta";
@@ -223,6 +224,7 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
   }, [data.updated_at]);
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <div ref={pageRef}>

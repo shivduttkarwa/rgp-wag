@@ -14,6 +14,7 @@ import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import { useHomePage } from "@/hooks/useHomePage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import { Building2 } from "lucide-react";
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
@@ -55,6 +56,7 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
     : undefined;
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <div ref={pageRef}>

@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useServicesPage } from "@/hooks/useServicesPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import assetUrl from "@/lib/assetUrl";
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
@@ -150,6 +151,7 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
   }, []);
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <>

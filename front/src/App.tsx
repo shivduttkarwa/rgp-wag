@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./sections/Footer";
 import Preloader from "./components/Preloader";
 import PageSkeleton from "./components/reusable/PageSkeleton";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -32,6 +33,7 @@ function App() {
       <Preloader onComplete={() => setLoaded(true)} />
       <div>
         <Header ready={loaded} />
+        <ErrorBoundary>
         <Suspense fallback={<PageSkeleton />}>
           <Routes>
             <Route path="/" element={<HomePage ready={loaded} />} />
@@ -54,6 +56,7 @@ function App() {
             />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
         <Footer ready={loaded} />
       </div>
     </>

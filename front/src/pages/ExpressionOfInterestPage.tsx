@@ -4,6 +4,7 @@ import InternalPageHero from "@/sections/InternalPageHero";
 import { useEoiPage } from "@/hooks/useEoiPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -402,6 +403,7 @@ export default function ExpressionOfInterestPage({
   };
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <main className="eoi-page" ref={pageRef}>

@@ -8,6 +8,7 @@ import { submitContactForm } from "@/lib/api/forms";
 import { useContactPage } from "@/hooks/useContactPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageError from "@/components/reusable/PageError";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./ContactPage.css";
@@ -147,6 +148,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   };
 
   if (status === "loading") return <PageSkeleton />;
+  if (status === "error") return <PageError />;
 
   return (
     <>
