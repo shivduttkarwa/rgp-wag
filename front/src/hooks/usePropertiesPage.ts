@@ -6,7 +6,7 @@ import {
 import { prefetchPropertyDetails } from "@/lib/api/propertyDetail";
 import type { PropertiesPageData } from "@/types/propertiesPage";
 
-type Status = "loading" | "ready" | "fallback";
+type Status = "loading" | "ready" | "fallback" | "error";
 
 let cachedData: PropertiesPageData | null = null;
 const REQUEST_TIMEOUT_MS = 20000;

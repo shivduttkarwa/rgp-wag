@@ -2,7 +2,7 @@ import { startTransition, useEffect, useState } from "react";
 import { DEFAULT_TEAM_PAGE_DATA, fetchTeamPage } from "@/lib/api/teamPage";
 import type { TeamPageData } from "@/types/teamPage";
 
-type Status = "loading" | "ready" | "fallback";
+type Status = "loading" | "ready" | "fallback" | "error";
 
 let cachedData: TeamPageData | null = null;
 

@@ -2,7 +2,7 @@ import { startTransition, useEffect, useState } from "react";
 import { DEFAULT_CONTACT_PAGE_DATA, fetchContactPage } from "@/lib/api/contactPage";
 import type { ContactPageData } from "@/types/contactPage";
 
-type Status = "loading" | "ready" | "fallback";
+type Status = "loading" | "ready" | "fallback" | "error";
 
 let cachedData: ContactPageData | null = null;
 
