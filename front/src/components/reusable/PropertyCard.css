@@ -368,7 +368,21 @@
 }
 
 /* ── Small screens ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .property-card .card-image-wrapper {
+    height: 11rem;
+  }
+
+  .property-card .card-body {
+    padding: 1rem;
+  }
+}
+
 @media (max-width: 480px) {
+  .property-card .card-image-wrapper {
+    height: 10rem;
+  }
+
   .property-card .card-stats {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
