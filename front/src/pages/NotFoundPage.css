@@ -6,27 +6,11 @@
   justify-content: center;
   background: #f4f6fb;
   overflow: hidden;
-  padding: calc(6.45rem + 2rem) 2rem 4rem;
-}
-
-/* Dark navy strip behind the fixed transparent header so white nav text is visible */
-.nf-root::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6.45rem;
-  background: var(--rg-navy);
-  z-index: 0;
+  padding: calc(6.45rem + 2rem) 2rem 2rem;
 }
 
 /* ── Decorative background circles ── */
-.nf-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
+.nf-bg { position: absolute; inset: 0; pointer-events: none; }
 
 .nf-bg__circle {
   position: absolute;
@@ -38,7 +22,7 @@
 .nf-bg__circle--1 {
   width: 42rem;
   height: 42rem;
-  top: -4rem;
+  top: -12rem;
   right: -10rem;
 }
 
@@ -121,13 +105,53 @@
   margin: 0 0 2.5rem;
 }
 
-/* ── Buttons — use RgButton global styles, just layout here ── */
+/* ── Buttons ── */
 .nf-actions {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 2rem;
+}
+
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  border-radius: var(--rg-radius);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.nf-btn--primary {
+  background: var(--rg-navy);
+  color: #ffffff;
+  border: 2px solid var(--rg-navy);
+}
+
+.nf-btn--primary:hover {
+  background: #0a2563;
+  border-color: #0a2563;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 31, 73, 0.2);
+}
+
+.nf-btn--outline {
+  background: transparent;
+  color: var(--rg-navy);
+  border: 2px solid rgba(0, 31, 73, 0.25);
+}
+
+.nf-btn--outline:hover {
+  border-color: var(--rg-gold);
+  color: var(--rg-navy);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(249, 194, 6, 0.15);
 }
 
 /* ── Footer links ── */
@@ -160,7 +184,7 @@
     width: 100%;
   }
 
-  .nf-actions .rg-btn {
+  .nf-btn {
     justify-content: center;
     width: 100%;
   }
