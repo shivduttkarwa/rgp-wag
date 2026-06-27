@@ -78,7 +78,7 @@ export default function PropertyPage() {
 
   const seoDescription = [
     property.status,
-    property.price_label,
+    property.priceLabel,
     property.address,
     property.city,
   ].filter(Boolean).join(" · ");
@@ -97,7 +97,7 @@ export default function PropertyPage() {
           "description": seoDescription,
           "url": `https://realgoldproperties.com.au/properties/${id}`,
           "image": property.images[0]?.url,
-          "offers": { "@type": "Offer", "price": property.price_label, "priceCurrency": "AUD" },
+          "offers": { "@type": "Offer", "price": property.priceLabel, "priceCurrency": "AUD" },
           "address": {
             "@type": "PostalAddress",
             "streetAddress": property.address,
