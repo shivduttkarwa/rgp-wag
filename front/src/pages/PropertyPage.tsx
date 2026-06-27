@@ -1,12 +1,11 @@
 import { useEffect, startTransition, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import PropDetail from "../components/reusable/PropDetails";
-import type { PropertyData, ContactFormData } from "@/components/reusable/PropDetails";
+import type { PropertyData } from "@/components/reusable/PropDetails";
 import { detailCache, fetchPropertyDetail } from "@/lib/api/propertyDetail";
 import { fetchPropertyList } from "@/lib/api/propertiesPage";
 import type { Property } from "@/components/reusable/PropertyCard";
 import PropertyCard from "@/components/reusable/PropertyCard";
-import { submitContactForm } from "@/lib/api/forms";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import RgpCta from "@/components/reusable/RgpCta";
 import "./PropertyPage.css";
@@ -76,21 +75,10 @@ export default function PropertyPage() {
   if (isLoading) return <PageSkeleton />;
   if (!property) return null;
 
-  const handleContactSubmit = async (data: ContactFormData) => {
-    await submitContactForm({
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      subject: `Property Enquiry — ${property.address}`,
-      message: data.message,
-    });
-  };
-
   return (
     <>
       <PropDetail
         property={property}
-        onContactSubmit={handleContactSubmit}
       />
 
       {related.length > 0 && (

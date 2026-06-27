@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReCaptchaV2, { type ReCaptchaV2Handle } from "./ReCaptchaV2";
 import "./PropDetails.css";
-import RgButton from "./RgButton";
 import { submitPropertyEnquiry } from "../../lib/api/forms";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
