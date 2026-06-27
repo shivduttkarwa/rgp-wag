@@ -47,13 +47,33 @@
   display: flex;
 }
 
+/* GPU compositing — prevents flicker during swipe (iOS) */
+.pd-related__swiper .swiper-slide,
+.pd-related__card-wrap,
+.pd-related__card-wrap .property-card,
+.pd-related__card-wrap .card-image-wrapper,
+.pd-related__card-wrap .card-image,
+.pd-related__card-wrap .card-overlay,
+.pd-related__card-wrap .card-content,
+.pd-related__card-wrap .card-badges,
+.pd-related__card-wrap .like-btn,
+.pd-related__card-wrap .card-price-wrapper,
+.pd-related__card-wrap .card-body {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
 .pd-related__card-wrap {
   width: 100%;
 }
 
 .pd-related__card-wrap .property-card {
-  transform: scale(0.9) translateY(0.875rem);
-  opacity: 0.55;
+  transform: scale(0.95) translateY(0.5rem);
+  opacity: 0.75;
   transition:
     transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 0.5s ease;
