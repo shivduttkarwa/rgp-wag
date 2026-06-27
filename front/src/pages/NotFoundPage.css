@@ -1,36 +1,56 @@
+/* ═══════════════════════════════
+   404 NOT FOUND PAGE
+═══════════════════════════════ */
+
 .nf-root {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f6fb;
+  background: #020d1f;
   overflow: hidden;
-  padding: calc(6.45rem + 2rem) 2rem 2rem;
+  padding: calc(6.45rem + 3rem) 2rem 4rem;
 }
 
-/* ── Decorative background circles ── */
-.nf-bg { position: absolute; inset: 0; pointer-events: none; }
+/* ── Decorative background ── */
+.nf-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 
-.nf-bg__circle {
+/* Subtle dot grid */
+.nf-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(249, 195, 7, 0.12) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* Radial glows */
+.nf-glow {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.07;
+  filter: blur(80px);
+  opacity: 0.18;
+}
+
+.nf-glow--1 {
+  width: 40rem;
+  height: 40rem;
+  top: -10rem;
+  right: -8rem;
   background: var(--rg-navy);
+  opacity: 0.7;
 }
 
-.nf-bg__circle--1 {
-  width: 42rem;
-  height: 42rem;
-  top: -12rem;
-  right: -10rem;
-}
-
-.nf-bg__circle--2 {
-  width: 28rem;
-  height: 28rem;
-  bottom: -8rem;
-  left: -8rem;
+.nf-glow--2 {
+  width: 24rem;
+  height: 24rem;
+  bottom: -6rem;
+  left: -4rem;
   background: var(--rg-gold);
   opacity: 0.12;
 }
@@ -43,66 +63,68 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 36rem;
+  max-width: 38rem;
   width: 100%;
+}
+
+/* ── Eyebrow ── */
+.nf-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rg-gold);
+  margin-bottom: 2rem;
 }
 
 /* ── Giant 404 ── */
 .nf-code {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1em;
   line-height: 1;
   font-family: var(--font-title);
-  font-size: clamp(6rem, 22vw, 11rem);
+  font-size: clamp(7rem, 24vw, 12rem);
   font-weight: 400;
-  letter-spacing: -0.04em;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin-bottom: 1.75rem;
   user-select: none;
 }
 
-.nf-code__4 {
-  color: var(--rg-navy);
-}
-
-.nf-code__0 {
-  color: var(--rg-gold);
+.nf-code__zero {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--rg-gold);
   position: relative;
-  display: inline-block;
 }
 
-.nf-code__0::before {
-  content: "";
-  position: absolute;
-  inset: 8% 6%;
-  border-radius: 50%;
-  border: 4px solid var(--rg-gold);
-  opacity: 0.25;
-}
-
-/* ── Divider ── */
+/* ── Gold divider ── */
 .nf-divider {
-  width: 3rem;
-  height: 2px;
+  width: 3.5rem;
+  height: 1.5px;
   background: linear-gradient(90deg, transparent, var(--rg-gold), transparent);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
-/* ── Text ── */
+/* ── Heading ── */
 .nf-title {
   font-family: var(--font-title);
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
   font-weight: 400;
-  color: var(--rg-navy);
+  color: #ffffff;
   margin: 0 0 1rem;
+  letter-spacing: 0.01em;
 }
 
+/* ── Subtext ── */
 .nf-sub {
   font-family: var(--font-body);
   font-size: clamp(0.9rem, 2vw, 1rem);
-  color: rgba(0, 31, 73, 0.55);
-  line-height: 1.7;
-  margin: 0 0 2.5rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.75;
+  margin: 0 0 2.75rem;
+  max-width: 30rem;
 }
 
 /* ── Buttons ── */
@@ -111,60 +133,32 @@
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
-.nf-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 2rem;
-  border-radius: var(--rg-radius);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  white-space: nowrap;
-}
-
-.nf-btn--primary {
-  background: var(--rg-navy);
+/* Override outline variant for dark background */
+.nf-btn-outline.rg-btn--outline {
+  border-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
-  border: 2px solid var(--rg-navy);
 }
 
-.nf-btn--primary:hover {
-  background: #0a2563;
-  border-color: #0a2563;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 31, 73, 0.2);
-}
-
-.nf-btn--outline {
-  background: transparent;
-  color: var(--rg-navy);
-  border: 2px solid rgba(0, 31, 73, 0.25);
-}
-
-.nf-btn--outline:hover {
+.nf-btn-outline.rg-btn--outline:hover {
   border-color: var(--rg-gold);
-  color: var(--rg-navy);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(249, 194, 6, 0.15);
+  background-color: rgba(249, 195, 7, 0.08);
+  color: var(--rg-gold);
 }
 
-/* ── Footer links ── */
+/* ── Quick links ── */
 .nf-links {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.875rem;
   font-family: var(--font-body);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .nf-links a {
-  color: rgba(0, 31, 73, 0.45);
+  color: rgba(255, 255, 255, 0.3);
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -174,7 +168,7 @@
 }
 
 .nf-links span {
-  color: rgba(0, 31, 73, 0.2);
+  color: rgba(255, 255, 255, 0.12);
 }
 
 /* ── Mobile ── */
@@ -184,7 +178,7 @@
     width: 100%;
   }
 
-  .nf-btn {
+  .nf-actions .rg-btn {
     justify-content: center;
     width: 100%;
   }
