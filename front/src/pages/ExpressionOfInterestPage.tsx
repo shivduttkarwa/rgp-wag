@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import ReCaptchaV2, { type ReCaptchaV2Handle } from "@/components/reusable/ReCaptchaV2";
+import ReCaptchaV2, { type ReCaptchaV2Handle, RECAPTCHA_ENABLED } from "@/components/reusable/ReCaptchaV2";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { useEoiPage } from "@/hooks/useEoiPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
@@ -349,7 +349,7 @@ export default function ExpressionOfInterestPage({
     const budget = getValue("offer_price");
     const timeline = getValue("finance_if_yes_how_many_days");
 
-    if (!recaptchaToken) {
+    if (RECAPTCHA_ENABLED && !recaptchaToken) {
       setSubmitError("Please complete the reCAPTCHA.");
       return;
     }
@@ -504,7 +504,7 @@ export default function ExpressionOfInterestPage({
                   className="eoi-submit__button"
                   label={isSubmitting ? "Submitting..." : "Submit Expression of Interest"}
                   endIcon={<Send size={18} aria-hidden="true" />}
-                  disabled={isSubmitting || !recaptchaToken}
+                  disabled={isSubmitting || (RECAPTCHA_ENABLED && !recaptchaToken)}
                 />
               </div>
               {submitError ? <p className="eoi-submit__note">{submitError}</p> : null}

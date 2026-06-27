@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import ReCaptchaV2, { type ReCaptchaV2Handle } from "./ReCaptchaV2";
+import ReCaptchaV2, { type ReCaptchaV2Handle, RECAPTCHA_ENABLED } from "./ReCaptchaV2";
 import "./PropDetails.css";
 import { submitPropertyEnquiry } from "../../lib/api/forms";
 
@@ -347,7 +347,7 @@ const EnquiryCard: React.FC<{
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!recaptchaToken) {
+    if (RECAPTCHA_ENABLED && !recaptchaToken) {
       setError("Please complete the reCAPTCHA.");
       return;
     }
@@ -454,7 +454,7 @@ const EnquiryCard: React.FC<{
           />
 
           {error && <p className="pd-enquiry__error">{error}</p>}
-          <button type="submit" className="pd-form__submit" disabled={submitting || !recaptchaToken}>
+          <button type="submit" className="pd-form__submit" disabled={submitting || (RECAPTCHA_ENABLED && !recaptchaToken)}>
             {submitting ? "Sending…" : <><span>Send Enquiry</span> <Icons.arrow /></>}
           </button>
         </form>

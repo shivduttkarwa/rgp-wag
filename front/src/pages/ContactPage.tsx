@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import ReCaptchaV2, { type ReCaptchaV2Handle } from "@/components/reusable/ReCaptchaV2";
+import ReCaptchaV2, { type ReCaptchaV2Handle, RECAPTCHA_ENABLED } from "@/components/reusable/ReCaptchaV2";
 import { ChevronDown, Send } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -270,7 +270,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                 const message = String(formData.get("message") ?? "").trim();
                 const fullName = `${firstName} ${lastName}`.trim();
 
-                if (!recaptchaToken) {
+                if (RECAPTCHA_ENABLED && !recaptchaToken) {
                   setSubmitError("Please complete the reCAPTCHA.");
                   return;
                 }
@@ -440,7 +440,7 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                   type="submit"
                   label={isSubmitting ? "Sending..." : "Send Enquiry"}
                   endIcon={<Send size={18} aria-hidden="true" />}
-                  disabled={isSubmitting || !recaptchaToken}
+                  disabled={isSubmitting || (RECAPTCHA_ENABLED && !recaptchaToken)}
                 />
                 <p className="s-note">{contactForm.submit_note}</p>
               </div>

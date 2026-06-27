@@ -20,7 +20,10 @@ interface Props {
   onExpire?: () => void;
 }
 
-const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string;
+const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;
+
+/** True only when a site key is configured — use this to gate token requirements in forms. */
+export const RECAPTCHA_ENABLED = Boolean(SITE_KEY);
 
 const ReCaptchaV2 = forwardRef<ReCaptchaV2Handle, Props>(({ onVerify, onExpire }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,6 +38,8 @@ const ReCaptchaV2 = forwardRef<ReCaptchaV2Handle, Props>(({ onVerify, onExpire }
   }));
 
   useEffect(() => {
+    if (!SITE_KEY) return; // no key configured — skip widget
+
     const render = () => {
       if (!containerRef.current || widgetIdRef.current !== null) return;
       widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
@@ -60,6 +65,8 @@ const ReCaptchaV2 = forwardRef<ReCaptchaV2Handle, Props>(({ onVerify, onExpire }
       widgetIdRef.current = null;
     };
   }, []);
+
+  if (!SITE_KEY) return null;
 
   return <div ref={containerRef} />;
 });
