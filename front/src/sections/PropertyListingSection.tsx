@@ -1,6 +1,9 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import assetUrl from "@/lib/assetUrl";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import type { PropertyListingSection as PropertyListingSectionData } from "@/types/homePage";
@@ -9,7 +12,9 @@ import {
   type Category,
   type Property as ListingCardProperty,
 } from "../components/reusable/PropertyCard";
-import "./PropertyListingsection.css";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./PropertyListingSection.css";
 
 const isCategory = (value: string): value is Category =>
   value === "for-sale" || value === "sold" || value === "for-rent";
@@ -57,8 +62,11 @@ const PropertyListingSection = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState<Category | "*">("*");
   const [gridPhase, setGridPhase] = useState<"" | "grid-exiting" | "grid-entering">("");
+  const [swiperPhase, setSwiperPhase] = useState<"" | "swiper-exiting" | "swiper-entering">("");
   const pendingFilter = useRef<Category | "*">("*");
   const animating = useRef(false);
+  const mobileSwiperRef = useRef<SwiperType | null>(null);
+  const [mobileSwiperIndex, setMobileSwiperIndex] = useState(0);
 
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
@@ -77,11 +85,16 @@ const PropertyListingSection = ({
     pendingFilter.current = next;
     animating.current = true;
     setGridPhase("grid-exiting");
+    setSwiperPhase("swiper-exiting");
     setTimeout(() => {
       setActiveFilter(pendingFilter.current);
       setGridPhase("grid-entering");
+      setSwiperPhase("swiper-entering");
+      mobileSwiperRef.current?.slideTo(0, 0);
+      setMobileSwiperIndex(0);
       setTimeout(() => {
         setGridPhase("");
+        setSwiperPhase("");
         animating.current = false;
       }, 420);
     }, 260);
@@ -148,6 +161,7 @@ const PropertyListingSection = ({
               </div>
             </div>
 
+            {/* Desktop grid — hidden on mobile via CSS */}
             <div
               className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}
               data-gsap="clip-smooth-down"
@@ -163,6 +177,49 @@ const PropertyListingSection = ({
                   <PropertyCard property={property} cardIndex={index} />
                 </div>
               ))}
+            </div>
+
+            {/* Mobile swiper — hidden on desktop via CSS */}
+            <div className={`property-swiper-wrapper${swiperPhase ? ` ${swiperPhase}` : ""}`}>
+              <Swiper
+                className="property-swiper"
+                modules={[Pagination]}
+                spaceBetween={16}
+                slidesPerView={1.08}
+                speed={400}
+                pagination={{ clickable: true }}
+                onSwiper={(swiper) => { mobileSwiperRef.current = swiper; }}
+                onActiveIndexChange={(swiper) => setMobileSwiperIndex(swiper.activeIndex)}
+                breakpoints={{ 480: { slidesPerView: 1.15, spaceBetween: 20 } }}
+              >
+                {displayed.map((property, index) => (
+                  <SwiperSlide key={property.id}>
+                    <div className="property-card-wrap">
+                      <PropertyCard property={property} cardIndex={index} />
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <div className="swiper-nav">
+                <button
+                  type="button"
+                  className="swiper-btn"
+                  aria-label="Previous property"
+                  disabled={mobileSwiperIndex === 0}
+                  onClick={() => mobileSwiperRef.current?.slidePrev()}
+                >
+                  <ArrowLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="swiper-btn"
+                  aria-label="Next property"
+                  disabled={mobileSwiperIndex >= displayed.length - 1}
+                  onClick={() => mobileSwiperRef.current?.slideNext()}
+                >
+                  <ArrowRight size={18} />
+                </button>
+              </div>
             </div>
 
             <div className="view-all-wrapper">
