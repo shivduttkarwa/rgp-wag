@@ -1,7 +1,8 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.urls import path, reverse
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_http_methods
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.snippets.models import register_snippet
@@ -40,15 +41,19 @@ register_snippet(PortfolioShowcaseViewSet)
 
 # ─── Sync Properties ─────────────────────────────────────────────────────────
 
+@require_http_methods(["GET", "POST"])
 def sync_properties_view(request):
-    from apps.properties.vaultre import _fetch_all_listings, save_cache
-    try:
-        data = _fetch_all_listings()
-        save_cache(data)
-        messages.success(request, f"Synced {len(data)} properties from VaultRE.")
-    except Exception as exc:
-        messages.error(request, f"Sync failed: {exc}")
-    return redirect(reverse("wagtailadmin_home"))
+    if request.method == "POST":
+        from apps.properties.vaultre import _fetch_all_listings, save_cache
+        try:
+            data = _fetch_all_listings()
+            save_cache(data)
+            messages.success(request, f"Successfully synced {len(data)} properties from VaultRE.")
+        except Exception as exc:
+            messages.error(request, f"Sync failed: {exc}")
+        return redirect(reverse("sync_properties"))
+
+    return render(request, "wagtailadmin/sync_properties.html")
 
 
 @hooks.register("register_admin_urls")
