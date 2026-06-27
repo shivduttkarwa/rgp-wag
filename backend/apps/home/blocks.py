@@ -305,8 +305,6 @@ class IntroBlock(StructBlock):
             "advice, and a client-first approach to every property decision."
         ),
     )
-    primary_cta      = CtaBlock(required=False)
-    secondary_cta    = CtaBlock(required=False)
     image            = ImageChooserBlock(
         required=False,
         help_text="Pick founder image from media library. Takes priority over URL fallback.",

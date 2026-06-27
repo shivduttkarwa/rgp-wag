@@ -60,15 +60,6 @@
   margin: 0 0 clamp(1.5rem, 3vh, 2.5rem) 0;
 }
 
-/* CTA Group */
-.intro-cta-group {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  flex-wrap: wrap;
-  margin-bottom: clamp(1.875rem, 4vh, 3.125rem);
-}
-
 /* ─── Right Column: Image ─── */
 .intro-image {
   position: relative;
@@ -238,10 +229,6 @@
     max-width: 100%;
   }
 
-  .intro-cta-group {
-    justify-content: center;
-  }
-
   .intro-image {
     order: 2;
     height: 45vh;
@@ -258,13 +245,4 @@
     font-size: 0.875rem;
   }
 
-  .intro-cta-group {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .intro-cta-group .rg-btn {
-    width: clamp(14.5rem, 78vw, 17.5rem);
-    white-space: nowrap;
-  }
 }

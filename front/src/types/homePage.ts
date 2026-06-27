@@ -37,8 +37,6 @@ export type IntroSection = {
   headline_line2: string;
   founder_name: string;
   body: string;
-  primary_cta: CtaData;
-  secondary_cta: CtaData;
   image: WagtailImage | null;
   image_url: string;
 };
