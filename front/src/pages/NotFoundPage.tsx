@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import RgButton from "@/components/reusable/RgButton";
 import "./NotFoundPage.css";
 
 export default function NotFoundPage() {
@@ -26,12 +27,8 @@ export default function NotFoundPage() {
         </p>
 
         <div className="nf-actions">
-          <Link to="/" className="nf-btn nf-btn--primary">
-            Back to Home
-          </Link>
-          <Link to="/properties" className="nf-btn nf-btn--outline">
-            View Properties
-          </Link>
+          <RgButton to="/" label="Back to Home" variant="blue" withArrow={false} />
+          <RgButton to="/properties" label="View Properties" variant="outline" withArrow={false} />
         </div>
 
         <div className="nf-links">
