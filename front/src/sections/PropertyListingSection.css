@@ -225,11 +225,6 @@
   }
 }
 
-/* First slide entry animation when swiper scrolls into view */
-.property-section .property-swiper-wrapper.is-visible .swiper-slide:first-child .property-card-wrap {
-  animation: cardReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @media (max-width: 768px) {
   .property-section .property-swiper-wrapper {
     display: block;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -67,23 +67,6 @@ const PropertyListingSection = ({
   const animating = useRef(false);
   const mobileSwiperRef = useRef<SwiperType | null>(null);
   const [mobileSwiperIndex, setMobileSwiperIndex] = useState(0);
-  const swiperWrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = swiperWrapperRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("is-visible");
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
@@ -197,7 +180,7 @@ const PropertyListingSection = ({
             </div>
 
             {/* Mobile swiper — hidden on desktop via CSS */}
-            <div ref={swiperWrapperRef} className={`property-swiper-wrapper${swiperPhase ? ` ${swiperPhase}` : ""}`}>
+            <div className={`property-swiper-wrapper${swiperPhase ? ` ${swiperPhase}` : ""}`}>
               <Swiper
                 className="property-swiper"
                 modules={[Pagination]}
@@ -210,7 +193,12 @@ const PropertyListingSection = ({
               >
                 {displayed.map((property, index) => (
                   <SwiperSlide key={property.id}>
-                    <div className="property-card-wrap">
+                    <div
+                      className="property-card-wrap"
+                      {...(index === 0
+                        ? { "data-gsap": "clip-smooth-down", "data-gsap-start": "top 85%" }
+                        : {})}
+                    >
                       <PropertyCard property={property} cardIndex={index} />
                     </div>
                   </SwiperSlide>
