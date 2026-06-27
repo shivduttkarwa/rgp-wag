@@ -3,7 +3,7 @@ import { PropertyCard } from "./PropertyCard";
 import type { Property } from "./PropertyCard";
 import CmsButton from "@/components/reusable/CmsButton";
 import type { ButtonBlockData } from "@/types/shared";
-import "../../sections/PropertyListingsection.css";
+import "../../sections/PropertyListingSection.css";
 import "./PropertyMarqee.css";
 
 function clamp(n: number, a: number, b: number) {
