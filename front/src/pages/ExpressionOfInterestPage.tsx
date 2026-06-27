@@ -5,6 +5,7 @@ import { useEoiPage } from "@/hooks/useEoiPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
 import RgButton from "@/components/reusable/RgButton";
 import { Send } from "lucide-react";
@@ -407,6 +408,12 @@ export default function ExpressionOfInterestPage({
 
   return (
     <main className="eoi-page" ref={pageRef}>
+      <PageSeo
+        title="Expression of Interest"
+        description="Register your expression of interest with Real Gold Properties for exclusive off-market and upcoming property opportunities in Brisbane & Gold Coast."
+        path="/expressions-of-interest"
+        image="/images/eoi-cta.jpg"
+      />
       <CmsEditBar pageId={eoiData.id} />
       {eoiData.hero ? (
         <InternalPageHero

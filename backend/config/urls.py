@@ -18,6 +18,7 @@ from apps.home.api import (
 from apps.properties.api import PropertyListAPIView, PropertyDetailAPIView
 from apps.forms.api import ContactFormAPIView, ExpressionOfInterestAPIView, PropertyEnquiryAPIView
 from apps.testimonials.api import FeaturedTestimonialListAPIView, VideoTestimonialListAPIView, TextTestimonialListAPIView
+from apps.properties.sitemap import sitemap_view
 
 # ─── Wagtail headless API router ─────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ urlpatterns = [
     path("api/pages/testimonials/",    TestimonialsPageAPIView.as_view(),    name="api-testimonials-page"),
     path("api/pages/eoi/",             EoiPageAPIView.as_view(),             name="api-eoi-page"),
 
+    path("sitemap.xml",                sitemap_view,                         name="sitemap"),
     path("api/properties/",            PropertyListAPIView.as_view(),        name="api-property-list"),
     path("api/properties/<slug:slug>/", PropertyDetailAPIView.as_view(),     name="api-property-detail"),
 

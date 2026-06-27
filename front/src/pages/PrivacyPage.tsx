@@ -1,8 +1,10 @@
 import "./LegalPage.css";
+import PageSeo from "@/components/reusable/PageSeo";
 
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
+      <PageSeo title="Privacy Policy" description="Real Gold Properties Privacy Policy." path="/privacy" noindex />
       <div className="legal-hero">
         <div className="legal-hero__inner">
           <span className="legal-hero__eyebrow">Real Gold Properties</span>

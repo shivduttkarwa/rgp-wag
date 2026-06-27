@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cms/
+Disallow: /admin/
+
+Sitemap: https://realgoldproperties.com.au/sitemap.xml

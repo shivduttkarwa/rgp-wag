@@ -11,6 +11,7 @@ import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import type { CmsFeaturedTestimonial, CmsTestimonial } from "@/types/testimonialsPage";
 import { resolveMediaUrl } from "@/lib/api/config";
 import RgpCta from "@/components/reusable/RgpCta";
@@ -228,6 +229,12 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
 
   return (
     <div ref={pageRef}>
+      <PageSeo
+        title="Client Reviews"
+        description="Read what our clients say about Real Gold Properties — honest reviews from satisfied buyers, sellers and investors across Brisbane & Gold Coast."
+        path="/testimonials"
+        image="/images/testi-hero.jpg"
+      />
       <CmsEditBar pageId={data.id} />
       <main className="testimonial-page">
         {sections.hero ? (

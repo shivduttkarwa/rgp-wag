@@ -9,6 +9,7 @@ import { useContactPage } from "@/hooks/useContactPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./ContactPage.css";
@@ -152,6 +153,12 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <PageSeo
+        title="Contact Us"
+        description="Get in touch with Real Gold Properties — our expert agents in Brisbane & Gold Coast are ready to help with enquiries, valuations and property advice."
+        path="/contact"
+        image="/images/contact-hero.jpg"
+      />
       <CmsEditBar pageId={data.id} />
       <main className="contact-page" ref={pageRef}>
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}

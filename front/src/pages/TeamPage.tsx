@@ -6,6 +6,7 @@ import { useTeamPage } from "@/hooks/useTeamPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
 import "./TeamPage.css";
@@ -39,6 +40,11 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <PageSeo
+        title="Our Team"
+        description="Meet the Real Gold Properties team — experienced agents passionate about matching clients with exceptional properties across Brisbane & Gold Coast."
+        path="/team"
+      />
       <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 

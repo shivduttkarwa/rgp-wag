@@ -15,7 +15,24 @@ import { useHomePage } from "@/hooks/useHomePage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import { Building2 } from "lucide-react";
+
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  "name": "Real Gold Properties",
+  "url": "https://realgoldproperties.com.au",
+  "logo": "https://realgoldproperties.com.au/images/RGP-logo.png",
+  "email": "admin@realgoldproperties.com.au",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Brisbane",
+    "addressRegion": "QLD",
+    "addressCountry": "AU",
+  },
+  "areaServed": ["Brisbane", "Gold Coast", "Queensland"],
+};
 
 const isExternalHref = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
 
@@ -60,6 +77,12 @@ export default function HomePage({ ready = false }: { ready?: boolean }) {
 
   return (
     <div ref={pageRef}>
+      <PageSeo
+        title="Premium Real Estate Brisbane & Gold Coast"
+        description="Real Gold Properties — discover luxury homes and investment properties in Brisbane & Gold Coast. Expert agents, exceptional results."
+        path="/"
+        jsonLd={ORG_JSON_LD}
+      />
       <CmsEditBar pageId={id} />
       {hero ? (
         <HeroSection

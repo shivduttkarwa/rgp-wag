@@ -1,8 +1,10 @@
 import "./LegalPage.css";
+import PageSeo from "@/components/reusable/PageSeo";
 
 export default function CookiesPage() {
   return (
     <main className="legal-page">
+      <PageSeo title="Cookie Policy" description="Real Gold Properties Cookie Policy." path="/cookies" noindex />
       <div className="legal-hero">
         <div className="legal-hero__inner">
           <span className="legal-hero__eyebrow">Real Gold Properties</span>

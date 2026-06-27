@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState, useMemo, useEffect } from "react";
+import PageSeo from "@/components/reusable/PageSeo";
 import { useSearchParams } from "react-router-dom";
 import InternalPageHero from "@/sections/InternalPageHero";
 import gsap from "gsap";
@@ -290,6 +291,12 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <div className={pageClassName} ref={pageRef}>
+      <PageSeo
+        title="Properties for Sale & Rent"
+        description="Browse premium properties for sale and rent in Brisbane & Gold Coast. Find your dream home with Real Gold Properties."
+        path="/properties"
+        image="/images/prop-hero.jpg"
+      />
       <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
 

@@ -10,6 +10,7 @@ import { useServicesPage } from "@/hooks/useServicesPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import assetUrl from "@/lib/assetUrl";
 
 export default function ServicesPage({ ready = false }: { ready?: boolean }) {
@@ -155,6 +156,11 @@ export default function ServicesPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <PageSeo
+        title="Our Services"
+        description="Expert real estate services in Brisbane & Gold Coast — buying, selling, property management and investment advisory by Real Gold Properties."
+        path="/services"
+      />
       <CmsEditBar pageId={data.id} />
       {data.hero ? <InternalPageHero ready={ready} hero={data.hero} /> : null}
       <main className="about-page" ref={pageRef}>

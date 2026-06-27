@@ -12,6 +12,7 @@ import { useAboutPage } from "@/hooks/useAboutPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
+import PageSeo from "@/components/reusable/PageSeo";
 import assetUrl from "@/lib/assetUrl";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
@@ -300,6 +301,12 @@ export default function AboutPage({ ready = false }: { ready?: boolean }) {
 
   return (
     <>
+      <PageSeo
+        title="About Us"
+        description="Learn about Real Gold Properties — our story, values and team of expert agents dedicated to finding your perfect property in Brisbane & Gold Coast."
+        path="/about"
+        image="/images/about-hero.jpg"
+      />
       <CmsEditBar pageId={data.id} />
       {sections.hero && <InternalPageHero ready={ready} hero={sections.hero} />}
       <main className="about-page" ref={pageRef}>

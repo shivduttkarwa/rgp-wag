@@ -1,8 +1,10 @@
 import "./LegalPage.css";
+import PageSeo from "@/components/reusable/PageSeo";
 
 export default function CollectionNoticePage() {
   return (
     <main className="legal-page">
+      <PageSeo title="Collection Notice" description="Real Gold Properties Collection Notice." path="/terms" noindex />
       <div className="legal-hero">
         <div className="legal-hero__inner">
           <span className="legal-hero__eyebrow">Real Gold Properties</span>

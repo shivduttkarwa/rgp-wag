@@ -7,6 +7,7 @@ import { fetchPropertyList } from "@/lib/api/propertiesPage";
 import type { Property } from "@/components/reusable/PropertyCard";
 import PropertyCard from "@/components/reusable/PropertyCard";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
+import PageSeo from "@/components/reusable/PageSeo";
 import RgpCta from "@/components/reusable/RgpCta";
 import "./PropertyPage.css";
 
@@ -75,8 +76,37 @@ export default function PropertyPage() {
   if (isLoading) return <PageSkeleton />;
   if (!property) return null;
 
+  const seoDescription = [
+    property.status,
+    property.price_label,
+    property.address,
+    property.city,
+  ].filter(Boolean).join(" · ");
+
   return (
     <>
+      <PageSeo
+        title={property.title}
+        description={seoDescription}
+        image={property.images[0]?.url}
+        path={`/properties/${id}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "RealEstateListing",
+          "name": property.title,
+          "description": seoDescription,
+          "url": `https://realgoldproperties.com.au/properties/${id}`,
+          "image": property.images[0]?.url,
+          "offers": { "@type": "Offer", "price": property.price_label, "priceCurrency": "AUD" },
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": property.address,
+            "addressLocality": property.city,
+            "addressRegion": property.state,
+            "addressCountry": "AU",
+          },
+        }}
+      />
       <PropDetail
         property={property}
       />
