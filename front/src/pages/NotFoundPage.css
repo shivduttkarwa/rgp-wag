@@ -99,12 +99,15 @@
   position: relative;
 }
 
-/* ── Gold divider ── */
-.nf-divider {
-  width: 3.5rem;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--rg-gold), transparent);
-  margin-bottom: 1.75rem;
+/* ── Bouncing architectural watermark ── */
+.nf-arch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: rgba(249, 195, 7, 0.09);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
 }
 
 /* ── Heading ── */
@@ -115,6 +118,7 @@
   color: #ffffff;
   margin: 0 0 1rem;
   letter-spacing: 0.01em;
+  margin-top: 1.25rem;
 }
 
 /* ── Subtext ── */
