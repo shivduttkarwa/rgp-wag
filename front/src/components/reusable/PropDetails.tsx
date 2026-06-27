@@ -22,7 +22,7 @@ interface PropertyData {
   featured?: boolean; images: PropertyImage[]; stats: PropertyStat[];
   overview: string[]; features: PropertyFeature[]; details: PropertyDetail[];
   mapEmbedUrl?: string; nearbyLocations: NearbyLocation[];
-  videoTourUrl?: string; videoThumbnail?: string; agent: Agent;
+  videoTourUrl?: string; virtualTourUrl?: string; videoThumbnail?: string; agent: Agent;
   floorplans?: PropertyImage[];
 }
 
@@ -471,7 +471,8 @@ const PropDetail: React.FC<PropDetailProps> = ({
   const fullAddress = [property.address, property.city, property.state, property.zipCode]
     .filter(Boolean).join(", ");
   const videoThumbnail = property.videoThumbnail || property.images[0]?.url;
-  const showVideo  = Boolean(property.videoTourUrl);
+  const showVideo       = Boolean(property.videoTourUrl);
+  const showVirtualTour = Boolean(property.virtualTourUrl);
   const hasFeatures = property.features.length > 0;
   const hasDetails  = property.details.some(d => d.value?.trim());
   const hasOverview = property.overview.some(p => p.trim());
@@ -548,8 +549,32 @@ const PropDetail: React.FC<PropDetailProps> = ({
 
             {showVideo && (
               <section className="pd-card">
-                <SectionHead eyebrow="Tour" title="Virtual Tour" />
+                <SectionHead eyebrow="Video" title="Property Video" />
                 <VideoSection videoUrl={property.videoTourUrl} thumbnail={videoThumbnail} />
+              </section>
+            )}
+
+            {showVirtualTour && (
+              <section className="pd-card">
+                <SectionHead eyebrow="360°" title="Virtual Tour" />
+                <div className="pd-vtour">
+                  <iframe
+                    src={property.virtualTourUrl}
+                    className="pd-vtour__frame"
+                    allowFullScreen
+                    allow="xr-spatial-tracking"
+                    title="Virtual Tour"
+                    loading="lazy"
+                  />
+                  <a
+                    href={property.virtualTourUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pd-vtour__link"
+                  >
+                    Open Full Screen Tour ↗
+                  </a>
+                </div>
               </section>
             )}
 

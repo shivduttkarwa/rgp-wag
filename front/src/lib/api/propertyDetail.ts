@@ -29,6 +29,7 @@ type PropertyDetailApi = {
     type: "shopping" | "airport" | "dining" | "golf" | "beach" | "school" | "hospital";
   }>;
   video_tour_url?: string;
+  virtual_tour_url?: string;
   video_thumbnail_url?: string;
   floorplans?: Array<{ url: string; alt: string }>;
   agent?: {
@@ -136,6 +137,7 @@ export async function fetchPropertyDetail(slug: string, signal?: AbortSignal): P
     mapEmbedUrl: data.map_embed_url || "",
     nearbyLocations: data.nearbyLocations || [],
     videoTourUrl: data.video_tour_url || "",
+    virtualTourUrl: data.virtual_tour_url || "",
     videoThumbnail: resolveUrl(data.video_thumbnail_url || ""),
     floorplans: (data.floorplans || []).map((fp) => ({ url: resolveUrl(fp.url), alt: fp.alt || "Floorplan" })),
     agent: {

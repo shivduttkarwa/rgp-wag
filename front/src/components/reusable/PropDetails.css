@@ -593,6 +593,29 @@
 }
 .pd-video__play svg { width: 28px; height: 28px; }
 
+/* Virtual Tour */
+.pd-vtour {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.pd-vtour__frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.625rem;
+  border: 1px solid var(--pd-border);
+  display: block;
+}
+.pd-vtour__link {
+  align-self: flex-end;
+  font-size: 0.8rem;
+  color: var(--pd-gold);
+  font-family: var(--font-body);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.pd-vtour__link:hover { text-decoration: underline; }
+
 /* Floorplans */
 .pd-floorplans {
   display: flex;

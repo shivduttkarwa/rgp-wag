@@ -5,6 +5,7 @@ import Footer from "./sections/Footer";
 import Preloader from "./components/Preloader";
 import PageSkeleton from "./components/reusable/PageSkeleton";
 import ErrorBoundary from "./components/ErrorBoundary";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
@@ -54,6 +55,7 @@ function App() {
               path="/expressions-of-interest"
               element={<ExpressionOfInterestPage ready={loaded} />}
             />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
         </ErrorBoundary>

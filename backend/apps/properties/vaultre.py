@@ -378,6 +378,22 @@ def _parse_overview_lines(p: dict) -> list[str]:
     return [line.strip() for line in text.splitlines() if line.strip()]
 
 
+def _parse_external_links(p: dict) -> tuple[str, str]:
+    """Return (video_url, virtual_tour_url) from externalLinks. First match wins per type."""
+    video_url = ""
+    virtual_tour_url = ""
+    for link in p.get("externalLinks") or []:
+        type_name = (link.get("type") or {}).get("name", "").lower()
+        url = link.get("url", "")
+        if not url:
+            continue
+        if type_name == "video" and not video_url:
+            video_url = url
+        elif type_name == "virtual tour" and not virtual_tour_url:
+            virtual_tour_url = url
+    return video_url, virtual_tour_url
+
+
 def _pub_photos(p: dict) -> list[dict]:
     return [
         {
@@ -460,6 +476,7 @@ def normalise_detail(p: dict) -> dict:
     land_area = p.get("landArea") or {}
 
     agents = [a for a in p.get("contactStaff", []) if a.get("showOnWeb")]
+    video_url, virtual_tour_url = _parse_external_links(p)
 
     return {
         # ── Frontend-compatible fields ────────────────────────────────────
@@ -476,7 +493,8 @@ def normalise_detail(p: dict) -> dict:
         "category": p.get("_category", "for-sale"),
         "description": p.get("description", ""),
         "map_embed_url": _map_embed_url(p),
-        "video_tour_url": "",
+        "video_tour_url": video_url,
+        "virtual_tour_url": virtual_tour_url,
         "video_thumbnail_url": "",
         "updated_at": p.get("modified", ""),
         "stats": _make_stats(p, floor_area, land_area),
