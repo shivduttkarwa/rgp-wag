@@ -54,7 +54,7 @@
         line-height: 1.6;
         margin: 0 0 2.25rem;
       ">
-        Press the button below to pull the latest properties from VaultRE and show them on the website. Nothing will be deleted.
+        Press the button below to pull the latest properties from VaultRE and show them on the website.
       </p>
 
       <!-- Divider -->
@@ -91,18 +91,11 @@
       </form>
 
       <!-- Cancel -->
-      <a href="{% url 'wagtailadmin_home' %}" style="
-        display: inline-block;
-        margin-top: 1rem;
-        font-size: 0.8125rem;
-        color: #9ca3af;
-        text-decoration: none;
-        transition: color 0.2s;
-      "
-      onmouseover="this.style.color='#374151'"
-      onmouseout="this.style.color='#9ca3af'"
+      <a href="{% url 'wagtailadmin_home' %}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;margin-top:0.75rem;padding:0.8rem 2rem;background:transparent;color:#6b7280;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9rem;font-weight:500;text-decoration:none;transition:border-color 0.2s,color 0.2s;"
+      onmouseover="this.style.borderColor='#d1d5db';this.style.color='#374151'"
+      onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#6b7280'"
       >
-        Cancel — go back to dashboard
+        Cancel
       </a>
 
     </div>
