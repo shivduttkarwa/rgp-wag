@@ -219,6 +219,31 @@ def get_listing(vault_id: str) -> dict:
     raise ValueError(f"Property {vault_id} not found")
 
 
+def post_enquiry(payload: dict) -> None:
+    """POST a lead enquiry to VaultRE. Fires in a background thread; failures are logged, never raised."""
+    if not settings.VAULTRE_API_KEY or not settings.VAULTRE_ACCESS_TOKEN:
+        logger.debug("[VaultRE] Skipping enquiry post — credentials not configured")
+        return
+
+    # Strip keys with empty-string values so VaultRE doesn't receive noise
+    clean_payload = {k: v for k, v in payload.items() if v != ""}
+
+    def _send():
+        try:
+            resp = requests.post(
+                f"{BASE_URL}/enquiries",
+                headers={**_headers(), "Content-Type": "application/json"},
+                json=clean_payload,
+                timeout=10,
+            )
+            resp.raise_for_status()
+            logger.info("[VaultRE] Enquiry submitted — status=%s originalId=%s", resp.status_code, clean_payload.get("originalId"))
+        except Exception as exc:
+            logger.warning("[VaultRE] Enquiry submission failed: %s", exc)
+
+    threading.Thread(target=_send, daemon=True).start()
+
+
 # ─── Normalisation helpers ────────────────────────────────────────────────────
 
 def _first_photo(p: dict) -> dict | None:

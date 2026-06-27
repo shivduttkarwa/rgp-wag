@@ -4,7 +4,8 @@
       "Bash(mkdir -p d:/Kailash/rgp-wag/backend)",
       "Bash(uv init:*)",
       "Bash(uv sync:*)",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "WebFetch(domain:docs.api.vaultre.com.au)"
     ]
   }
 }
