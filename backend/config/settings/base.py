@@ -192,6 +192,8 @@ CORS_ALLOW_CREDENTIALS = True
 VAULTRE_API_KEY = config("VAULTRE_API_KEY", default="")
 VAULTRE_ACCESS_TOKEN = config("VAULTRE_ACCESS_TOKEN", default="")
 
+RECAPTCHA_SECRET_KEY = config("RECAPTCHA_SECRET_KEY", default="")
+
 # ─── Logging ──────────────────────────────────────────────────────────────────
 
 LOGGING = {

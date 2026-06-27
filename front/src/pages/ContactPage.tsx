@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReCaptchaV2, { type ReCaptchaV2Handle } from "@/components/reusable/ReCaptchaV2";
 import { ChevronDown, Send } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -95,6 +96,8 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [propertyType, setPropertyType] = useState<string>("Any type");
   const [ptOpen, setPtOpen] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const recaptchaRef = useRef<ReCaptchaV2Handle>(null);
 
   useEffect(() => {
     setIntent((prev) => (intentOptions.includes(prev) ? prev : intentOptions[0] || ""));
@@ -267,6 +270,11 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                 const message = String(formData.get("message") ?? "").trim();
                 const fullName = `${firstName} ${lastName}`.trim();
 
+                if (!recaptchaToken) {
+                  setSubmitError("Please complete the reCAPTCHA.");
+                  return;
+                }
+
                 setSubmitError(null);
                 setIsSubmitting(true);
                 try {
@@ -280,11 +288,15 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                       `Intent: ${intent}\n` +
                       `Property type: ${propertyType}\n` +
                       `Budget: ${formatBudget(budget)}`,
+                    recaptcha_token: recaptchaToken,
+                    website: "",
                   });
                   setSuccess(true);
                   form.reset();
                   setPropertyType("Any type");
                   setBudget(budgetDefault);
+                  recaptchaRef.current?.reset();
+                  setRecaptchaToken("");
                 } catch (err) {
                   setSubmitError(
                     err instanceof Error
@@ -405,13 +417,30 @@ export default function ContactPage({ ready = false }: { ready?: boolean }) {
                 </div>
               </div>
 
+              {/* Honeypot — hidden from real users, filled by bots */}
+              <input
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                defaultValue=""
+                style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, pointerEvents: "none" }}
+              />
+
+              <ReCaptchaV2
+                ref={recaptchaRef}
+                onVerify={setRecaptchaToken}
+                onExpire={() => setRecaptchaToken("")}
+              />
+
               <div className="srow">
                 <RgButton
                   variant="gold"
                   type="submit"
                   label={isSubmitting ? "Sending..." : "Send Enquiry"}
                   endIcon={<Send size={18} aria-hidden="true" />}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !recaptchaToken}
                 />
                 <p className="s-note">{contactForm.submit_note}</p>
               </div>

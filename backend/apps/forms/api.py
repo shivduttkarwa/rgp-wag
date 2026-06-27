@@ -8,6 +8,20 @@ from rest_framework.views import APIView
 
 from apps.properties.vaultre import post_enquiry
 from .serializers import ContactFormSerializer, ExpressionOfInterestSerializer, PropertyEnquirySerializer
+from .spam import is_honeypot_filled, verify_recaptcha_v2
+
+
+_CAPTCHA_ERROR = {"detail": "reCAPTCHA verification failed. Please try again."}
+_SILENT_OK = {"detail": "Message received. We'll be in touch soon."}
+
+
+def _spam_check(request) -> "Response | None":
+    """Return a Response to short-circuit if the request looks like spam, else None."""
+    if is_honeypot_filled(request.data):
+        return Response(_SILENT_OK, status=status.HTTP_201_CREATED)
+    if not verify_recaptcha_v2(request.data.get("recaptcha_token", "")):
+        return Response(_CAPTCHA_ERROR, status=status.HTTP_400_BAD_REQUEST)
+    return None
 
 
 def _now_iso() -> str:
@@ -103,6 +117,8 @@ class ContactFormAPIView(APIView):
     authentication_classes = []
 
     def post(self, request: Request) -> Response:
+        if (early := _spam_check(request)):
+            return early
         serializer = ContactFormSerializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save()
@@ -118,6 +134,8 @@ class ExpressionOfInterestAPIView(APIView):
     authentication_classes = []
 
     def post(self, request: Request) -> Response:
+        if (early := _spam_check(request)):
+            return early
         serializer = ExpressionOfInterestSerializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save()
@@ -133,6 +151,8 @@ class PropertyEnquiryAPIView(APIView):
     authentication_classes = []
 
     def post(self, request: Request) -> Response:
+        if (early := _spam_check(request)):
+            return early
         serializer = PropertyEnquirySerializer(data=request.data)
         if serializer.is_valid():
             instance = serializer.save()

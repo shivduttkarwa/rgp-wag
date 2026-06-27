@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import ReCaptchaV2, { type ReCaptchaV2Handle } from "./ReCaptchaV2";
 import "./PropDetails.css";
 import RgButton from "./RgButton";
 import { submitPropertyEnquiry } from "../../lib/api/forms";
@@ -348,12 +349,18 @@ const EnquiryCard: React.FC<{
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const recaptchaRef = useRef<ReCaptchaV2Handle>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!recaptchaToken) {
+      setError("Please complete the reCAPTCHA.");
+      return;
+    }
     setError(null);
     setSubmitting(true);
     try {
@@ -365,11 +372,15 @@ const EnquiryCard: React.FC<{
         property_id: propertyId,
         property_title: propertyTitle,
         agent_name: agent.name || undefined,
+        recaptcha_token: recaptchaToken,
+        website: "",
       });
       onSubmit?.({ ...form, propertyId });
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      recaptchaRef.current?.reset();
+      setRecaptchaToken("");
     } finally {
       setSubmitting(false);
     }
@@ -435,8 +446,25 @@ const EnquiryCard: React.FC<{
             <label>Message</label>
             <textarea name="message" rows={3} placeholder="I'd like to enquire about this property…" value={form.message} onChange={onChange} />
           </div>
+          {/* Honeypot — hidden from real users, filled by bots */}
+          <input
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            defaultValue=""
+            style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, pointerEvents: "none" }}
+          />
+
+          <ReCaptchaV2
+            ref={recaptchaRef}
+            onVerify={setRecaptchaToken}
+            onExpire={() => setRecaptchaToken("")}
+          />
+
           {error && <p className="pd-enquiry__error">{error}</p>}
-          <button type="submit" className="pd-form__submit" disabled={submitting}>
+          <button type="submit" className="pd-form__submit" disabled={submitting || !recaptchaToken}>
             {submitting ? "Sending…" : <><span>Send Enquiry</span> <Icons.arrow /></>}
           </button>
         </form>

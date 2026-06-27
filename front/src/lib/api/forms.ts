@@ -4,7 +4,12 @@ const API_BASE = (
   ""
 ).replace(/\/$/, "");
 
-type ContactPayload = {
+type SpamFields = {
+  recaptcha_token: string;
+  website?: string; // honeypot — always sent as empty string by real users
+};
+
+type ContactPayload = SpamFields & {
   name: string;
   email: string;
   phone?: string;
@@ -12,7 +17,7 @@ type ContactPayload = {
   message: string;
 };
 
-type EoiPayload = {
+type EoiPayload = SpamFields & {
   first_name: string;
   last_name: string;
   email: string;
@@ -62,7 +67,7 @@ async function postJson<TPayload extends object>(
   }
 }
 
-type PropertyEnquiryPayload = {
+type PropertyEnquiryPayload = SpamFields & {
   name: string;
   email: string;
   phone?: string;

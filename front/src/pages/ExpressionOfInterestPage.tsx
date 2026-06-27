@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import ReCaptchaV2, { type ReCaptchaV2Handle } from "@/components/reusable/ReCaptchaV2";
 import InternalPageHero from "@/sections/InternalPageHero";
 import { useEoiPage } from "@/hooks/useEoiPage";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
@@ -304,6 +305,8 @@ export default function ExpressionOfInterestPage({
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const recaptchaRef = useRef<ReCaptchaV2Handle>(null);
 
   useEffect(() => {
     const guards = [
@@ -346,6 +349,11 @@ export default function ExpressionOfInterestPage({
     const budget = getValue("offer_price");
     const timeline = getValue("finance_if_yes_how_many_days");
 
+    if (!recaptchaToken) {
+      setSubmitError("Please complete the reCAPTCHA.");
+      return;
+    }
+
     setSubmitError(null);
     setIsSubmitting(true);
     try {
@@ -379,9 +387,13 @@ export default function ExpressionOfInterestPage({
         solicitor_details: getValue("solicitor_details"),
         are_you_happy_for_us_to_store_your_information_in_our_database:
           getValue("are_you_happy_for_us_to_store_your_information_in_our_database"),
+        recaptcha_token: recaptchaToken,
+        website: "",
       });
       setSuccess(true);
       form.reset();
+      recaptchaRef.current?.reset();
+      setRecaptchaToken("");
     } catch {
       setSubmitError("Could not submit right now. Please try again.");
     } finally {
@@ -469,13 +481,30 @@ export default function ExpressionOfInterestPage({
                   </p>
                 </div>
 
+                {/* Honeypot — hidden from real users, filled by bots */}
+                <input
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  defaultValue=""
+                  style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, pointerEvents: "none" }}
+                />
+
+                <ReCaptchaV2
+                  ref={recaptchaRef}
+                  onVerify={setRecaptchaToken}
+                  onExpire={() => setRecaptchaToken("")}
+                />
+
                 <RgButton
                   variant="gold"
                   type="submit"
                   className="eoi-submit__button"
                   label={isSubmitting ? "Submitting..." : "Submit Expression of Interest"}
                   endIcon={<Send size={18} aria-hidden="true" />}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !recaptchaToken}
                 />
               </div>
               {submitError ? <p className="eoi-submit__note">{submitError}</p> : null}
