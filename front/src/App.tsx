@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./sections/Footer";
 import Preloader from "./components/Preloader";
@@ -22,8 +22,18 @@ const ExpressionOfInterestPage = lazy(
   () => import("./pages/ExpressionOfInterestPage"),
 );
 
+const KNOWN_ROUTES = [
+  "/", "/about", "/services", "/testimonials", "/contact",
+  "/properties", "/privacy", "/terms", "/cookies", "/team",
+  "/expressions-of-interest",
+];
+
 function App() {
-  const [loaded, setLoaded] = useState(false);
+  const { pathname } = useLocation();
+  const isKnownRoute =
+    KNOWN_ROUTES.includes(pathname) ||
+    pathname.startsWith("/properties/");
+  const [loaded, setLoaded] = useState(!isKnownRoute);
 
   useEffect(() => {
     document.body.classList.toggle("loaded", loaded);
@@ -31,7 +41,7 @@ function App() {
 
   return (
     <>
-      <Preloader onComplete={() => setLoaded(true)} />
+      {isKnownRoute && <Preloader onComplete={() => setLoaded(true)} />}
       <div>
         <Header ready={loaded} />
         <ErrorBoundary>

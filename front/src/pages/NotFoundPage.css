@@ -93,21 +93,17 @@
   user-select: none;
 }
 
+@keyframes nf-zero-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .nf-code__zero {
+  display: inline-block;
   color: transparent;
   -webkit-text-stroke: 2px var(--rg-gold);
   position: relative;
-}
-
-/* ── Bouncing architectural watermark ── */
-.nf-arch {
-  position: fixed;
-  top: 0;
-  left: 0;
-  color: rgba(249, 195, 7, 0.09);
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
+  animation: nf-zero-spin 2s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 /* ── Heading ── */
