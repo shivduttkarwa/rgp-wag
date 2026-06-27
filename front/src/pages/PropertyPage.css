@@ -30,6 +30,93 @@
   gap: 1.75rem;
 }
 
+/* ─── Mobile swiper (hidden on desktop) ─────────────────── */
+
+.pd-related__swiper-wrapper {
+  display: none;
+  position: relative;
+}
+
+.pd-related__swiper {
+  padding-top: 0.375rem;
+  padding-bottom: 3rem;
+}
+
+.pd-related__swiper .swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+.pd-related__card-wrap {
+  width: 100%;
+}
+
+.pd-related__card-wrap .property-card {
+  transform: scale(0.9) translateY(0.875rem);
+  opacity: 0.55;
+  transition:
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.5s ease;
+  will-change: transform, opacity;
+  width: 100%;
+  height: 100%;
+}
+
+.pd-related__swiper .swiper-slide-active .property-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.pd-related__swiper .swiper-pagination {
+  bottom: 0;
+}
+
+.pd-related__swiper .swiper-pagination-bullet {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: rgba(0, 31, 73, 0.2);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.pd-related__swiper .swiper-pagination-bullet-active {
+  width: 1.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--rg-gold, #f9c206);
+}
+
+.pd-related__swiper-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.pd-related__swiper-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.0625rem solid rgba(0, 31, 73, 0.2);
+  background-color: rgba(0, 31, 73, 0.05);
+  color: #001f49;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pd-related__swiper-btn:hover:not(:disabled) {
+  background-color: #001f49;
+  border-color: #001f49;
+  color: #fff;
+}
+
+.pd-related__swiper-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1024px) {
   .pd-related {
     padding: 3rem 2rem 4rem;
@@ -39,11 +126,14 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .pd-related {
-    padding: 2.5rem 1.25rem 3rem;
+    padding: 2.5rem 1rem 3rem;
   }
   .pd-related__grid {
-    grid-template-columns: 1fr;
+    display: none;
+  }
+  .pd-related__swiper-wrapper {
+    display: block;
   }
 }

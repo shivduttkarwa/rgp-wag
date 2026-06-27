@@ -1,5 +1,9 @@
-import { useEffect, startTransition, useState } from "react";
+import { useEffect, startTransition, useState, useRef } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import PropDetail from "../components/reusable/PropDetails";
 import type { PropertyData } from "@/components/reusable/PropDetails";
 import { detailCache, fetchPropertyDetail } from "@/lib/api/propertyDetail";
@@ -9,6 +13,8 @@ import PropertyCard from "@/components/reusable/PropertyCard";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageSeo from "@/components/reusable/PageSeo";
 import RgpCta from "@/components/reusable/RgpCta";
+import "swiper/css";
+import "swiper/css/pagination";
 import "./PropertyPage.css";
 
 function pickRelated(all: Property[], currentSlug: string, city: string, category: string): Property[] {
@@ -27,6 +33,8 @@ export default function PropertyPage() {
   const [isLoading, setIsLoading] = useState(id ? !detailCache.has(id) : false);
   const [apiFailed, setApiFailed] = useState(false);
   const [related, setRelated] = useState<Property[]>([]);
+  const relatedSwiperRef = useRef<SwiperType | null>(null);
+  const [relatedSwiperIndex, setRelatedSwiperIndex] = useState(0);
 
   useEffect(() => {
     if (!id) { setIsLoading(false); return; }
@@ -117,10 +125,54 @@ export default function PropertyPage() {
             <h2 className="pd-related__title">Similar Properties</h2>
             <p className="pd-related__sub">You might also be interested in these listings</p>
           </div>
+
+          {/* Desktop grid */}
           <div className="pd-related__grid">
             {related.map((p, i) => (
               <PropertyCard key={p.slug} property={p} cardIndex={i} />
             ))}
+          </div>
+
+          {/* Mobile swiper */}
+          <div className="pd-related__swiper-wrapper">
+            <Swiper
+              className="pd-related__swiper"
+              modules={[Pagination]}
+              spaceBetween={16}
+              slidesPerView={1}
+              speed={400}
+              pagination={{ clickable: true }}
+              onSwiper={(swiper) => { relatedSwiperRef.current = swiper; }}
+              onActiveIndexChange={(swiper) => setRelatedSwiperIndex(swiper.activeIndex)}
+            >
+              {related.map((p, i) => (
+                <SwiperSlide key={p.slug}>
+                  <div className="pd-related__card-wrap">
+                    <PropertyCard property={p} cardIndex={i} />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <div className="pd-related__swiper-nav">
+              <button
+                type="button"
+                className="pd-related__swiper-btn"
+                aria-label="Previous property"
+                disabled={relatedSwiperIndex === 0}
+                onClick={() => relatedSwiperRef.current?.slidePrev()}
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                type="button"
+                className="pd-related__swiper-btn"
+                aria-label="Next property"
+                disabled={relatedSwiperIndex >= related.length - 1}
+                onClick={() => relatedSwiperRef.current?.slideNext()}
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         </section>
       )}

@@ -176,6 +176,7 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
 
   return (
     <section className="pd-gallery">
+      <SectionHead eyebrow="Photos" title="Photo Gallery" />
       <div className="pd-gallery__wrap">
         {/* Main large image */}
         <div className="pd-gallery__main" onClick={() => open(0)} role="button" tabIndex={0} aria-label="Open gallery">

@@ -209,6 +209,17 @@
   padding: 2.5rem var(--pd-pad);
 }
 
+.pd-gallery__title {
+  font-family: var(--font-title, "Bona Nova SC", serif);
+  font-size: 2.55rem;
+  font-weight: 500;
+  color: var(--pd-text);
+  line-height: 1.2;
+  margin: 0 0 1.5rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--pd-border);
+}
+
 .pd-gallery__wrap {
   display: grid;
   grid-template-columns: 62fr 38fr;
@@ -476,7 +487,7 @@
 .pd-specs__row dt {
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--pd-text-3);
+  color: var(--pd-text);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   flex-shrink: 0;
@@ -1011,6 +1022,8 @@
 @media (max-width: 768px) {
   .pd-hero { height: 100svh; min-height: 35rem; }
   .pd-hero__title { font-size: 1.75rem; }
+  .pd-layout { padding-left: 1rem; padding-right: 1rem; }
+  .pd-gallery { padding-left: 1rem; padding-right: 1rem; }
   .pd-sechead__title { font-size: 1.85rem; }
 
   /* Stats bar — 2×2 grid so nothing is cramped */
