@@ -371,7 +371,7 @@ def _inject_featured_portfolio_properties(sections: dict[str, Any]) -> None:
 
 def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
     try:
-        from apps.properties.models import PortfolioShowcaseItem
+        from apps.properties.models import PortfolioShowcaseItem, Property
     except Exception:
         return []
 
@@ -381,13 +381,43 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
     def _img_shape(url: str | None, alt: str) -> dict | None:
         return {"url": url, "width": 0, "height": 0, "alt": alt} if url else None
 
+    def _prop_price_label(prop) -> str:
+        if prop.price_label and prop.price_label != "Listed Price":
+            return prop.price_label
+        return f"${int(prop.price):,}" if prop.price else "Contact Agent"
+
+    _status_display = {
+        "for_sale": "For Sale", "for_rent": "For Rent",
+        "sold": "Sold", "pending": "Pending",
+    }
+
+    def _local_prop_to_item(prop, bg_override=None, thumb_override=None, area_override="") -> dict:
+        card_url = _img(getattr(prop, "card_image", None))
+        bg_url = _img(bg_override) or card_url
+        thumb_url = _img(thumb_override) or card_url or bg_url
+        return {
+            "title": prop.title,
+            "location": f"{prop.city}, {prop.state}" if prop.city else prop.address,
+            "price": _prop_price_label(prop),
+            "status": _status_display.get(prop.status, prop.status),
+            "bg_image": _img_shape(bg_url, prop.title),
+            "thumbnail": _img_shape(thumb_url, prop.title),
+            "interior_image": None,
+            "beds": str(prop.bedrooms),
+            "baths": str(prop.bathrooms),
+            "area": str(prop.area_sqft) if prop.area_sqft else area_override,
+            "property_slug": prop.slug,
+        }
+
     try:
         queryset = (
             PortfolioShowcaseItem.objects.filter(is_active=True)
-            .select_related("background_image", "thumbnail")
+            .select_related("background_image", "thumbnail", "local_property", "local_property__card_image")
             .order_by("order", "id")
         )
         items = []
+        covered_local_pks: set[int] = set()
+
         for item in queryset:
             # ── VaultRE-sourced item ──────────────────────────────────────────
             if item.vault_property_id:
@@ -423,6 +453,14 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                 except Exception:
                     pass
 
+            # ── Local Property FK item ────────────────────────────────────────
+            if item.local_property_id:
+                prop = item.local_property
+                if prop:
+                    covered_local_pks.add(prop.pk)
+                    items.append(_local_prop_to_item(prop, item.background_image, item.thumbnail, item.area))
+                    continue
+
             # ── Manual / Wagtail-only item (fallback) ────────────────────────
             bg_url = _img(item.background_image)
             thumb_url = _img(item.thumbnail) or bg_url
@@ -439,6 +477,16 @@ def _get_portfolio_showcase_items() -> list[dict[str, Any]]:
                 "area": item.area,
                 "property_slug": item.property_slug,
             })
+
+        # Auto-include local properties with show_in_portfolio=True not already covered above
+        auto_props = (
+            Property.objects.filter(show_in_portfolio=True)
+            .exclude(pk__in=covered_local_pks)
+            .select_related("card_image")
+        )
+        for prop in auto_props:
+            items.append(_local_prop_to_item(prop))
+
         return items
     except Exception:
         return []

@@ -170,13 +170,15 @@ def register_properties_menu():
 def vault_portfolio_css():
     return mark_safe("""
 <style>
-#id_vault_property_id {
+#id_vault_property_id,
+#id_local_property {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
   box-sizing: border-box;
 }
-.vault-search-input {
+.vault-search-input,
+.local-search-input {
   width: 100%;
   padding: 6px 10px;
   margin-bottom: 6px;
@@ -194,6 +196,17 @@ def vault_portfolio_js():
     return mark_safe("""
 <script>
 (function () {
+
+  /* ── shared fill helper ── */
+  function fill(id, val) {
+    var el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) {
+      el.value = val;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  /* ── VaultRE property selector ── */
   function initVaultSelect() {
     var sel = document.getElementById('id_vault_property_id');
     if (!sel || sel.dataset.vaultInit) return;
@@ -205,7 +218,7 @@ def vault_portfolio_js():
 
     var search = document.createElement('input');
     search.type = 'text';
-    search.placeholder = 'Search properties…';
+    search.placeholder = 'Search VaultRE properties…';
     search.className = 'vault-search-input';
     sel.parentNode.insertBefore(search, sel);
 
@@ -223,15 +236,6 @@ def vault_portfolio_js():
       var opt = sel.options[sel.selectedIndex];
       if (!opt || !opt.value) return;
       var d = opt.dataset;
-
-      function fill(id, val) {
-        var el = document.getElementById(id);
-        if (el && val !== undefined && val !== null) {
-          el.value = val;
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }
-
       fill('id_title',         d.title);
       fill('id_location',      d.location);
       fill('id_price',         d.price);
@@ -240,10 +244,75 @@ def vault_portfolio_js():
       fill('id_baths',         d.baths);
       fill('id_area',          d.area);
       fill('id_property_slug', d.slug);
+      /* clear local property selector when VaultRE is chosen */
+      var local = document.getElementById('id_local_property');
+      if (local) local.value = '';
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () { setTimeout(initVaultSelect, 200); });
+  /* ── Local property selector ── */
+  function initLocalSelect() {
+    var sel = document.getElementById('id_local_property');
+    if (!sel || sel.dataset.localInit) return;
+    sel.dataset.localInit = '1';
+
+    var allOptions = Array.from(sel.options).map(function (o) {
+      return { el: o.cloneNode(true), text: o.text.toLowerCase(), val: o.value };
+    });
+
+    var search = document.createElement('input');
+    search.type = 'text';
+    search.placeholder = 'Search local properties…';
+    search.className = 'local-search-input';
+    sel.parentNode.insertBefore(search, sel);
+
+    search.addEventListener('input', function () {
+      var q = this.value.toLowerCase().trim();
+      while (sel.options.length) sel.remove(0);
+      allOptions.forEach(function (item) {
+        if (!q || item.val === '' || item.text.includes(q)) {
+          sel.appendChild(item.el.cloneNode(true));
+        }
+      });
+    });
+
+    sel.addEventListener('change', function () {
+      var opt = sel.options[sel.selectedIndex];
+      if (!opt || !opt.value) return;
+      var d = opt.dataset;
+      fill('id_title',         d.title);
+      fill('id_location',      d.location);
+      fill('id_price',         d.price);
+      fill('id_status',        d.status);
+      fill('id_beds',          d.beds);
+      fill('id_baths',         d.baths);
+      fill('id_area',          d.area);
+      fill('id_property_slug', d.slug);
+      /* clear VaultRE selector when local is chosen */
+      var vault = document.getElementById('id_vault_property_id');
+      if (vault) vault.value = '';
+    });
+  }
+
+  /* ── Hide "Add Portfolio Showcase Item" button on the list page ── */
+  function hidePortfolioAddBtn() {
+    if (window.location.pathname.indexOf('portfolioshowcaseitem') === -1) return;
+    /* Only on the list page, not on add/edit pages */
+    if (window.location.pathname.indexOf('/add') !== -1) return;
+    if (/\\/\\d+\\//.test(window.location.pathname)) return;
+    document.querySelectorAll('a[href*="portfolioshowcaseitem/add"]').forEach(function (el) {
+      el.style.display = 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+      initVaultSelect();
+      initLocalSelect();
+      hidePortfolioAddBtn();
+    }, 200);
+  });
+
 })();
 </script>
 """)

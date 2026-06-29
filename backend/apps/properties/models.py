@@ -90,6 +90,14 @@ class Property(ClusterableModel):
         help_text="Used by homepage listing filters (For Sale / Sold / For Rent).",
     )
     featured = models.BooleanField(default=False)
+    show_on_home_prime = models.BooleanField(
+        default=False,
+        help_text="Show this property in the homepage Prime Listing section.",
+    )
+    show_in_portfolio = models.BooleanField(
+        default=False,
+        help_text="Show this property in the homepage Portfolio Showcase section.",
+    )
     sold_price = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
     badge = models.CharField(max_length=120, blank=True, help_text="Optional badge shown on property card.")
     is_new = models.BooleanField(default=False)
@@ -140,6 +148,7 @@ class Property(ClusterableModel):
                 FieldPanel("address"),
                 FieldRowPanel([FieldPanel("city"), FieldPanel("state"), FieldPanel("zip_code")]),
                 FieldRowPanel([FieldPanel("listing_category"), FieldPanel("status"), FieldPanel("featured")]),
+                FieldRowPanel([FieldPanel("show_on_home_prime"), FieldPanel("show_in_portfolio")]),
                 FieldRowPanel([FieldPanel("price"), FieldPanel("price_label"), FieldPanel("sold_price")]),
                 FieldRowPanel([FieldPanel("bedrooms"), FieldPanel("bathrooms"), FieldPanel("garages")]),
                 FieldRowPanel([FieldPanel("area_sqft"), FieldPanel("badge"), FieldPanel("is_new")]),
@@ -256,6 +265,51 @@ class PropertyNearbyLocation(Orderable):
         verbose_name = "Nearby Location"
 
 
+class LocalPropertySelectWidget(Select):
+    """Select widget that populates choices from the local Property DB with auto-fill data attributes."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._local_data: dict = {}
+
+    def _load_choices(self):
+        try:
+            self.choices = [("", "── Select a local property ──")]
+            for prop in Property.objects.select_related("card_image").order_by("title"):
+                pid = str(prop.pk)
+                self._local_data[pid] = prop
+                label = f"{prop.title}  |  {prop.city}, {prop.state}  |  {prop.get_status_display()}"
+                self.choices.append((pid, label))
+        except Exception:
+            self.choices = [("", "── Local properties unavailable ──")]
+
+    def optgroups(self, name, value, attrs=None):
+        self._load_choices()
+        return super().optgroups(name, value, attrs)
+
+    def create_option(self, name, value, label, selected, index, **kwargs):
+        option = super().create_option(name, value, label, selected, index, **kwargs)
+        pid = str(value)
+        prop = self._local_data.get(pid)
+        if prop:
+            pl = (
+                prop.price_label
+                if prop.price_label and prop.price_label != "Listed Price"
+                else (f"${int(prop.price):,}" if prop.price else "")
+            )
+            option["attrs"].update({
+                "data-title":    prop.title,
+                "data-location": f"{prop.city}, {prop.state}" if prop.city else prop.address,
+                "data-price":    pl,
+                "data-status":   prop.get_status_display(),
+                "data-beds":     str(prop.bedrooms),
+                "data-baths":    str(prop.bathrooms),
+                "data-area":     str(prop.area_sqft) if prop.area_sqft else "",
+                "data-slug":     prop.slug,
+            })
+        return option
+
+
 class PortfolioShowcaseItem(models.Model):
     """
     A curated showcase entry for the homepage Portfolio section.
@@ -290,17 +344,26 @@ class PortfolioShowcaseItem(models.Model):
         max_length=50,
         blank=True,
         default="",
-        help_text="VaultRE property ID (find it in the property URL: /properties/<id>). When set, title/price/photos/beds/baths auto-fill from VaultRE.",
+        help_text="VaultRE property ID. When set, title/price/photos/beds/baths auto-fill from VaultRE.",
+    )
+    local_property = models.ForeignKey(
+        "properties.Property",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Local property to link. When set, title/price/beds/baths auto-fill from the local listing.",
     )
     property_slug = models.SlugField(
         blank=True,
-        help_text="Slug of a property listing to link to. Leave blank — auto-set from vault_property_id if provided.",
+        help_text="Slug of a property listing to link to. Leave blank — auto-set from vault_property_id or local_property if provided.",
     )
     is_active = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0, help_text="Sort order in the showcase.")
 
     panels = [
         FieldPanel("vault_property_id", widget=VaultPropertySelectWidget()),
+        FieldPanel("local_property", widget=LocalPropertySelectWidget()),
         FieldRowPanel([FieldPanel("title"), FieldPanel("status")]),
         FieldRowPanel([FieldPanel("location"), FieldPanel("price")]),
         FieldPanel("background_image"),
