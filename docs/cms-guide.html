@@ -21,13 +21,58 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   background:#fff;
   color:var(--text);
-  font-size:15px;
+  font-size: 1rem;
   line-height:1.6;
 }
 
+/* ─── Responsive root font-size (×1.3 scale) ─────────────── */
+html {
+  font-size: 20.8px; /* <= 479px (mobile baseline) */
+}
+@media (min-width: 480px) {
+  html { font-size: 20.8px; }
+}
+@media (min-width: 640px) {
+  html { font-size: 20.8px; }
+}
+/* iPad portrait */
+@media (min-width: 768px) {
+  html { font-size: 20.8px; }
+}
+/* iPad Air / Pro 11 portrait */
+@media (min-width: 834px) {
+  html { font-size: 19.2px; }
+}
+/* iPad landscape */
+@media (min-width: 1024px) {
+  html { font-size: 16.3px; }
+}
+@media (min-width: 1280px) {
+  html { font-size: 16.9px; }
+}
+@media (min-width: 1440px) {
+  html { font-size: 20.2px; }
+}
+@media (min-width: 1536px) {
+  html { font-size: 20.8px; }
+}
+@media (min-width: 1728px) {
+  html { font-size: 21.5px; }
+}
+@media (min-width: 1920px) {
+  html { font-size: 25.4px; }
+}
+@media (min-width: 2240px) {
+  html { font-size: 24.1px; }
+}
+@media (min-width: 2560px) {
+  html { font-size: 25.4px; }
+}
+
+
 /* ── HEADER ── */
 .hdr{background:var(--navy);padding:2.75rem 2rem}
-.hdr-in{max-width:860px;margin:0 auto}
+.hdr-in{max-width:clamp(860px,82vw,1200px);margin:0 auto}
 .hdr-brand{color:var(--gold);font-size:1.05rem;font-weight:700;letter-spacing:0.04em;margin:0 0 1rem}
 .hdr h1{color:#fff;font-size:clamp(1.6rem,3vw,2.25rem);font-weight:700;margin-bottom:0.4rem}
 .hdr h1 em{color:var(--gold);font-style:normal}
@@ -35,13 +80,13 @@ body{
 
 /* ── CONTENTS NAV ── */
 .toc{background:var(--bg);border-bottom:1px solid var(--border);padding:1.1rem 2rem}
-.toc-in{max-width:860px;margin:0 auto;display:flex;flex-wrap:wrap;gap:0.4rem 1rem;align-items:center}
+.toc-in{max-width:clamp(860px,82vw,1200px);margin:0 auto;display:flex;flex-wrap:wrap;gap:0.4rem 1rem;align-items:center}
 .toc-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-right:0.5rem}
 .toc a{font-size:0.78rem;color:var(--navy);text-decoration:none;opacity:0.7}
 .toc a:hover{opacity:1;text-decoration:underline}
 
 /* ── MAIN ── */
-main{max-width:860px;margin:0 auto;padding:0 2rem 5rem}
+main{max-width:clamp(860px,82vw,1200px);margin:0 auto;padding:0 2rem 5rem}
 
 /* ── STEP ── */
 .step{padding:3.5rem 0;border-bottom:1px solid var(--border)}
@@ -120,7 +165,7 @@ main{max-width:860px;margin:0 auto;padding:0 2rem 5rem}
 .ibox-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;margin-bottom:0.5rem}
 
 /* field grid for properties */
-.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin:1.1rem 0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
 .fcard{background:var(--bg);border:1px solid var(--border);border-radius:0.5rem;padding:0.85rem 1rem}
 .fcard-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;
   color:var(--gold);font-weight:700;margin-bottom:0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.35rem}
