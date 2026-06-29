@@ -167,7 +167,6 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
                   {/* Thumb strip */}
                   <div className="pc-thumb">
                     <img src={project.thumb} alt={project.title} />
-                    <div className="pc-price-tag">{project.price}</div>
                   </div>
 
                   {/* Content */}
