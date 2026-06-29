@@ -57,8 +57,6 @@ def _collect_agents() -> list[dict]:
                 aid = a.get("id")
                 if not aid or aid in seen:
                     continue
-                if not a.get("showOnWeb"):
-                    continue
                 # Skip company/office entries — their firstName contains spaces
                 first = (a.get("firstName") or "").strip()
                 if not first or " " in first:
