@@ -23,7 +23,7 @@
 }
 
 .legal-hero__inner {
-  max-width: 56.25rem;
+  max-width: clamp(56.25rem, 70vw, 68.75rem);
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -74,7 +74,7 @@
 }
 
 .legal-content__inner {
-  max-width: 900px;
+  max-width: clamp(56.25rem, 70vw, 68.75rem);
   margin: 0 auto;
 }
 
@@ -209,6 +209,21 @@
 }
 
 /* ---- Responsive ---- */
+@media (min-width: 1280px) {
+  .legal-content {
+    padding: 96px 60px 144px;
+  }
+
+  .legal-section h2 {
+    font-size: 14px;
+  }
+
+  .legal-section p,
+  .legal-section ul li {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   .legal-hero {
     padding: 7.5rem 1.5rem 3.5rem;
