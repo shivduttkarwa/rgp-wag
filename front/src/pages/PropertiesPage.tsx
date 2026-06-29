@@ -10,6 +10,7 @@ import {
   ChevronDown,
   X,
   ArrowRight,
+  Search,
 } from "lucide-react";
 import {
   PropertyCard,
@@ -164,6 +165,8 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
     showAll: false,
   };
 
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") ?? "");
+
   // activeFilters drives UI controls (immediate feedback)
   // displayedFilters drives the grid (lags 280ms behind for exit animation)
   const [activeFilters, setActiveFilters] = useState<Filters>(initialFilters);
@@ -253,6 +256,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const clearFilters = () => {
     pendingRef.current = { ...DEFAULT_FILTERS };
     setActiveFilters({ ...DEFAULT_FILTERS });
+    setSearchQuery("");
     if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
     setIsExiting(true);
     exitTimerRef.current = setTimeout(() => {
@@ -262,16 +266,28 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   };
 
   // ── Data ─────────────────────────────────────────────────────────────────
+  const applySearch = (items: Property[], q: string) => {
+    if (!q.trim()) return items;
+    const lower = q.toLowerCase().trim();
+    return items.filter(
+      (p) =>
+        p.title.toLowerCase().includes(lower) ||
+        p.location.toLowerCase().includes(lower),
+    );
+  };
+
   // filtered/displayed are from displayedFilters (what the grid actually shows)
   const filtered = useMemo(() => {
     const result = applyFilters(sourceProperties, displayedFilters);
-    return displayedFilters.cat === "all" ? sortAll(result) : result;
-  }, [sourceProperties, displayedFilters]);
+    const sorted = displayedFilters.cat === "all" ? sortAll(result) : result;
+    return applySearch(sorted, searchQuery);
+  }, [sourceProperties, displayedFilters, searchQuery]);
   // activeFiltered is for the result count badge (updates immediately)
   const activeFiltered = useMemo(() => {
     const result = applyFilters(sourceProperties, activeFilters);
-    return activeFilters.cat === "all" ? sortAll(result) : result;
-  }, [sourceProperties, activeFilters]);
+    const sorted = activeFilters.cat === "all" ? sortAll(result) : result;
+    return applySearch(sorted, searchQuery);
+  }, [sourceProperties, activeFilters, searchQuery]);
 
   const displayed = displayedFilters.showAll
     ? filtered
@@ -284,7 +300,8 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const hasActiveFilters =
     activeFilters.price !== "all" ||
     activeFilters.beds !== "any" ||
-    activeFilters.baths !== "any";
+    activeFilters.baths !== "any" ||
+    searchQuery !== "";
 
   if (status === "loading") return <PageSkeleton />;
   if (status === "error") return <PageError />;
@@ -401,6 +418,32 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
           ) : null}
         </div>
       </div>
+
+      {/* ── Search Bar ─────────────────────────────────────────────────── */}
+      {hasListings && (
+        <div className="ap-search-row">
+          <div className="ap-search-wrap">
+            <Search size={18} className="ap-search-icon" />
+            <input
+              type="text"
+              className="ap-search-input"
+              placeholder="Search by property name or location…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search properties"
+            />
+            {searchQuery && (
+              <button
+                className="ap-search-clear"
+                onClick={() => setSearchQuery("")}
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Grid ───────────────────────────────────────────────────────── */}
       {hasListings ? (
