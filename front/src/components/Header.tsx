@@ -11,8 +11,9 @@ export default function Header({ ready = false }: { ready?: boolean }) {
   const headerRef = useRef<HTMLElement>(null);
   const headerBgRef = useRef<HTMLDivElement>(null);
   const mobileMenuEffectInit = useRef(false);
+  const lastScrollYRef = useRef(0);
+  const scrollHideEnabledRef = useRef(false);
   const location = useLocation();
-  const publicUrl = import.meta.env.BASE_URL || "/";
   const logoSrc = `${import.meta.env.BASE_URL}images/RGP-logo.png`;
 
   const setHeaderVisible = (visible: boolean, immediate = false) => {
@@ -30,24 +31,45 @@ export default function Header({ ready = false }: { ready?: boolean }) {
     setMobileOpen(false);
   }, [location.pathname]);
 
+  // Enable scroll-hide only after the preloader has fully exited and the browser's
+  // scroll restoration has settled. Before this point, scroll events are only used
+  // to keep lastScrollYRef in sync, never to hide/show the header.
+  useEffect(() => {
+    if (!ready) return;
+    // Preloader exit animation takes ~1 s after onComplete fires (which sets ready=true).
+    // Adding 500 ms buffer → 1.5 s total gives scroll restoration time to settle.
+    const t = window.setTimeout(() => {
+      scrollHideEnabledRef.current = true;
+    }, 1500);
+    return () => window.clearTimeout(t);
+  }, [ready]);
+
   // Scroll-hide / scroll-reveal behaviour
   useEffect(() => {
-    let lastScrollY = window.scrollY;
+    lastScrollYRef.current = window.scrollY;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const isScrollingUp = currentScrollY < lastScrollY;
+
+      // While the preloader is still active (or settling), keep lastScrollY
+      // in sync but don't execute any hide / show logic.
+      if (!scrollHideEnabledRef.current) {
+        lastScrollYRef.current = currentScrollY;
+        return;
+      }
+
+      const isScrollingUp = currentScrollY < lastScrollYRef.current;
 
       if (headerRef.current) {
         if (isScrollingUp && currentScrollY > 100) {
-          gsap.to(headerRef.current, { y: 0, duration: 0.4, ease: "power3.out" });
+          gsap.to(headerRef.current, { y: 0, duration: 0.4, ease: "power3.out", overwrite: true });
           if (headerBgRef.current) {
             gsap.to(headerBgRef.current, {
               opacity: 1, scaleY: 1, duration: 0.25, ease: "power2.out", overwrite: true,
             });
           }
         } else if (currentScrollY > 120) {
-          gsap.to(headerRef.current, { y: "-100%", duration: 0.4, ease: "power3.out" });
+          gsap.to(headerRef.current, { y: "-100%", duration: 0.4, ease: "power3.out", overwrite: true });
         }
 
         if (currentScrollY <= 100 && headerBgRef.current) {
@@ -57,21 +79,13 @@ export default function Header({ ready = false }: { ready?: boolean }) {
         }
       }
 
-      lastScrollY = currentScrollY;
+      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Set initial y position based on route
-  useEffect(() => {
-    if (!headerRef.current) return;
-    if (location.pathname !== "/" && location.pathname !== publicUrl) {
-      gsap.set(headerRef.current, { y: 0 });
-    }
-  }, [location.pathname, publicUrl]);
 
   // Fade header bg out when mobile menu opens, restore on close
   useEffect(() => {
@@ -91,17 +105,6 @@ export default function Header({ ready = false }: { ready?: boolean }) {
     }
   }, [mobileOpen]);
 
-  // Slide header in after hero finishes on homepage
-  useEffect(() => {
-    if (!ready || !headerRef.current) return;
-    if (location.pathname !== "/" && location.pathname !== publicUrl) return;
-    gsap.to(headerRef.current, {
-      y: 0,
-      duration: 0.55,
-      ease: "power3.out",
-      delay: 0.95,
-    });
-  }, [ready, location.pathname, publicUrl]);
 
   return (
     <>
