@@ -36,7 +36,7 @@ def normalise_local_list(prop) -> dict:
     status = _STATUS_DISPLAY.get(prop.status, prop.status)
     location = f"{prop.city}, {prop.state}" if prop.city and prop.state else (prop.city or prop.state or "")
     return {
-        "id": f"local-{prop.pk}",
+        "id": prop.pk,
         "slug": prop.slug,
         "title": prop.title,
         "address": prop.address,

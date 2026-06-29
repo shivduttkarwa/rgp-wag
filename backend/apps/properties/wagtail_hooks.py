@@ -294,22 +294,10 @@ def vault_portfolio_js():
     });
   }
 
-  /* ── Hide "Add Portfolio Showcase Item" button on the list page ── */
-  function hidePortfolioAddBtn() {
-    if (window.location.pathname.indexOf('portfolioshowcaseitem') === -1) return;
-    /* Only on the list page, not on add/edit pages */
-    if (window.location.pathname.indexOf('/add') !== -1) return;
-    if (/\\/\\d+\\//.test(window.location.pathname)) return;
-    document.querySelectorAll('a[href*="portfolioshowcaseitem/add"]').forEach(function (el) {
-      el.style.display = 'none';
-    });
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     setTimeout(function () {
       initVaultSelect();
       initLocalSelect();
-      hidePortfolioAddBtn();
     }, 200);
   });
 

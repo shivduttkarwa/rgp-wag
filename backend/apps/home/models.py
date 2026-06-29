@@ -530,11 +530,24 @@ def _inject_home_property_listing_cards(sections: dict[str, Any]) -> None:
 
 
 def _get_properties_page_listing_items() -> list[dict[str, Any]]:
+    from apps.properties.api import normalise_local_list
+    from apps.properties.models import Property
+
     try:
         from apps.properties.vaultre import get_listings, normalise_list
-        return [normalise_list(p) for p in get_listings()]
+        vault = [normalise_list(p) for p in get_listings()]
     except Exception:
-        return []
+        vault = []
+
+    try:
+        local = [
+            normalise_local_list(p)
+            for p in Property.objects.select_related("card_image").all()
+        ]
+    except Exception:
+        local = []
+
+    return vault + local
 
 
 def _get_active_video_testimonial_items() -> list[dict[str, Any]]:
