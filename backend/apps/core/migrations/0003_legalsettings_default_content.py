@@ -117,7 +117,9 @@ PRIVACY_POLICY_HTML = """<h2>Introduction</h2>
 
 <h2>12. Contact Us and Complaints</h2>
 <p>If you have any questions, concerns, or complaints regarding this Privacy Policy or the handling of your personal information, please contact us:</p>
-<p>Real Gold Properties<br>PO Box 4024 Forest Lake, 4078, QLD, Australia<br>Email: <a href="mailto:admin@realgoldproperties.com.au">admin@realgoldproperties.com.au</a></p>
+<p>Real Gold Properties</p>
+<p>PO Box 4024 Forest Lake, 4078, QLD, Australia</p>
+<p>Email: <a href="mailto:admin@realgoldproperties.com.au">admin@realgoldproperties.com.au</a></p>
 <p>We will respond to your enquiry within a reasonable timeframe and take all reasonable steps to resolve any issues promptly and fairly.</p>
 
 <h2>13. Changes to This Privacy Policy</h2>
@@ -126,7 +128,8 @@ PRIVACY_POLICY_HTML = """<h2>Introduction</h2>
 
 COLLECTION_NOTICE_HTML = """<h2>Who Are We?</h2>
 <p>This information is being collected by Real Gold Properties.</p>
-<p>Address: PO Box 4024, Forest Lakes QLD 4078<br>Email: <a href="mailto:admin@realgoldproperties.com.au">admin@realgoldproperties.com.au</a></p>
+<p>Address: PO Box 4024, Forest Lakes QLD 4078</p>
+<p>Email: <a href="mailto:admin@realgoldproperties.com.au">admin@realgoldproperties.com.au</a></p>
 <p>Our full Privacy Policy is available on our website. If you require further information about our privacy practices, please contact us using the details above.</p>
 <p>By providing your personal information to us, you consent to its collection, use, storage, and disclosure in accordance with this Collection Notice and our Privacy Policy.</p>
 
