@@ -25,16 +25,6 @@
   margin-right: auto;
 }
 
-.svc__eyebrow {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--rg-gold);
-  margin-bottom: 1rem;
-}
 
 .svc__title {
   font-family: var(--font-title);

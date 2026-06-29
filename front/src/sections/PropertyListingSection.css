@@ -23,23 +23,6 @@
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
 }
 
-.property-section .section-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #fdf4e3;
-  color: var(--rg-text-medium);
-  padding: 0.5rem 1rem;
-  border-radius: var(--rg-radius);
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-}
-
-.property-section .section-badge svg {
-  color: var(--rg-gold);
-}
 
 .property-section .section-title {
   font-family: var(--font-title);

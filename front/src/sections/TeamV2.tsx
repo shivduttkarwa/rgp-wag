@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Users } from "lucide-react";
 import assetUrl from "@/lib/assetUrl";
 import { renderHeroAccentTokens } from "@/lib/heroTokens";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import type { TeamMemberData, TeamSectionData } from "@/types/teamPage";
 import "./TeamV2.css";
 
@@ -78,7 +80,7 @@ export default function TeamV2({ section, members }: TeamV2Props) {
       {/* ── Header ── */}
       <header className="tv2__header">
         <div className="tv2__header-left">
-          <span className="tv2__eyebrow">{section.eyebrow}</span>
+          <SectionBadge text={section.eyebrow} icon={Users} />
           <h2 className="tv2__title">
             {renderHeroAccentTokens(section.title_line_1)} <br />
             {renderHeroAccentTokens(section.title_line_2)}

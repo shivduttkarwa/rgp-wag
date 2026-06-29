@@ -20,17 +20,7 @@
   gap: 0;
 }
 
-/* Label */
-.intro-label {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--rg-gold);
-  margin-bottom: 1rem;
-}
+
 
 /* Headline */
 .intro-headline {
@@ -221,9 +211,6 @@
     align-items: center;
   }
 
-  .intro-label {
-    justify-content: center;
-  }
 
   .intro-text {
     max-width: 100%;

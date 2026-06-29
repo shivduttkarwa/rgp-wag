@@ -1,4 +1,6 @@
+import { User } from "lucide-react";
 import assetUrl from "@/lib/assetUrl";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import type { IntroSection } from "@/types/homePage";
 import "./Intro.css";
 
@@ -7,9 +9,7 @@ const Intro = ({ data }: { data: IntroSection }) => {
     <section className="intro">
       {/* Left: Content */}
       <div className="intro-content">
-        <span className="intro-label" data-gsap="fade-up">
-          {data.label}
-        </span>
+        <SectionBadge text={data.label} icon={User} />
 
         <h1
           className="intro-headline"

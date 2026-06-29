@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
+import { LayoutGrid } from "lucide-react";
 import type { PortfolioSection } from "@/types/homePage";
 import assetUrl from "@/lib/assetUrl";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import "./PortfolioShowcase.css";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -129,9 +131,7 @@ const PortfolioShowcase: React.FC<PortfolioShowcaseProps> = ({ data }) => {
   return (
     <section className="project-feature" ref={sectionRef}>
       <div className="pf-header">
-        <span data-gsap="fade-up" className="rg-eyebrow">
-          {section.eyebrow}
-        </span>
+        <SectionBadge text={section.eyebrow} icon={LayoutGrid} />
         <h3 data-gsap="char-reveal" className="rg-section-title">
           {section.heading} <em>{section.heading_em}</em>
         </h3>

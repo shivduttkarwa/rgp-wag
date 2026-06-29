@@ -16,14 +16,6 @@
   text-align: center;
 }
 
-.rg-about__kicker {
-  font-family: var(--font-body);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  color: var(--rg-gold);
-  margin-bottom: 1.25rem;
-}
 
 .rg-about__headline {
   font-family: var(--font-title);
@@ -65,15 +57,6 @@
   align-items: center;
 }
 
-.rg-about__eyebrow {
-  display: inline-block;
-  font-family: var(--font-body);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.72rem;
-  color: var(--rg-gold);
-  margin-bottom: 1rem;
-}
 
 .rg-about__capsTitle,
 .rg-about__capsTitle--big {

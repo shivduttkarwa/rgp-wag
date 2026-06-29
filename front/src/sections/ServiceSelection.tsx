@@ -2,8 +2,10 @@ import {
   TrendingUp,
   Search,
   CalendarCheck,
+  Briefcase,
 } from "lucide-react";
 import CmsButton from "@/components/reusable/CmsButton";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import type { ServicesSection } from "@/types/homePage";
 import "./ServiceSelection.css";
 
@@ -20,9 +22,7 @@ const ServiceSelection = ({ data }: { data?: ServicesSection }) => {
     <section className="svc">
       <div className="svc__container">
         <header className="svc__header">
-          <span className="svc__eyebrow" data-gsap="fade-up">
-            {data.header_eyebrow}
-          </span>
+          <SectionBadge text={data.header_eyebrow} icon={Briefcase} />
           <h2
             className="svc__title"
             data-gsap="char-reveal"

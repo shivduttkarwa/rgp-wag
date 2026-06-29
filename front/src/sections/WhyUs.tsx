@@ -1,5 +1,7 @@
 // WhyUs.tsx
 import { useEffect, useMemo, useRef } from "react";
+import { Award } from "lucide-react";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import "./WhyUs.css";
 
 type Benefit = {
@@ -269,9 +271,7 @@ export default function WhyUs() {
       <div className="whyus__overlay" aria-hidden="true" />
 
       <div className="whyus__wrap">
-        <div className="whyus__label" aria-hidden="false" data-gsap="fade-up">
-          <span className="whyus__labelText">Why Us</span>
-        </div>
+        <SectionBadge text="Why Us" icon={Award} />
 
         <div className="whyus__content">
           <h2

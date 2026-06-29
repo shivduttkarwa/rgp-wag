@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+import { MessageCircle } from "lucide-react";
 import type { VideoTestimonialsSection } from "@/types/homePage";
 import assetUrl from "@/lib/assetUrl";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import "swiper/css";
 import "swiper/css/pagination";
 import "./Philosophy.css";
@@ -149,9 +151,7 @@ export default function PhilosophyPillars({ data }: { data?: VideoTestimonialsSe
     <section className="rg-philo" aria-label="Client Testimonials">
       <div className="rg-philo__wrap">
         <header className="rg-philo__head">
-          <p data-gsap="fade-up" className="rg-philo__label">
-            {section.section_label}
-          </p>
+          <SectionBadge text={section.section_label} icon={MessageCircle} />
           <h2
             data-gsap="char-reveal"
             data-gsap-start="top 85%"

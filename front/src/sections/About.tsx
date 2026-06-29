@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { Sparkles, MapPin } from "lucide-react";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import "./About.css";
 import PropertySlider from "./PropertySlider";
 
@@ -173,9 +175,7 @@ const About: React.FC<AboutProps> = ({
     <section className="rg-about" aria-label="About Real Gold Properties">
       {/* 1) Big centered intro statement */}
       <div className="rg-about__intro">
-        <div className="rg-about__kicker" data-gsap="fade-up">
-          {introKicker}
-        </div>
+        <SectionBadge text={introKicker} icon={Sparkles} />
         <h2
           className="rg-about__headline"
           data-gsap="word-write"
@@ -205,9 +205,7 @@ const About: React.FC<AboutProps> = ({
           </figure>
 
           <div className="rg-about__splitCopy">
-            <div className="rg-about__eyebrow" data-gsap="fade-up">
-              {splitKicker}
-            </div>
+            <SectionBadge text={splitKicker} icon={MapPin} />
 
             <h3
               className="rg-about__splitTitle"

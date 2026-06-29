@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -105,10 +106,7 @@ const PropertyListingSection = ({
       <div className="property-container">
         <header className="section-header">
           {data.section_title?.eyebrow ? (
-            <div className="section-badge" data-gsap="fade-up">
-              <Building2 size={16} />
-              <span>{data.section_title.eyebrow}</span>
-            </div>
+            <SectionBadge text={data.section_title.eyebrow} icon={Building2} />
           ) : null}
           {data.section_title?.title ? (
             <h2

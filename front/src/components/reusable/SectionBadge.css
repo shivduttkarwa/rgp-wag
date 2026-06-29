@@ -1,0 +1,19 @@
+.section-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fdf4e3;
+  color: var(--rg-text-medium, rgba(0, 31, 73, 0.65));
+  padding: 0.5rem 1rem;
+  border-radius: var(--rg-radius, 0.5rem);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.section-badge svg {
+  color: var(--rg-gold, #f9c206);
+  flex-shrink: 0;
+}

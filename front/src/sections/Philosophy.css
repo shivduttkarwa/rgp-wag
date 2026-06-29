@@ -18,17 +18,9 @@
   max-width: 62ch;
   margin: 0 auto;
   text-align: center;
+  justify-items: center;
 }
 
-.rg-philo__label {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--rg-gold);
-}
 
 .rg-philo__title {
   margin: 0;

@@ -45,6 +45,11 @@ section.project-feature .pf-header {
 }
 
 
+section.project-feature .pf-header .section-badge {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+}
+
 /* ─── Block text (title) ─── */
 section.project-feature .block-text {
   width: 100%;

@@ -30,16 +30,6 @@
   flex-shrink: 0;
 }
 
-.tv2__eyebrow {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.24em;
-  color: var(--rg-gold);
-  margin-bottom: 1.1rem;
-}
 
 .tv2__title {
   font-family: var(--font-title);
