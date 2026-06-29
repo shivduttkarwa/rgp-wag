@@ -243,3 +243,92 @@
     padding: 2.5rem 1.25rem 4rem;
   }
 }
+
+/* ── Rich text output from Wagtail CMS ── */
+.legal-rich h1,
+.legal-rich h2,
+.legal-rich h3 {
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #00032e;
+  margin: 52px 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0, 3, 46, 0.12);
+}
+
+.legal-rich h1:first-child,
+.legal-rich h2:first-child,
+.legal-rich h3:first-child {
+  margin-top: 0;
+}
+
+.legal-rich p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #3a3f5c;
+  margin: 0 0 14px;
+}
+
+.legal-rich ul,
+.legal-rich ol {
+  margin: 10px 0 14px 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.legal-rich ul li,
+.legal-rich ol li {
+  font-size: 15px;
+  line-height: 1.85;
+  color: #3a3f5c;
+  padding-left: 14px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.legal-rich ul li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: #f9c307;
+  font-weight: 600;
+}
+
+.legal-rich ol {
+  counter-reset: li;
+}
+
+.legal-rich ol li::before {
+  counter-increment: li;
+  content: counter(li) ".";
+  position: absolute;
+  left: 0;
+  color: #f9c307;
+  font-weight: 600;
+}
+
+.legal-rich a {
+  color: #0f1870;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(15, 24, 112, 0.35);
+}
+
+.legal-rich a:hover {
+  color: #f9c307;
+  text-decoration-color: #f9c307;
+}
+
+.legal-rich strong,
+.legal-rich b {
+  font-weight: 700;
+  color: #00032e;
+}
+
+.legal-rich em,
+.legal-rich i {
+  font-style: italic;
+}

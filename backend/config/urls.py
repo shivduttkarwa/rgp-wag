@@ -14,6 +14,7 @@ from apps.home.api import (
     AboutPageAPIView, CmsAuthView, ContactPageAPIView, EoiPageAPIView,
     HomePageAPIView, PropertiesPageAPIView, ServicesPageAPIView,
     TeamPageAPIView, TestimonialsPageAPIView,
+    PrivacyPolicyAPIView, CollectionNoticeAPIView,
 )
 from apps.properties.api import PropertyListAPIView, PropertyDetailAPIView
 from apps.forms.api import ContactFormAPIView, ExpressionOfInterestAPIView, PropertyEnquiryAPIView
@@ -51,7 +52,9 @@ urlpatterns = [
     path("api/pages/about/",           AboutPageAPIView.as_view(),           name="api-about-page"),
     path("api/pages/services/",        ServicesPageAPIView.as_view(),        name="api-services-page"),
     path("api/pages/testimonials/",    TestimonialsPageAPIView.as_view(),    name="api-testimonials-page"),
-    path("api/pages/eoi/",             EoiPageAPIView.as_view(),             name="api-eoi-page"),
+    path("api/pages/eoi/",              EoiPageAPIView.as_view(),             name="api-eoi-page"),
+    path("api/pages/privacy/",          PrivacyPolicyAPIView.as_view(),       name="api-privacy"),
+    path("api/pages/collection-notice/", CollectionNoticeAPIView.as_view(),   name="api-collection-notice"),
 
     path("sitemap.xml",                sitemap_view,                         name="sitemap"),
     path("api/properties/",            PropertyListAPIView.as_view(),        name="api-property-list"),

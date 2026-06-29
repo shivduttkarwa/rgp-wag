@@ -117,3 +117,29 @@ class EoiPageAPIView(APIView):
         if page is None:
             return Response({"detail": "EOI page not yet published."}, status=404)
         return Response(page.get_api_representation())
+
+
+class PrivacyPolicyAPIView(APIView):
+    """GET /api/pages/privacy/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        from wagtail.models import Site
+        from apps.core.models import LegalSettings
+        site = Site.objects.filter(is_default_site=True).first()
+        settings = LegalSettings.for_site(site) if site else None
+        body = settings.privacy_policy if settings else ""
+        return Response({"body": body})
+
+
+class CollectionNoticeAPIView(APIView):
+    """GET /api/pages/collection-notice/"""
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        from wagtail.models import Site
+        from apps.core.models import LegalSettings
+        site = Site.objects.filter(is_default_site=True).first()
+        settings = LegalSettings.for_site(site) if site else None
+        body = settings.collection_notice if settings else ""
+        return Response({"body": body})
