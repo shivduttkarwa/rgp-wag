@@ -269,10 +269,10 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const applySearch = (items: Property[], q: string) => {
     if (!q.trim()) return items;
     const lower = q.toLowerCase().trim();
-    return items.filter(
-      (p) =>
-        p.title.toLowerCase().includes(lower) ||
-        p.location.toLowerCase().includes(lower),
+    return items.filter((p) =>
+      [p.title, p.location, p.address, p.price_label, p.badge, p.agent]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(lower)),
     );
   };
 

@@ -32,6 +32,9 @@ export interface Property {
   minLease?: string;
   featured?: boolean;
   type?: string;
+  address?: string;
+  price_label?: string;
+  agent?: string;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
