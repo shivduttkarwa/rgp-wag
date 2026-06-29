@@ -99,7 +99,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Found {len(agents)} agent(s) from VaultRE.")
 
         for idx, a in enumerate(agents):
-            slug = f"vault-{a['vault_id']}"
+            slug = f"vaultre-{a['vault_id']}"
             defaults = {
                 "name": a["name"],
                 "role": a["position"] or "Property Specialist",

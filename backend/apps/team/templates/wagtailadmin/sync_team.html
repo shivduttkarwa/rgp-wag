@@ -1,0 +1,109 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% block titletag %}Sync Team Members{% endblock %}
+
+{% block content %}
+<div style="min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 2rem;">
+
+  <div style="width: 100%; max-width: 520px; text-align: center;">
+
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'error' %}
+          <div style="margin-bottom:1.5rem;padding:0.875rem 1.25rem;border-radius:8px;font-size:0.9rem;font-weight:500;background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;">
+            {{ message }}
+          </div>
+        {% else %}
+          <div style="margin-bottom:1.5rem;padding:0.875rem 1.25rem;border-radius:8px;font-size:0.9rem;font-weight:500;background:#f0fdf4;color:#15803d;border:1px solid #86efac;">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <!-- Card -->
+    <div style="
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    ">
+
+      <!-- Icon -->
+      <div style="margin: 0 auto 1.75rem; line-height: 1;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#001f49" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+
+      <!-- Title -->
+      <h1 style="
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 0.625rem;
+        letter-spacing: -0.01em;
+      ">Sync Team Members</h1>
+
+      <p style="
+        font-size: 0.875rem;
+        color: #6b7280;
+        line-height: 1.6;
+        margin: 0 0 2.25rem;
+      ">
+        Pull all agents from VaultRE and add them as Team Members. Existing records are updated; no duplicates are created.
+        Use the <strong>Team Members</strong> list to activate or deactivate individual members.
+      </p>
+
+      <!-- Divider -->
+      <div style="height: 1px; background: #f3f4f6; margin-bottom: 2rem;"></div>
+
+      <!-- Run button -->
+      <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit" style="
+          display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+          width: 100%;
+          padding: 0.875rem 2rem;
+          background: linear-gradient(135deg, #001f49 0%, #0a3572 100%);
+          color: #ffffff;
+          border: none;
+          border-radius: 10px;
+          font-size: 0.9375rem;
+          font-weight: 600;
+          cursor: pointer;
+          letter-spacing: 0.01em;
+          box-shadow: 0 4px 14px rgba(0,31,73,0.25);
+          transition: opacity 0.2s;
+        "
+        onmouseover="this.style.opacity='0.9'"
+        onmouseout="this.style.opacity='1'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Run Sync Now
+        </button>
+      </form>
+
+      <!-- Cancel -->
+      <a href="{% url 'wagtailadmin_home' %}" style="display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;margin-top:0.75rem;padding:0.8rem 2rem;background:transparent;color:#6b7280;border:1px solid #e5e7eb;border-radius:10px;font-size:0.9rem;font-weight:500;text-decoration:none;transition:border-color 0.2s,color 0.2s;"
+      onmouseover="this.style.borderColor='#d1d5db';this.style.color='#374151'"
+      onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#6b7280'"
+      >
+        Cancel
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
