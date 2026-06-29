@@ -28,10 +28,7 @@ body{
 /* ── HEADER ── */
 .hdr{background:var(--navy);padding:2.75rem 2rem}
 .hdr-in{max-width:860px;margin:0 auto}
-.hdr-logo{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem}
-.hdr-chip{background:var(--gold);color:var(--navy);font-weight:800;font-size:0.65rem;
-  letter-spacing:0.06em;padding:0.35rem 0.55rem;border-radius:0.3rem;line-height:1.3;text-align:center;text-transform:uppercase}
-.hdr-name{color:rgba(255,255,255,0.85);font-size:0.95rem;font-weight:600}
+.hdr-brand{color:var(--gold);font-size:1.05rem;font-weight:700;letter-spacing:0.04em;margin:0 0 1rem}
 .hdr h1{color:#fff;font-size:clamp(1.6rem,3vw,2.25rem);font-weight:700;margin-bottom:0.4rem}
 .hdr h1 em{color:var(--gold);font-style:normal}
 .hdr p{color:rgba(255,255,255,0.55);font-size:0.9rem;max-width:48ch}
@@ -157,10 +154,7 @@ footer strong{color:rgba(255,255,255,0.65)}
 <!-- HEADER -->
 <header class="hdr">
   <div class="hdr-in">
-    <div class="hdr-logo">
-      <div class="hdr-chip">REAL<br>GOLD</div>
-      <span class="hdr-name">Real Gold Properties</span>
-    </div>
+    <p class="hdr-brand">Real Gold Properties</p>
     <h1>Your Website <em>CMS Guide</em></h1>
     <p>Step-by-step instructions to manage your website. No technical knowledge needed.</p>
   </div>
@@ -362,55 +356,40 @@ footer strong{color:rgba(255,255,255,0.65)}
   <section class="step" id="properties">
     <div class="step-head">
       <div class="step-num">7</div>
-      <div><h2>Property Listings</h2><div class="sub">Adding and managing all your properties</div></div>
+      <div><h2>Property Listings</h2><div class="sub">Two sources — VaultRE and Local Listings</div></div>
     </div>
 
     <div class="ss">
-      <img src="../ss-for-guide-page/02-dashboard.png" alt="Property Listings in sidebar"/>
-      <div class="ss-cap">Click "Property Listings" in the left menu to see all your properties</div>
+      <img src="../ss-for-guide-page/properties-listings.png" alt="Property Listings in Wagtail admin"/>
+      <div class="ss-cap">Properties menu — VaultRE Listings (synced from your agency software) and Local Listings (managed directly in the CMS)</div>
     </div>
 
-    <p class="step-intro">Click <strong>Property Listings</strong> in the left menu. You'll see all your properties in a list. Click any to edit, or click <strong>New</strong> to add a fresh listing.</p>
+    <p class="step-intro">Your website shows properties from two places. Both appear together on the Properties page automatically.</p>
 
     <div class="fgrid">
       <div class="fcard">
-        <div class="fcard-title">Basic Info</div>
+        <div class="fcard-title">VaultRE Listings</div>
         <ul class="blist" style="margin:0">
-          <li><strong>Title</strong> — property headline</li>
-          <li><strong>Address, City, State</strong></li>
-          <li><strong>Status</strong> — For Sale / Sold / For Rent</li>
-          <li><strong>Featured</strong> — tick to show in marquee</li>
+          <li>Managed entirely inside VaultRE</li>
+          <li>Synced to your website via <strong>Properties → Sync Properties</strong></li>
+          <li>View them in admin under <strong>Properties → VaultRE Listings</strong> (read-only)</li>
+          <li>To update — change in VaultRE, then sync</li>
         </ul>
       </div>
       <div class="fcard">
-        <div class="fcard-title">Price</div>
+        <div class="fcard-title">Local Listings</div>
         <ul class="blist" style="margin:0">
-          <li><strong>Price</strong> — number (e.g. 850000)</li>
-          <li><strong>Price Label</strong> — e.g. "$850,000"</li>
-          <li><strong>Sold Price</strong> — fill in when sold</li>
-        </ul>
-      </div>
-      <div class="fcard">
-        <div class="fcard-title">Stats</div>
-        <ul class="blist" style="margin:0">
-          <li>Bedrooms / Bathrooms / Garages</li>
-          <li>Area &amp; Lot Size</li>
-          <li>Year Built</li>
-        </ul>
-      </div>
-      <div class="fcard">
-        <div class="fcard-title">Photos &amp; Content</div>
-        <ul class="blist" style="margin:0">
-          <li><strong>Card Image</strong> — main listing photo</li>
-          <li><strong>Gallery Images</strong> — multiple photos</li>
-          <li><strong>Overview</strong> — short card summary</li>
-          <li><strong>Description</strong> — full detail page text</li>
+          <li>Managed directly in the CMS</li>
+          <li>Go to <strong>Properties → Local Listings → New</strong></li>
+          <li>Fill in title, address, price, beds/baths, card image</li>
+          <li>Tick <strong>Show in Portfolio Showcase</strong> to auto-include it on the homepage showcase</li>
+          <li>To mark as Sold — change Status to "Sold", add Sold Price, Save</li>
         </ul>
       </div>
     </div>
 
     <div class="tip" style="margin-top:1rem">
-      <b>To mark a property as Sold:</b> Open it → change Status to "Sold" → optionally add Sold Price → Save.
+      <b>Rule of thumb:</b> Properties you manage through your real estate software → use VaultRE + Sync. Properties you want to manage yourself directly → use Local Listings.
     </div>
   </section>
 
@@ -418,22 +397,37 @@ footer strong{color:rgba(255,255,255,0.65)}
   <section class="step" id="showcase">
     <div class="step-head">
       <div class="step-num">8</div>
-      <div><h2>Portfolio Showcase</h2><div class="sub">The curated selection on the homepage</div></div>
+      <div><h2>Portfolio Showcase</h2><div class="sub">The featured property section on the homepage</div></div>
     </div>
 
     <div class="ss">
-      <img src="../ss-for-guide-page/09-portfolio-showcase.png" alt="Portfolio Showcase"/>
-      <div class="ss-cap">Select a property from VaultRE and most fields fill in automatically</div>
+      <img src="../ss-for-guide-page/09-portfolio-showcase.png" alt="Portfolio Showcase admin"/>
+      <div class="ss-cap">Portfolio Showcase — choose from VaultRE or Local Listings and all fields fill in automatically</div>
     </div>
 
-    <p class="step-intro">The <strong>Portfolio Showcase</strong> is the featured section on your Home page. You hand-pick exactly which properties appear there — it's separate from your full Property Listings.</p>
-    <ol class="steps">
-      <li>Click <strong>Portfolio Showcase</strong> → click <strong>New</strong></li>
-      <li>Select from the <strong>VaultRE dropdown</strong> — fields fill automatically — or type manually</li>
-      <li>Upload a <strong>Background Image</strong> (large photo) and a <strong>Thumbnail</strong></li>
-      <li>Set <strong>Order</strong> (lower = first) and tick <strong>Active</strong></li>
-      <li>Click <strong>Save</strong></li>
-    </ol>
+    <p class="step-intro">The Portfolio Showcase is the large featured section on your Home page. Properties appear here in two ways:</p>
+
+    <div class="fgrid">
+      <div class="fcard">
+        <div class="fcard-title">Auto-included</div>
+        <ul class="blist" style="margin:0">
+          <li>Any <strong>Local Listing</strong> with <strong>Show in Portfolio Showcase</strong> ticked is included automatically — no extra steps needed</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <div class="fcard-title">Manually added</div>
+        <ul class="blist" style="margin:0">
+          <li>Click <strong>Portfolio Showcase → New</strong></li>
+          <li>Select from the <strong>VaultRE dropdown</strong> or the <strong>Local property dropdown</strong> — fields fill automatically</li>
+          <li>Upload a <strong>Background Image</strong> and optional <strong>Thumbnail</strong></li>
+          <li>Set <strong>Order</strong> (lower = first) and tick <strong>Active</strong> → Save</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:1rem">
+      <b>Only pick one source per entry</b> — either VaultRE or Local, not both. Selecting one clears the other automatically.
+    </div>
   </section>
 
   <!-- ─── 9. FORM SUBMISSIONS ─── -->
