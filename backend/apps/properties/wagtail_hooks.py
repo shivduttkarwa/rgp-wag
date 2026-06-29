@@ -4,20 +4,22 @@ from django.urls import path, reverse
 from django.utils.safestring import mark_safe
 from django.views.decorators.http import require_http_methods
 from wagtail import hooks
-from wagtail.admin.menu import MenuItem
+from wagtail.admin.menu import MenuItem, SubmenuMenuItem, Menu
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 from .models import Property, PortfolioShowcaseItem
 
 
+# ─── Snippet ViewSets ─────────────────────────────────────────────────────────
+
 class ListingViewSet(SnippetViewSet):
     model = Property
-    menu_label = "Property Listings"
+    menu_label = "Local Listings"
     menu_name = "listings"
-    menu_icon = "home"
-    menu_order = 250
-    add_to_admin_menu = True
+    menu_icon = "edit"
+    menu_order = 20
+    add_to_admin_menu = False   # added via the Properties submenu below
     list_display = ("title", "listing_category", "status", "price", "city", "updated_at")
     list_filter = ("listing_category", "status", "featured", "city")
     search_fields = ("title", "slug", "address", "city")
@@ -39,15 +41,75 @@ register_snippet(ListingViewSet)
 register_snippet(PortfolioShowcaseViewSet)
 
 
+# ─── VaultRE Listings (read-only view) ───────────────────────────────────────
+
+_CATEGORY_CHOICES = [
+    ("",         "All"),
+    ("for-sale", "For Sale"),
+    ("for-rent", "For Rent"),
+    ("sold",     "Sold"),
+]
+
+_CATEGORY_DISPLAY = {
+    "for-sale": "For Sale",
+    "for-rent": "For Rent",
+    "sold":     "Sold",
+}
+
+
+@require_http_methods(["GET"])
+def vaultre_listings_view(request):
+    from apps.properties.vaultre import get_listings, normalise_list
+
+    category_filter = request.GET.get("category", "")
+    search = request.GET.get("q", "").strip().lower()
+
+    try:
+        all_listings = [normalise_list(p) for p in get_listings()]
+        for p in all_listings:
+            p["category_display"] = _CATEGORY_DISPLAY.get(p.get("category", ""), p.get("category", ""))
+    except Exception:
+        all_listings = []
+
+    counts = {
+        "all":      len(all_listings),
+        "for_sale": sum(1 for p in all_listings if p.get("category") == "for-sale"),
+        "for_rent": sum(1 for p in all_listings if p.get("category") == "for-rent"),
+        "sold":     sum(1 for p in all_listings if p.get("category") == "sold"),
+    }
+
+    listings = all_listings
+    if category_filter:
+        listings = [p for p in listings if p.get("category") == category_filter]
+
+    if search:
+        listings = [
+            p for p in listings
+            if search in (p.get("title") or "").lower()
+            or search in (p.get("address") or "").lower()
+            or search in (p.get("city") or "").lower()
+        ]
+
+    return render(request, "wagtailadmin/vaultre_listings.html", {
+        "listings":          listings,
+        "category":          category_filter,
+        "search":            search,
+        "counts":            counts,
+        "total":             len(listings),
+        "category_choices":  _CATEGORY_CHOICES,
+    })
+
+
 # ─── Sync Properties ─────────────────────────────────────────────────────────
 
 @require_http_methods(["GET", "POST"])
 def sync_properties_view(request):
     if request.method == "POST":
-        from apps.properties.vaultre import _fetch_all_listings, save_cache
+        from apps.properties.vaultre import _fetch_all_listings, save_cache, sync_staff_from_listings
         try:
             data = _fetch_all_listings()
             save_cache(data)
+            sync_staff_from_listings(data)
             messages.success(request, f"Successfully synced {len(data)} properties from VaultRE.")
         except Exception as exc:
             messages.error(request, f"Sync failed: {exc}")
@@ -56,23 +118,58 @@ def sync_properties_view(request):
     return render(request, "wagtailadmin/sync_properties.html")
 
 
-@hooks.register("register_admin_urls")
-def register_sync_url():
-    return [path("sync-properties/", sync_properties_view, name="sync_properties")]
+# ─── URL registration ─────────────────────────────────────────────────────────
 
+@hooks.register("register_admin_urls")
+def register_property_urls():
+    return [
+        path("sync-properties/",  sync_properties_view,  name="sync_properties"),
+        path("vaultre-listings/", vaultre_listings_view, name="vaultre_listings"),
+    ]
+
+
+# ─── Menu ─────────────────────────────────────────────────────────────────────
 
 @hooks.register("register_admin_menu_item")
 def register_sync_menu_item():
     return MenuItem("Sync Properties", "/cms/sync-properties/", icon_name="upload", order=105)
 
 
-# ─── Portfolio admin CSS / JS ────────────────────────────────────────────────
+@hooks.register("register_admin_menu_item")
+def register_properties_menu():
+    try:
+        local_url = reverse("wagtailsnippets_properties_property:list")
+    except Exception:
+        local_url = "/cms/snippets/properties/property/"
+
+    submenu = Menu(items=[
+        MenuItem(
+            "VaultRE Listings",
+            "/cms/vaultre-listings/",
+            icon_name="home",
+            order=10,
+        ),
+        MenuItem(
+            "Local Listings",
+            local_url,
+            icon_name="edit",
+            order=20,
+        ),
+    ])
+    return SubmenuMenuItem(
+        "Properties",
+        submenu,
+        icon_name="home",
+        order=250,
+    )
+
+
+# ─── Portfolio Showcase admin CSS / JS ───────────────────────────────────────
 
 @hooks.register("insert_global_admin_css")
 def vault_portfolio_css():
     return mark_safe("""
 <style>
-
 #id_vault_property_id {
   width: 100% !important;
   max-width: 100% !important;
