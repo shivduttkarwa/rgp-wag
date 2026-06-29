@@ -162,7 +162,7 @@ def internal_page_hero_admin_js():
 
 _REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 _GUIDE_PATH = os.path.join(_REPO_ROOT, "docs", "cms-guide.html")
-_ASSETS_DIR = os.path.join(_REPO_ROOT, "ss-for-guide-page")
+_ASSETS_DIR = os.path.join(_REPO_ROOT, "docs", "cms-guide-screenshots")
 
 
 def cms_guide_view(request):
@@ -170,7 +170,7 @@ def cms_guide_view(request):
         with open(_GUIDE_PATH, "r", encoding="utf-8") as f:
             html = f.read()
         # Rewrite relative asset paths to the Django-served URL
-        html = html.replace("../ss-for-guide-page/", "/cms/guide-assets/")
+        html = html.replace("cms-guide-screenshots/", "/cms/guide-assets/")
         return HttpResponse(html, content_type="text/html; charset=utf-8")
     except FileNotFoundError:
         return HttpResponse("<h1>Guide not found</h1>", status=404)
