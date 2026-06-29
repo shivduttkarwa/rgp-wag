@@ -6,7 +6,7 @@ from django.views.decorators.http import require_http_methods
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem, SubmenuMenuItem, Menu
 from wagtail.snippets.models import register_snippet
-from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets.views.snippets import SnippetViewSet, SnippetViewSetGroup
 
 from .models import Property, PortfolioShowcaseItem
 
@@ -19,10 +19,17 @@ class ListingViewSet(SnippetViewSet):
     menu_name = "listings"
     menu_icon = "edit"
     menu_order = 20
-    add_to_admin_menu = False   # added via the Properties submenu below
     list_display = ("title", "listing_category", "status", "price", "city", "updated_at")
     list_filter = ("listing_category", "status", "featured", "city")
     search_fields = ("title", "slug", "address", "city")
+
+
+class PropertiesSnippetGroup(SnippetViewSetGroup):
+    menu_label = "Properties"
+    menu_icon = "home"
+    menu_order = 250
+    add_to_admin_menu = False
+    items = (ListingViewSet,)
 
 
 class PortfolioShowcaseViewSet(SnippetViewSet):
@@ -37,7 +44,7 @@ class PortfolioShowcaseViewSet(SnippetViewSet):
     search_fields = ("title", "location")
 
 
-register_snippet(ListingViewSet)
+register_snippet(PropertiesSnippetGroup)
 register_snippet(PortfolioShowcaseViewSet)
 
 
