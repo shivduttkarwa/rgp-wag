@@ -42,7 +42,7 @@ type Filters = {
 type ScrollAction = "none" | "preserve" | "gridTop";
 
 const DEFAULT_FILTERS: Filters = {
-  cat: "for-sale",
+  cat: "all",
   price: "all",
   beds: "any",
   baths: "any",
@@ -158,7 +158,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
   const paramBeds  = searchParams.get("beds")  ?? "any";
   const paramBaths = searchParams.get("baths") ?? "any";
   const initialFilters: Filters = {
-    cat:     paramCat && VALID_CATS.includes(paramCat) ? paramCat : "for-sale",
+    cat:     paramCat && VALID_CATS.includes(paramCat) ? paramCat : "all",
     price:   paramPrice,
     beds:    paramBeds,
     baths:   paramBaths,
@@ -423,24 +423,30 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
       {hasListings && (
         <div className="ap-search-row">
           <div className="ap-search-wrap">
-            <Search size={18} className="ap-search-icon" />
-            <input
-              type="text"
-              className="ap-search-input"
-              placeholder="Search by property name or location…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search properties"
-            />
-            {searchQuery && (
-              <button
-                className="ap-search-clear"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-              >
-                <X size={16} />
-              </button>
-            )}
+            <span className="ap-search-label">
+              <Search size={14} />
+              Search
+            </span>
+            <div className="ap-search-field">
+              <Search size={17} className="ap-search-icon" />
+              <input
+                type="text"
+                className="ap-search-input"
+                placeholder="Search by property name or suburb…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search properties"
+              />
+              {searchQuery && (
+                <button
+                  className="ap-search-clear"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                >
+                  <X size={15} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
