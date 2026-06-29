@@ -162,12 +162,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 38%;
+  height: 55%;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 50%,
-    #ffffff 100%
+    rgba(0, 18, 51, 0.6) 45%,
+    rgba(0, 10, 35, 0.92) 100%
   );
   z-index: 1;
   pointer-events: none;
@@ -212,7 +212,7 @@
   font-family: var(--font-title);
   font-size: clamp(1.15rem, 1.4vw, 1.4rem);
   font-weight: 400;
-  color: var(--rg-navy);
+  color: #ffffff;
   line-height: 1.2;
   margin: 0 0 4px;
 }
@@ -221,7 +221,7 @@
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--rg-text-medium);
+  color: rgba(255, 255, 255, 0.65);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0;

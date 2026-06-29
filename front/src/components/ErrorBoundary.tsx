@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import "./ErrorBoundary.css";
 
 interface Props {
   children: ReactNode;
@@ -22,39 +23,24 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{
-          minHeight: "60vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "1rem",
-          padding: "2rem",
-          textAlign: "center",
-          fontFamily: "var(--font-body)",
-        }}>
-          <p style={{ fontSize: "1.125rem", color: "var(--rg-navy)", fontWeight: 600 }}>
-            Something went wrong.
-          </p>
-          <p style={{ fontSize: "0.9rem", color: "var(--rg-text-light)" }}>
-            Please refresh the page. If the problem persists, contact support.
-          </p>
-          <button
-            onClick={() => window.location.reload()}
-            style={{
-              marginTop: "0.5rem",
-              padding: "0.65rem 1.5rem",
-              background: "var(--rg-navy)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "var(--rg-radius)",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-              fontFamily: "var(--font-body)",
-            }}
-          >
-            Refresh Page
-          </button>
+        <div className="eb-root">
+          <div className="eb-bg" aria-hidden="true">
+            <div className="eb-glow eb-glow--1" />
+            <div className="eb-glow eb-glow--2" />
+            <div className="eb-grid" />
+          </div>
+
+          <div className="eb-inner">
+            <p className="eb-eyebrow">Real Gold Properties</p>
+            <div className="eb-icon" aria-hidden="true">!</div>
+            <h1 className="eb-title">Something went wrong.</h1>
+            <p className="eb-sub">
+              Please refresh the page. If the problem persists, contact support.
+            </p>
+            <button className="eb-btn" onClick={() => window.location.reload()}>
+              Refresh Page
+            </button>
+          </div>
         </div>
       );
     }

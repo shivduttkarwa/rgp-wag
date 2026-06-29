@@ -169,8 +169,16 @@ def sync_staff_from_listings(listings: list[dict]) -> None:
     for listing in listings:
         for staff in listing.get("contactStaff") or []:
             sid = staff.get("id")
-            if sid and sid not in seen:
-                seen[sid] = staff
+            if not sid or sid in seen:
+                continue
+            # Skip system/non-login accounts (e.g. "Real Gold Management")
+            permissions = staff.get("permissions") or {}
+            if permissions.get("canLogin") is False:
+                continue
+            username = staff.get("username") or ""
+            if username.upper().startswith("NOLOGIN-"):
+                continue
+            seen[sid] = staff
 
     if not seen:
         logger.info("[VaultRE] Staff sync — no staff found in listings")
