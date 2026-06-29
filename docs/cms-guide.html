@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Real Gold Properties — CMS Guide</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:#001f49;
+  --gold:#f9c206;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --bg:#f9fafb;
+  --tip:#fffbe6;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#fff;
+  color:var(--text);
+  font-size:15px;
+  line-height:1.6;
+}
+
+/* ── HEADER ── */
+.hdr{background:var(--navy);padding:2.75rem 2rem}
+.hdr-in{max-width:860px;margin:0 auto}
+.hdr-logo{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem}
+.hdr-chip{background:var(--gold);color:var(--navy);font-weight:800;font-size:0.65rem;
+  letter-spacing:0.06em;padding:0.35rem 0.55rem;border-radius:0.3rem;line-height:1.3;text-align:center;text-transform:uppercase}
+.hdr-name{color:rgba(255,255,255,0.85);font-size:0.95rem;font-weight:600}
+.hdr h1{color:#fff;font-size:clamp(1.6rem,3vw,2.25rem);font-weight:700;margin-bottom:0.4rem}
+.hdr h1 em{color:var(--gold);font-style:normal}
+.hdr p{color:rgba(255,255,255,0.55);font-size:0.9rem;max-width:48ch}
+
+/* ── CONTENTS NAV ── */
+.toc{background:var(--bg);border-bottom:1px solid var(--border);padding:1.1rem 2rem}
+.toc-in{max-width:860px;margin:0 auto;display:flex;flex-wrap:wrap;gap:0.4rem 1rem;align-items:center}
+.toc-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-right:0.5rem}
+.toc a{font-size:0.78rem;color:var(--navy);text-decoration:none;opacity:0.7}
+.toc a:hover{opacity:1;text-decoration:underline}
+
+/* ── MAIN ── */
+main{max-width:860px;margin:0 auto;padding:0 2rem 5rem}
+
+/* ── STEP ── */
+.step{padding:3.5rem 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+
+.step-head{display:flex;align-items:flex-start;gap:0.875rem;margin-bottom:0.6rem}
+.step-num{
+  min-width:2rem;height:2rem;border-radius:50%;
+  background:var(--navy);color:var(--gold);
+  font-size:0.78rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:0.1rem;flex-shrink:0;
+}
+.step-num.last{background:var(--gold);color:var(--navy)}
+.step-head h2{font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:0.15rem}
+.step-head .sub{font-size:0.8rem;color:var(--muted)}
+
+/* screenshot */
+.ss{
+  margin:1.75rem 0;
+  border:1px solid var(--border);
+  border-radius:0.75rem;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+}
+.ss img{width:100%;display:block}
+.ss-cap{
+  font-size:0.72rem;color:var(--muted);text-align:center;
+  padding:0.45rem 1rem;background:var(--bg);border-top:1px solid var(--border);
+}
+
+/* body text */
+.step-intro{color:#374151;font-size:0.9rem;margin-bottom:1.1rem;max-width:62ch}
+
+/* numbered steps */
+.steps{list-style:none;counter-reset:sc;display:flex;flex-direction:column;gap:0.55rem}
+.steps li{
+  display:flex;gap:0.75rem;align-items:flex-start;
+  font-size:0.88rem;color:#374151;counter-increment:sc;
+}
+.steps li::before{
+  content:counter(sc);
+  min-width:1.45rem;height:1.45rem;border-radius:50%;
+  background:var(--gold);color:var(--navy);
+  font-size:0.68rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:0.1rem;
+}
+
+/* bullets */
+.blist{list-style:none;display:flex;flex-direction:column;gap:0.45rem;margin-top:0.75rem}
+.blist li{font-size:0.88rem;color:#374151;padding-left:1.1rem;position:relative}
+.blist li::before{content:"";position:absolute;left:0;top:0.58em;
+  width:0.35rem;height:0.35rem;background:var(--gold);border-radius:50%}
+
+/* tip */
+.tip{
+  margin-top:1.1rem;padding:0.75rem 1rem;
+  background:var(--tip);border-left:3px solid var(--gold);
+  border-radius:0 0.375rem 0.375rem 0;
+  font-size:0.84rem;color:#1a1a2e;
+}
+.tip b{color:var(--navy)}
+
+/* warning */
+.warn{
+  margin-top:1rem;padding:0.75rem 1rem;
+  background:#fff4f4;border-left:3px solid #e55;
+  border-radius:0 0.375rem 0.375rem 0;
+  font-size:0.84rem;color:#7a1a1a;
+}
+
+/* 2-column info box */
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.ibox{background:var(--bg);border:1px solid var(--border);border-radius:0.5rem;padding:0.9rem 1rem}
+.ibox-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:700;margin-bottom:0.5rem}
+
+/* field grid for properties */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin:1.1rem 0}
+.fcard{background:var(--bg);border:1px solid var(--border);border-radius:0.5rem;padding:0.85rem 1rem}
+.fcard-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--gold);font-weight:700;margin-bottom:0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.35rem}
+
+/* ref table */
+.ref-table{width:100%;border-collapse:collapse;font-size:0.84rem;margin-top:1rem}
+.ref-table thead tr{background:var(--navy)}
+.ref-table th{padding:0.7rem 1rem;color:#fff;text-align:left;font-size:0.72rem;
+  text-transform:uppercase;letter-spacing:0.07em;font-weight:700}
+.ref-table td{padding:0.65rem 1rem;border-bottom:1px solid var(--border);color:#374151;vertical-align:top}
+.ref-table tr:nth-child(even) td{background:var(--bg)}
+.ref-table tr:last-child td{border-bottom:none}
+.ref-table td:first-child{font-weight:500;color:var(--navy);width:50%}
+
+/* footer */
+footer{background:var(--navy);text-align:center;padding:1.25rem;
+  font-size:0.78rem;color:rgba(255,255,255,0.35)}
+footer strong{color:rgba(255,255,255,0.65)}
+
+@media(max-width:600px){
+  .info-row{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr}
+  main{padding:0 1.25rem 4rem}
+  .hdr{padding:2rem 1.25rem}
+  .toc{padding:0.85rem 1.25rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-logo">
+      <div class="hdr-chip">REAL<br>GOLD</div>
+      <span class="hdr-name">Real Gold Properties</span>
+    </div>
+    <h1>Your Website <em>CMS Guide</em></h1>
+    <p>Step-by-step instructions to manage your website. No technical knowledge needed.</p>
+  </div>
+</header>
+
+<!-- CONTENTS -->
+<nav class="toc">
+  <div class="toc-in">
+    <span class="toc-label">Contents</span>
+    <a href="#login">Log In</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#pages">Pages</a>
+    <a href="#editor">Page Editor</a>
+    <a href="#publish">Publish</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#properties">Listings</a>
+    <a href="#showcase">Showcase</a>
+    <a href="#forms">Submissions</a>
+    <a href="#sync">Sync</a>
+    <a href="#images">Images</a>
+    <a href="#ref">Quick Ref</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ─── 1. LOG IN ─── -->
+  <section class="step" id="login">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div><h2>Logging In</h2><div class="sub">How to access your CMS</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/01-login.png" alt="Login page"/>
+      <div class="ss-cap">Your CMS login page — go to your website address + /cms/</div>
+    </div>
+
+    <p class="step-intro">Open any browser and go to your CMS address (e.g. <strong>54.252.235.169/cms/</strong>). You will see this screen.</p>
+    <ol class="steps">
+      <li>Type your <strong>Username</strong></li>
+      <li>Type your <strong>Password</strong> — click the eye icon to see what you're typing</li>
+      <li>Tick <strong>Remember me</strong> to save your username for next time</li>
+      <li>Click <strong>Sign in</strong></li>
+    </ol>
+  </section>
+
+  <!-- ─── 2. DASHBOARD ─── -->
+  <section class="step" id="dashboard">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div><h2>The Dashboard</h2><div class="sub">Your home screen after logging in</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/02-dashboard.png" alt="Dashboard"/>
+      <div class="ss-cap">The dashboard — the dark blue panel on the left is your main menu</div>
+    </div>
+
+    <p class="step-intro">After logging in you land here. The <strong>dark blue menu on the left</strong> is how you get to everything on the CMS.</p>
+
+    <div class="info-row">
+      <div class="ibox">
+        <div class="ibox-title">What each menu item does</div>
+        <ul class="blist">
+          <li><strong>Pages</strong> — edit your website pages</li>
+          <li><strong>Sync Properties</strong> — refresh from VaultRE</li>
+          <li><strong>RGP Reviews</strong> — client testimonials</li>
+          <li><strong>Team Members</strong> — staff profiles</li>
+        </ul>
+      </div>
+      <div class="ibox">
+        <div class="ibox-title">&nbsp;</div>
+        <ul class="blist">
+          <li><strong>Form Submissions</strong> — enquiries &amp; offers</li>
+          <li><strong>Property Listings</strong> — all your properties</li>
+          <li><strong>Portfolio Showcase</strong> — homepage picks</li>
+          <li><strong>Images</strong> — all uploaded photos</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 3. FINDING A PAGE ─── -->
+  <section class="step" id="pages">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div><h2>Finding a Page to Edit</h2><div class="sub">Home, About, Contact, Team, Properties, Services, Testimonials</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/03-pages-menu.png" alt="Pages menu"/>
+      <div class="ss-cap">Click Pages in the left menu → a panel slides out showing your pages</div>
+    </div>
+
+    <p class="step-intro">All your website pages are inside <strong>Pages</strong> in the left menu.</p>
+    <ol class="steps">
+      <li>Click <strong>Pages</strong> in the left menu</li>
+      <li>Click the <strong>arrow ›</strong> next to "Home Page" to see all pages inside it</li>
+      <li>Click the <strong>pencil icon ✏</strong> next to the page you want to edit</li>
+      <li>The page editor opens — make your changes</li>
+    </ol>
+  </section>
+
+  <!-- ─── 4. PAGE EDITOR ─── -->
+  <section class="step" id="editor">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div><h2>Inside the Page Editor</h2><div class="sub">How each page is structured</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/04-page-editor.png" alt="Page editor"/>
+      <div class="ss-cap">Each page is made of sections. The right panel is a quick-jump list of all sections.</div>
+    </div>
+
+    <p class="step-intro">Each page is built from <strong>sections</strong> stacked on top of each other — like building blocks. Click any section to expand it and edit the content inside.</p>
+    <ul class="blist">
+      <li><strong>Click a section</strong> to open and edit its fields</li>
+      <li><strong>Drag the ⠿ dots</strong> to move a section up or down</li>
+      <li><strong>Click the bin icon</strong> to remove a section</li>
+      <li><strong>Click +</strong> at the top to add a new section</li>
+      <li><strong>Right-side panel</strong> — click any section name there to jump straight to it</li>
+    </ul>
+  </section>
+
+  <!-- ─── 5. PUBLISH ─── -->
+  <section class="step" id="publish">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div><h2>Saving &amp; Publishing</h2><div class="sub">The most important step — do this after every edit</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/05-save-publish.png" alt="Publish button"/>
+      <div class="ss-cap">Click the ^ arrow next to "Save draft" → choose Publish to make changes live</div>
+    </div>
+
+    <div class="info-row">
+      <div class="ibox">
+        <div class="ibox-title">Save draft</div>
+        <p style="font-size:0.87rem;color:#374151">Saves your work but does <strong>not</strong> update the live website. Use when you're not ready yet.</p>
+      </div>
+      <div class="ibox">
+        <div class="ibox-title">Publish</div>
+        <p style="font-size:0.87rem;color:#374151">Saves your work <strong>and</strong> makes it live on the website immediately. Always choose this when ready.</p>
+      </div>
+    </div>
+
+    <ol class="steps" style="margin-top:1.1rem">
+      <li>Finish editing</li>
+      <li>Click the <strong>^ arrow</strong> next to the green "Save draft" button</li>
+      <li>Choose <strong>Publish</strong></li>
+    </ol>
+
+    <div class="warn" style="margin-top:1rem">
+      <strong>Changes not showing on the website?</strong> You pressed Save draft instead of Publish. Go back, click ^ → Publish.
+    </div>
+  </section>
+
+  <!-- ─── 6. RGP REVIEWS ─── -->
+  <section class="step" id="reviews">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div><h2>RGP Reviews — Testimonials</h2><div class="sub">Three types of client reviews</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/06-rgp-reviews.png" alt="RGP Reviews menu"/>
+      <div class="ss-cap">RGP Reviews → Video Testimonial / Text Testimonial / Featured Testimonial</div>
+    </div>
+
+    <div class="info-row">
+      <div class="ibox">
+        <div class="ibox-title">Video Testimonial</div>
+        <p style="font-size:0.85rem;color:#374151">Client video reviews on the Home page. Needs a name, short label (e.g. "SUNNYBANK · SOLD"), and a video.</p>
+      </div>
+      <div class="ibox">
+        <div class="ibox-title">Text Testimonial</div>
+        <p style="font-size:0.85rem;color:#374151">Written reviews shown as a grid and scrolling ticker on the Testimonials page. Needs name, suburb, quote, and star rating.</p>
+      </div>
+    </div>
+    <div class="ibox" style="margin-top:0.75rem">
+      <div class="ibox-title">Featured Testimonial</div>
+      <p style="font-size:0.85rem;color:#374151">The large full-screen slider at the top of the Testimonials page. Each slide has a heading, quote, photo, and colour theme.</p>
+    </div>
+
+    <ol class="steps" style="margin-top:1.1rem">
+      <li>Click <strong>RGP Reviews</strong> → pick the type</li>
+      <li>Click <strong>New</strong> (top right) to add one</li>
+      <li>Fill in the fields</li>
+      <li>Make sure <strong>Active</strong> is ticked — untick to hide without deleting</li>
+      <li>Set <strong>Order</strong> — lower number = shown first</li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+  </section>
+
+  <!-- ─── 7. PROPERTY LISTINGS ─── -->
+  <section class="step" id="properties">
+    <div class="step-head">
+      <div class="step-num">7</div>
+      <div><h2>Property Listings</h2><div class="sub">Adding and managing all your properties</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/02-dashboard.png" alt="Property Listings in sidebar"/>
+      <div class="ss-cap">Click "Property Listings" in the left menu to see all your properties</div>
+    </div>
+
+    <p class="step-intro">Click <strong>Property Listings</strong> in the left menu. You'll see all your properties in a list. Click any to edit, or click <strong>New</strong> to add a fresh listing.</p>
+
+    <div class="fgrid">
+      <div class="fcard">
+        <div class="fcard-title">Basic Info</div>
+        <ul class="blist" style="margin:0">
+          <li><strong>Title</strong> — property headline</li>
+          <li><strong>Address, City, State</strong></li>
+          <li><strong>Status</strong> — For Sale / Sold / For Rent</li>
+          <li><strong>Featured</strong> — tick to show in marquee</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <div class="fcard-title">Price</div>
+        <ul class="blist" style="margin:0">
+          <li><strong>Price</strong> — number (e.g. 850000)</li>
+          <li><strong>Price Label</strong> — e.g. "$850,000"</li>
+          <li><strong>Sold Price</strong> — fill in when sold</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <div class="fcard-title">Stats</div>
+        <ul class="blist" style="margin:0">
+          <li>Bedrooms / Bathrooms / Garages</li>
+          <li>Area &amp; Lot Size</li>
+          <li>Year Built</li>
+        </ul>
+      </div>
+      <div class="fcard">
+        <div class="fcard-title">Photos &amp; Content</div>
+        <ul class="blist" style="margin:0">
+          <li><strong>Card Image</strong> — main listing photo</li>
+          <li><strong>Gallery Images</strong> — multiple photos</li>
+          <li><strong>Overview</strong> — short card summary</li>
+          <li><strong>Description</strong> — full detail page text</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:1rem">
+      <b>To mark a property as Sold:</b> Open it → change Status to "Sold" → optionally add Sold Price → Save.
+    </div>
+  </section>
+
+  <!-- ─── 8. PORTFOLIO SHOWCASE ─── -->
+  <section class="step" id="showcase">
+    <div class="step-head">
+      <div class="step-num">8</div>
+      <div><h2>Portfolio Showcase</h2><div class="sub">The curated selection on the homepage</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/09-portfolio-showcase.png" alt="Portfolio Showcase"/>
+      <div class="ss-cap">Select a property from VaultRE and most fields fill in automatically</div>
+    </div>
+
+    <p class="step-intro">The <strong>Portfolio Showcase</strong> is the featured section on your Home page. You hand-pick exactly which properties appear there — it's separate from your full Property Listings.</p>
+    <ol class="steps">
+      <li>Click <strong>Portfolio Showcase</strong> → click <strong>New</strong></li>
+      <li>Select from the <strong>VaultRE dropdown</strong> — fields fill automatically — or type manually</li>
+      <li>Upload a <strong>Background Image</strong> (large photo) and a <strong>Thumbnail</strong></li>
+      <li>Set <strong>Order</strong> (lower = first) and tick <strong>Active</strong></li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+  </section>
+
+  <!-- ─── 9. FORM SUBMISSIONS ─── -->
+  <section class="step" id="forms">
+    <div class="step-head">
+      <div class="step-num">9</div>
+      <div><h2>Form Submissions</h2><div class="sub">Enquiries, contact messages, and buyer offers</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/07-form-submissions.png" alt="Form Submissions"/>
+      <div class="ss-cap">Form Submissions → three types: Property Enquiries, Contact Submissions, EOI Submissions</div>
+    </div>
+
+    <div class="info-row">
+      <div class="ibox">
+        <div class="ibox-title">Property Enquiries</div>
+        <p style="font-size:0.85rem;color:#374151">Messages from people asking about a specific property — includes their name, email, phone, and message.</p>
+      </div>
+      <div class="ibox">
+        <div class="ibox-title">Contact Submissions</div>
+        <p style="font-size:0.85rem;color:#374151">General messages sent through your contact page.</p>
+      </div>
+    </div>
+    <div class="ibox" style="margin-top:0.75rem">
+      <div class="ibox-title">EOI Submissions (Buyer Offers)</div>
+      <p style="font-size:0.85rem;color:#374151">Formal buyer offers with full legal buyer details, offer price, deposit, finance conditions, and solicitor information.</p>
+    </div>
+
+    <ul class="blist" style="margin-top:1.1rem">
+      <li>Click any submission to read the full details</li>
+      <li>Tick <strong>Is read</strong> to mark it as handled</li>
+      <li>Click <strong>Export</strong> to download as a spreadsheet (available on EOI &amp; Property Enquiries)</li>
+    </ul>
+
+    <div class="tip">
+      <b>Read-only.</b> You can view and search but not edit submissions. Use the contact details inside to follow up with clients.
+    </div>
+  </section>
+
+  <!-- ─── 10. SYNC ─── -->
+  <section class="step" id="sync">
+    <div class="step-head">
+      <div class="step-num">10</div>
+      <div><h2>Sync Properties from VaultRE</h2><div class="sub">Keep your website listings up to date</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/08-sync-properties.png" alt="Sync Properties"/>
+      <div class="ss-cap">Click Sync Properties → Run Sync Now — takes a few seconds</div>
+    </div>
+
+    <p class="step-intro">When you update a listing in VaultRE, the website does not refresh automatically. You need to press this button to pull the latest data across.</p>
+    <ol class="steps">
+      <li>Click <strong>Sync Properties</strong> in the left menu</li>
+      <li>Click <strong>Run Sync Now</strong></li>
+      <li>Wait a few seconds — it confirms when done ✓</li>
+    </ol>
+    <div class="tip">
+      <b>When to sync:</b> Any time you add, update, or remove a property in VaultRE. Do it right after making changes there.
+    </div>
+  </section>
+
+  <!-- ─── 11. IMAGES ─── -->
+  <section class="step" id="images">
+    <div class="step-head">
+      <div class="step-num">11</div>
+      <div><h2>Images Library</h2><div class="sub">All uploaded photos in one place</div></div>
+    </div>
+
+    <div class="ss">
+      <img src="../ss-for-guide-page/10-images-library.png" alt="Images library"/>
+      <div class="ss-cap">Images library — every photo uploaded to the website lives here</div>
+    </div>
+
+    <p class="step-intro">Scroll down the left menu to find <strong>Images</strong>. Every photo on your website is stored here.</p>
+    <ul class="blist">
+      <li>Click <strong>Add an image</strong> to upload from your computer</li>
+      <li>Use the <strong>search box</strong> to find a photo by name</li>
+      <li>Click any photo to rename or delete it</li>
+    </ul>
+    <div class="tip">
+      <b>You don't have to come here first.</b> When editing any property, team member, or page section, you can upload a photo directly from that field — it appears here automatically.
+    </div>
+  </section>
+
+  <!-- ─── QUICK REFERENCE ─── -->
+  <section class="step" id="ref">
+    <div class="step-head">
+      <div class="step-num last">✓</div>
+      <div><h2>Quick Reference</h2><div class="sub">Where to go for the most common tasks</div></div>
+    </div>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>What you want to do</th>
+          <th>Where to go</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Change the homepage hero photo or heading</td><td>Pages → Home Page ✏ → Hero Section</td></tr>
+        <tr><td>Add a new property</td><td>Property Listings → New</td></tr>
+        <tr><td>Mark a property as sold</td><td>Property Listings → open property → Status: Sold → Save</td></tr>
+        <tr><td>Add a video review</td><td>RGP Reviews → Video Testimonial → New</td></tr>
+        <tr><td>Add a written review</td><td>RGP Reviews → Text Testimonial → New</td></tr>
+        <tr><td>Add a featured review (slider)</td><td>RGP Reviews → Featured Testimonial → New</td></tr>
+        <tr><td>Add or edit a team member</td><td>Team Members → New or click existing</td></tr>
+        <tr><td>View a buyer's EOI offer</td><td>Form Submissions → EOI Submissions</td></tr>
+        <tr><td>View a contact message</td><td>Form Submissions → Contact Submissions</td></tr>
+        <tr><td>View a property enquiry</td><td>Form Submissions → Property Enquiries</td></tr>
+        <tr><td>Change the contact page phone or email</td><td>Pages → Contact Page ✏ → Contact Info section</td></tr>
+        <tr><td>Refresh listings after updating VaultRE</td><td>Sync Properties → Run Sync Now</td></tr>
+        <tr><td>Upload a photo</td><td>Images → Add an image</td></tr>
+        <tr><td>Add a property to the homepage showcase</td><td>Portfolio Showcase → New</td></tr>
+        <tr><td>Hide a team member (without deleting)</td><td>Team Members → open → untick Active → Save</td></tr>
+        <tr><td>Hide a testimonial (without deleting)</td><td>RGP Reviews → open → untick Active → Save</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip" style="margin-top:1.5rem">
+      <b>Golden rule:</b> After every edit, always click the <strong>^ arrow</strong> → <strong>Publish</strong>. Save draft does not update the live website.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Prepared for <strong>Real Gold Properties</strong> &nbsp;·&nbsp; CMS Guide &nbsp;·&nbsp; &copy; 2026
+</footer>
+
+</body>
+</html>
