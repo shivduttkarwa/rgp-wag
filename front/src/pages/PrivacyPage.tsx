@@ -4,6 +4,19 @@ import PageSeo from "@/components/reusable/PageSeo";
 
 const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 
+function renderSections(html: string) {
+  const parts = html.split(/(?=<h2>)/i);
+  return parts
+    .filter((p) => p.trim())
+    .map((part, i) => (
+      <div
+        key={i}
+        className="legal-section"
+        dangerouslySetInnerHTML={{ __html: part }}
+      />
+    ));
+}
+
 export default function PrivacyPage() {
   const [body, setBody] = useState<string | null>(null);
 
@@ -29,7 +42,7 @@ export default function PrivacyPage() {
           {body === null ? (
             <p style={{ color: "#9ca3af" }}>Loading…</p>
           ) : body ? (
-            <div className="legal-rich" dangerouslySetInnerHTML={{ __html: body }} />
+            renderSections(body)
           ) : (
             <p style={{ color: "#9ca3af" }}>No content yet. Add it in the CMS under Settings → Legal Pages.</p>
           )}
