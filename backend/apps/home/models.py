@@ -510,26 +510,17 @@ def _get_active_team_member_items() -> list[dict[str, Any]]:
 
 
 def _inject_home_property_listing_cards(sections: dict[str, Any]) -> None:
-    """Replace homepage property_listing cards with 3 per category from VaultRE + local DB."""
+    """Replace homepage property_listing cards with 3 per category from VaultRE."""
     pl = sections.get("property_listing")
     if not isinstance(pl, dict):
         return
     try:
         from collections import defaultdict
         from apps.properties.vaultre import get_listings, normalise_list
-        from apps.properties.api import normalise_local_list
-        from apps.properties.models import Property
-
         by_cat: dict[str, list] = defaultdict(list)
-
         for p in get_listings():
             item = normalise_list(p)
             by_cat[item["category"]].append(item)
-
-        for prop in Property.objects.select_related("card_image").all():
-            item = normalise_local_list(prop)
-            by_cat[item["category"]].append(item)
-
         cards: list[dict] = []
         for cat in ("for-sale", "sold", "for-rent"):
             cards.extend(by_cat[cat][:3])
