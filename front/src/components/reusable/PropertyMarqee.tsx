@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef } from "react";
+import { Building2 } from "lucide-react";
 import { PropertyCard } from "./PropertyCard";
 import type { Property } from "./PropertyCard";
 import CmsButton from "@/components/reusable/CmsButton";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import type { ButtonBlockData } from "@/types/shared";
 import "../../sections/PropertyListingSection.css";
 import "./PropertyMarqee.css";
@@ -258,9 +260,7 @@ export default function PropertyMarquee({
       <div className="wrap">
         <header className="section-header">
           {eyebrow ? (
-            <div data-gsap="fade-up" className="section-badge">
-              <span>{eyebrow}</span>
-            </div>
+            <SectionBadge text={eyebrow} icon={Building2} />
           ) : null}
           {title || titleEm ? (
             <h2

@@ -17,16 +17,6 @@
 }
 
 /* ── Shared typography ── */
-.tp-eyebrow {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--rg-gold);
-  margin-bottom: 1rem;
-}
 
 .tp-heading {
   font-family: var(--font-title);

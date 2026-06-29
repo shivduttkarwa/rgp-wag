@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Heart } from "lucide-react";
 import InternalPageHero from "@/sections/InternalPageHero";
 import Team from "../sections/TeamV2";
 import { initGsapSwitchAnimations } from "@/lib/gsapSwitchAnimations";
@@ -9,6 +10,7 @@ import PageError from "@/components/reusable/PageError";
 import PageSeo from "@/components/reusable/PageSeo";
 import RgpCta from "@/components/reusable/RgpCta";
 import EoiCta from "@/components/reusable/eoi-cta";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import "./TeamPage.css";
 
 export default function TeamPage({ ready = false }: { ready?: boolean }) {
@@ -59,9 +61,7 @@ export default function TeamPage({ ready = false }: { ready?: boolean }) {
               <div className="tp-values__header">
                 <div className="tp-values__header-left">
                   {sections.core_values.eyebrow && (
-                    <span className="tp-eyebrow" data-gsap="fade-up">
-                      {sections.core_values.eyebrow}
-                    </span>
+                    <SectionBadge text={sections.core_values.eyebrow} icon={Heart} />
                   )}
                   {sections.core_values.heading && (
                     <h2 className="tp-heading" data-gsap="char-reveal" data-gsap-start="top 85%">

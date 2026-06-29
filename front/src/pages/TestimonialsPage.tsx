@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Star } from "lucide-react";
+import { Star, MessageSquare } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import SectionBadge from "@/components/reusable/SectionBadge";
 import InternalPageHero from "@/sections/InternalPageHero";
 import RGPSplitSlider from "../components/reusable/SplitSlider";
 import type { SlideContent } from "../components/reusable/SplitSlider";
@@ -55,19 +57,21 @@ const SectionHeading = ({
   eyebrow,
   heading,
   subtitle,
+  icon: Icon,
 }: {
   eyebrow?: string;
   heading?: string;
   subtitle?: string;
+  icon?: LucideIcon;
 }) => {
   if (!eyebrow && !heading && !subtitle) return null;
   return (
     <div className="t-section-heading">
       <header className="t-section-heading__header">
-        {eyebrow ? (
-          <span className="t-section-heading__eyebrow" data-gsap="fade-in" data-gsap-start="top 100%">
-            {eyebrow}
-          </span>
+        {eyebrow && Icon ? (
+          <SectionBadge text={eyebrow} icon={Icon} />
+        ) : eyebrow ? (
+          <SectionBadge text={eyebrow} icon={Star} />
         ) : null}
         {heading ? (
           <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
@@ -103,7 +107,7 @@ const StoriesGrid: React.FC<{
   return (
     <section className="tp-stories">
       <div className="tp-stories__wrap">
-        <SectionHeading eyebrow={eyebrow} heading={heading} subtitle={subtitle} />
+        <SectionHeading eyebrow={eyebrow} heading={heading} subtitle={subtitle} icon={MessageSquare} />
 
         <div className="tp-stories__grid">
           {shown.map((item) => (
@@ -247,6 +251,7 @@ const TestimonialPage: React.FC<{ ready?: boolean }> = ({ ready = false }) => {
               eyebrow={sections.featured_testimonials.eyebrow}
               heading={sections.featured_testimonials.heading}
               subtitle={sections.featured_testimonials.subtitle}
+              icon={Star}
             />
             <RGPSplitSlider slides={featuredSlides} />
           </>
