@@ -402,12 +402,14 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
                 <ChevronDown size={14} className="ap-select-icon" />
               </div>
 
-              {hasActiveFilters && (
-                <button className="ap-clear-btn" onClick={clearFilters}>
-                  <X size={14} />
-                  Clear
-                </button>
-              )}
+              <button
+                className="ap-clear-btn"
+                onClick={clearFilters}
+                style={{ visibility: hasActiveFilters ? "visible" : "hidden" }}
+              >
+                <X size={14} />
+                Clear
+              </button>
             </div>
 
             <p className="ap-result-count">
