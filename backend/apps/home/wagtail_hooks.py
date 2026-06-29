@@ -1,4 +1,8 @@
+import os
+from django.http import HttpResponse
+from django.urls import path
 from wagtail import hooks
+from wagtail.admin.menu import MenuItem
 from django.utils.safestring import mark_safe
 
 
@@ -8,6 +12,30 @@ from django.utils.safestring import mark_safe
 def global_admin_css():
     return mark_safe("""
 <style>
+  /* ── CMS Guide — gold highlight in sidebar ── */
+  a[href="/cms/cms-guide/"],
+  a[href="/cms/cms-guide/"].sidebar-menu-item__link {
+    background: rgba(249,195,7,0.12) !important;
+    border-left: 3px solid #f9c307 !important;
+    margin: 2px 6px !important;
+    border-radius: 6px !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  a[href="/cms/cms-guide/"]:hover,
+  a[href="/cms/cms-guide/"].sidebar-menu-item__link:hover {
+    background: rgba(249,195,7,0.24) !important;
+    box-shadow: 0 0 0 1px rgba(249,195,7,0.35) !important;
+  }
+  a[href="/cms/cms-guide/"] .icon,
+  a[href="/cms/cms-guide/"] svg {
+    color: #f9c307 !important;
+    fill: #f9c307 !important;
+  }
+  a[href="/cms/cms-guide/"] .menuitem-label {
+    color: #f9c307 !important;
+    font-weight: 600 !important;
+  }
+
   /* ── Replace Wagtail bird logo with RGP logo ── */
   .sidebar-wagtail-branding__icon { display: none !important; }
   .sidebar-wagtail-branding__icon-wrapper {
@@ -128,3 +156,44 @@ def internal_page_hero_admin_js():
 })();
 </script>
 """)
+
+
+# ─── CMS Guide ───────────────────────────────────────────────────────────────
+
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+_GUIDE_PATH = os.path.join(_REPO_ROOT, "docs", "cms-guide.html")
+_ASSETS_DIR = os.path.join(_REPO_ROOT, "ss-for-guide-page")
+
+
+def cms_guide_view(request):
+    try:
+        with open(_GUIDE_PATH, "r", encoding="utf-8") as f:
+            html = f.read()
+        # Rewrite relative asset paths to the Django-served URL
+        html = html.replace("../ss-for-guide-page/", "/cms/guide-assets/")
+        return HttpResponse(html, content_type="text/html; charset=utf-8")
+    except FileNotFoundError:
+        return HttpResponse("<h1>Guide not found</h1>", status=404)
+
+
+def cms_guide_asset_view(request, asset_path):
+    from django.views.static import serve
+    return serve(request, asset_path, document_root=_ASSETS_DIR)
+
+
+@hooks.register("register_admin_urls")
+def register_guide_url():
+    return [
+        path("cms-guide/", cms_guide_view, name="cms_guide"),
+        path("guide-assets/<path:asset_path>", cms_guide_asset_view, name="cms_guide_asset"),
+    ]
+
+
+@hooks.register("register_admin_menu_item")
+def register_guide_menu_item():
+    return MenuItem(
+        "CMS Guide",
+        "/cms/cms-guide/",
+        icon_name="help",
+        order=50,
+    )
