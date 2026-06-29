@@ -25,10 +25,11 @@ class ListingViewSet(SnippetViewSet):
 
 
 class PropertiesSnippetGroup(SnippetViewSetGroup):
-    menu_label = "Properties"
+    menu_label = "Properties (internal)"
+    menu_name = "properties_internal"
     menu_icon = "home"
     menu_order = 250
-    add_to_admin_menu = False
+    add_to_admin_menu = True   # must be True so Wagtail hides children from Snippets index
     items = (ListingViewSet,)
 
 
@@ -136,6 +137,11 @@ def register_property_urls():
 
 
 # ─── Menu ─────────────────────────────────────────────────────────────────────
+
+@hooks.register("construct_main_menu")
+def remove_internal_properties_group(request, menu_items):
+    menu_items[:] = [i for i in menu_items if getattr(i, "name", "") != "properties_internal"]
+
 
 @hooks.register("register_admin_menu_item")
 def register_sync_menu_item():
