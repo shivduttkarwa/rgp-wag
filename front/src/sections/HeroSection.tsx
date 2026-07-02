@@ -46,6 +46,7 @@ export default function HeroSection({
   const titleTwoRef = useRef<HTMLDivElement>(null);
   const revealSubRef = useRef<HTMLDivElement>(null);
   const revealCtaRef = useRef<HTMLDivElement>(null);
+  const revealFooterRef = useRef<HTMLDivElement>(null);
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const posterSrc = assetUrl(bgPoster || bgImage);
@@ -102,6 +103,13 @@ export default function HeroSection({
     gsap.set([revealSub], { x: -60, opacity: 0 });
     if (revealCta) {
       gsap.set(revealCta, {
+        clipPath: "inset(0 0 100% 0)",
+        opacity: 1,
+        willChange: "clip-path",
+      });
+    }
+    if (revealFooterRef.current) {
+      gsap.set(revealFooterRef.current, {
         clipPath: "inset(0 0 100% 0)",
         opacity: 1,
         willChange: "clip-path",
@@ -205,6 +213,13 @@ export default function HeroSection({
         revealCta,
         { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" },
         1.1,
+      );
+    }
+    if (revealFooterRef.current) {
+      tl.to(
+        revealFooterRef.current,
+        { clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power3.inOut" },
+        1.3,
       );
     }
 
@@ -326,7 +341,7 @@ export default function HeroSection({
         )}
 
         {/* ── FOOTER ── */}
-        {footer && <div className="rgp-hero__footer">{footer}</div>}
+        {footer && <div className="rgp-hero__footer" ref={revealFooterRef}>{footer}</div>}
       </section>
     </div>
   );
