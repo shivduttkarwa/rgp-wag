@@ -76,19 +76,18 @@ const PropertyListingSection = ({
   useEffect(() => {
     const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
     if (!cards?.length) return;
-    gsap.set(cards, { x: "110%", opacity: 0 });
+    gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
     ScrollTrigger.create({
       trigger: gridRef.current,
-      start: "top 80%",
+      start: "top 82%",
       once: true,
       onEnter: () => {
         gsap.to(cards, {
-          x: 0,
-          opacity: 1,
-          duration: 0.7,
-          ease: "power3.out",
+          clipPath: "inset(0 0 0% 0)",
+          duration: 1.1,
+          ease: "power3.inOut",
           stagger: 0.15,
-          onComplete: () => { gsap.set(cards, { clearProps: "x,opacity" }); },
+          onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
         });
       },
     });
