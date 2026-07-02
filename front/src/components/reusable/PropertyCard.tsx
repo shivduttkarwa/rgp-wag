@@ -1,7 +1,6 @@
-import { useState } from "react";
 import {
   MapPin, Bed, Bath, Square, Car,
-  Heart, Tag, CheckCircle, Clock, Eye, Key,
+  Tag, CheckCircle, Clock, Eye, Key,
 } from "lucide-react";
 import RgButton from "@/components/reusable/RgButton";
 import "./PropertyCard.css";
@@ -58,7 +57,6 @@ export const PropertyCard = ({
   property: Property;
   cardIndex?: number;
 }) => {
-  const [isLiked, setIsLiked] = useState(false);
   const isSold = property.category === "sold";
   const isRent = property.category === "for-rent";
   const displayPrice = isSold ? (property.soldPrice ?? property.price) : property.price;
@@ -107,15 +105,6 @@ export const PropertyCard = ({
             </span>
           )}
         </div>
-
-        {/* Like */}
-        <button
-          className={`like-btn${isLiked ? " liked" : ""}`}
-          onClick={() => setIsLiked(v => !v)}
-          aria-label="Save property"
-        >
-          <Heart size={16} />
-        </button>
 
         {/* Price */}
         <div className="card-price-wrapper">

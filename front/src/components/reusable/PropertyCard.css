@@ -87,38 +87,6 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Like Button ────────────────────────────────────────────────────────── */
-.property-card .like-btn {
-  position: absolute;
-  top: 0.875rem;
-  right: 0.875rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: rgba(0, 3, 46, 0.5);
-}
-
-.property-card .like-btn:hover {
-  background-color: #fff;
-  color: var(--rg-crimson);
-  transform: scale(1.1);
-}
-
-.property-card .like-btn.liked {
-  background-color: var(--rg-crimson);
-  color: #fff;
-}
-
-.property-card .like-btn.liked svg {
-  fill: currentColor;
-}
 
 /* ── Price ──────────────────────────────────────────────────────────────── */
 .property-card .card-price-wrapper {
