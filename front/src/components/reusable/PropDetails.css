@@ -336,6 +336,61 @@
   color: #fff;
 }
 
+/* ─── Gallery arrows (mobile slider) ─────────────────────── */
+
+.pd-gallery__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s;
+}
+.pd-gallery__arrow:hover { background: rgba(0, 0, 0, 0.65); }
+.pd-gallery__arrow svg { width: 18px; height: 18px; }
+.pd-gallery__arrow--prev { left: 0.625rem; }
+.pd-gallery__arrow--next { right: 0.625rem; }
+
+/* Counter badge */
+.pd-gallery__img-counter {
+  position: absolute;
+  bottom: 0.625rem;
+  right: 0.75rem;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.6rem;
+  border-radius: 1rem;
+  display: none;
+  pointer-events: none;
+}
+
+/* Active thumbnail ring */
+.pd-gallery__thumb--active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--pd-gold);
+  border-radius: 0.5rem;
+  pointer-events: none;
+  z-index: 2;
+}
+
 /* ─── Lightbox ────────────────────────────────────────────── */
 
 .pd-lightbox {
@@ -802,7 +857,6 @@
   border: 1px solid var(--pd-border);
   box-shadow: var(--pd-shadow);
   overflow: hidden;
-  max-height: 80vh;
 }
 
 .pd-enquiry__agent {
@@ -1128,7 +1182,15 @@
   .pd-amenities { grid-template-columns: 1fr; }
   .pd-form__row { grid-template-columns: 1fr; }
 
-  .pd-lightbox__nav { display: none; }
+  .pd-gallery__arrow { display: flex; }
+  .pd-gallery__img-counter { display: block; }
+
+  .pd-lightbox__nav {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .pd-lightbox__nav--prev { left: 0.5rem; }
+  .pd-lightbox__nav--next { right: 0.5rem; }
   .pd-lightbox__wrap { max-width: 95vw; }
 }
 

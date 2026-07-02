@@ -129,7 +129,15 @@ const PropertyHero: React.FC<{
 
 const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
-  const touchStartX = useRef(0);
+  const [activeIdx, setActiveIdx]     = useState(0);
+  const lightboxTouchX = useRef(0);
+  const galleryTouchX  = useRef(0);
+
+  // Lock body scroll while lightbox is open
+  useEffect(() => {
+    document.body.style.overflow = lightboxIdx !== null ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [lightboxIdx]);
 
   const close = useCallback(() => setLightboxIdx(null), []);
   const prev  = useCallback((e: React.MouseEvent) => {
@@ -141,27 +149,38 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
     setLightboxIdx(i => i !== null ? (i + 1) % images.length : 0);
   }, [images.length]);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.changedTouches[0].clientX;
-  }, []);
+  const goPrev = useCallback(() => setActiveIdx(i => (i - 1 + images.length) % images.length), [images.length]);
+  const goNext = useCallback(() => setActiveIdx(i => (i + 1) % images.length), [images.length]);
 
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
+  // Lightbox swipe
+  const handleLightboxTouchStart = useCallback((e: React.TouchEvent) => {
+    lightboxTouchX.current = e.changedTouches[0].clientX;
+  }, []);
+  const handleLightboxTouchEnd = useCallback((e: React.TouchEvent) => {
+    const diff = lightboxTouchX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) < 40) return;
     setLightboxIdx(i => {
       if (i === null) return i;
-      return diff > 0
-        ? (i + 1) % images.length
-        : (i - 1 + images.length) % images.length;
+      return diff > 0 ? (i + 1) % images.length : (i - 1 + images.length) % images.length;
     });
   }, [images.length]);
+
+  // Gallery main image swipe
+  const handleGalleryTouchStart = useCallback((e: React.TouchEvent) => {
+    galleryTouchX.current = e.changedTouches[0].clientX;
+  }, []);
+  const handleGalleryTouchEnd = useCallback((e: React.TouchEvent) => {
+    const diff = galleryTouchX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 40) return;
+    if (diff > 0) goNext(); else goPrev();
+  }, [goNext, goPrev]);
 
   useEffect(() => {
     if (lightboxIdx === null) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape")      close();
-      if (e.key === "ArrowLeft")   setLightboxIdx(i => i !== null ? (i - 1 + images.length) % images.length : 0);
-      if (e.key === "ArrowRight")  setLightboxIdx(i => i !== null ? (i + 1) % images.length : 0);
+      if (e.key === "Escape")     close();
+      if (e.key === "ArrowLeft")  setLightboxIdx(i => i !== null ? (i - 1 + images.length) % images.length : 0);
+      if (e.key === "ArrowRight") setLightboxIdx(i => i !== null ? (i + 1) % images.length : 0);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -178,9 +197,36 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
     <section className="pd-gallery">
       <SectionHead eyebrow="Photos" title="Photo Gallery" />
       <div className="pd-gallery__wrap">
-        {/* Main large image */}
-        <div className="pd-gallery__main" onClick={() => open(0)} role="button" tabIndex={0} aria-label="Open gallery">
-          <img src={mosaic[0].url} alt={mosaic[0].alt || "Property photo"} />
+        {/* Main image — swipeable on mobile */}
+        <div
+          className="pd-gallery__main"
+          onClick={() => open(activeIdx)}
+          onTouchStart={handleGalleryTouchStart}
+          onTouchEnd={handleGalleryTouchEnd}
+          role="button"
+          tabIndex={0}
+          aria-label="Open gallery"
+        >
+          <img src={images[activeIdx].url} alt={images[activeIdx].alt || "Property photo"} />
+
+          {/* Arrows — CSS hides these on desktop */}
+          <button
+            className="pd-gallery__arrow pd-gallery__arrow--prev"
+            onClick={e => { e.stopPropagation(); goPrev(); }}
+            aria-label="Previous photo"
+          >
+            <Icons.chevronLeft />
+          </button>
+          <button
+            className="pd-gallery__arrow pd-gallery__arrow--next"
+            onClick={e => { e.stopPropagation(); goNext(); }}
+            aria-label="Next photo"
+          >
+            <Icons.chevronRight />
+          </button>
+
+          {/* Counter badge — CSS hides on desktop */}
+          <span className="pd-gallery__img-counter">{activeIdx + 1} / {images.length}</span>
         </div>
 
         {/* 2×2 side thumbnails */}
@@ -189,7 +235,14 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
             {sideGrid.slice(0, 4).map((img, i) => {
               const isLast = i === Math.min(sideGrid.length, 4) - 1 && extraCount > 0;
               return (
-                <div key={i} className="pd-gallery__thumb" onClick={() => open(i + 1)} role="button" tabIndex={0} aria-label={`Photo ${i + 2}`}>
+                <div
+                  key={i}
+                  className={`pd-gallery__thumb${activeIdx === i + 1 ? " pd-gallery__thumb--active" : ""}`}
+                  onClick={() => { setActiveIdx(i + 1); open(i + 1); }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Photo ${i + 2}`}
+                >
                   <img src={img.url} alt={img.alt || `Property photo ${i + 2}`} />
                   {isLast && (
                     <div className="pd-gallery__more">
@@ -205,7 +258,7 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
       </div>
 
       <div className="pd-gallery__foot">
-        <button className="pd-gallery__viewall" onClick={() => open(0)}>
+        <button className="pd-gallery__viewall" onClick={() => open(activeIdx)}>
           <Icons.camera />
           View all {images.length} photos
         </button>
@@ -216,8 +269,8 @@ const GallerySection: React.FC<{ images: PropertyImage[] }> = ({ images }) => {
         <div
           className="pd-lightbox"
           onClick={close}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          onTouchStart={handleLightboxTouchStart}
+          onTouchEnd={handleLightboxTouchEnd}
           role="dialog"
           aria-modal="true"
         >
