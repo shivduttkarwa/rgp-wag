@@ -72,6 +72,7 @@ const PropertyListingSection = ({
   const mobileSwiperRef = useRef<SwiperType | null>(null);
   const [mobileSwiperIndex, setMobileSwiperIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
+  const swiperWrapperRef = useRef<HTMLDivElement>(null);
 
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
@@ -83,23 +84,43 @@ const PropertyListingSection = ({
     let raf: number;
     let st: ReturnType<typeof ScrollTrigger.create> | null = null;
     raf = requestAnimationFrame(() => {
+      // Desktop: stagger each card
       const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
-      if (!cards?.length) return;
-      gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
-      st = ScrollTrigger.create({
-        trigger: gridRef.current,
-        start: "top 82%",
-        once: true,
-        onEnter: () => {
-          gsap.to(cards, {
-            clipPath: "inset(0 0 0% 0)",
-            duration: 1.1,
-            ease: "power3.inOut",
-            stagger: 0.15,
-            onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
-          });
-        },
-      });
+      if (cards?.length) {
+        gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
+        st = ScrollTrigger.create({
+          trigger: gridRef.current,
+          start: "top 82%",
+          once: true,
+          onEnter: () => {
+            gsap.to(cards, {
+              clipPath: "inset(0 0 0% 0)",
+              duration: 1.1,
+              ease: "power3.inOut",
+              stagger: 0.15,
+              onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
+            });
+          },
+        });
+      }
+      // Mobile: animate the whole swiper wrapper as one unit
+      const swiper = swiperWrapperRef.current;
+      if (swiper) {
+        gsap.set(swiper, { clipPath: "inset(0 0 100% 0)" });
+        ScrollTrigger.create({
+          trigger: swiper,
+          start: "top 82%",
+          once: true,
+          onEnter: () => {
+            gsap.to(swiper, {
+              clipPath: "inset(0 0 0% 0)",
+              duration: 1.1,
+              ease: "power3.inOut",
+              onComplete: () => { gsap.set(swiper, { clearProps: "clip-path" }); },
+            });
+          },
+        });
+      }
     });
     return () => { cancelAnimationFrame(raf); st?.kill(); };
   }, [sourceProperties]);
@@ -206,7 +227,7 @@ const PropertyListingSection = ({
             </div>
 
             {/* Mobile swiper — hidden on desktop via CSS */}
-            <div className={`property-swiper-wrapper${swiperPhase ? ` ${swiperPhase}` : ""}`}>
+            <div ref={swiperWrapperRef} className={`property-swiper-wrapper${swiperPhase ? ` ${swiperPhase}` : ""}`}>
               <Swiper
                 className="property-swiper"
                 modules={[Pagination]}
@@ -225,12 +246,7 @@ const PropertyListingSection = ({
               >
                 {displayed.map((property, index) => (
                   <SwiperSlide key={property.id}>
-                    <div
-                      className="property-card-wrap"
-                      {...(index === 0
-                        ? { "data-gsap": "clip-smooth-down", "data-gsap-start": "top 85%" }
-                        : {})}
-                    >
+                    <div className="property-card-wrap">
                       <PropertyCard property={property} cardIndex={index} />
                     </div>
                   </SwiperSlide>
