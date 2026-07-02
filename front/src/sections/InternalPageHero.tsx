@@ -102,6 +102,7 @@ export default function InternalPageHero({ hero, ready = false }: InternalPageHe
       subtitle={hero.subtitle}
       panel={panel}
       footer={footer}
+      scrollDown={Boolean(hero.show_scroll_down)}
     />
   );
 }

@@ -18,6 +18,7 @@ type HeroSectionProps = {
   bgPoster?: string;
   footer?: ReactNode;
   panel?: ReactNode;
+  scrollDown?: boolean;
 };
 
 /* ═══════════════════════════════════════════════════
@@ -37,6 +38,7 @@ export default function HeroSection({
   bgPoster,
   footer,
   panel,
+  scrollDown = false,
 }: HeroSectionProps) {
   const bgRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
@@ -297,6 +299,23 @@ export default function HeroSection({
             </div>
           ) : null}
         </div>
+
+        {/* ── SCROLL DOWN ── */}
+        {scrollDown && (
+          <button
+            className="rgp-hero__scroll-down"
+            aria-label="Scroll down"
+            onClick={() => {
+              const wrap = document.querySelector(".rgp-hero-wrap");
+              const next = wrap?.nextElementSibling as HTMLElement | null;
+              next?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+        )}
 
         {/* ── FOOTER ── */}
         {footer && <div className="rgp-hero__footer">{footer}</div>}

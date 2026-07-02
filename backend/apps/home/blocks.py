@@ -184,6 +184,11 @@ class InternalPageHeroBlock(StructBlock):
         required=False,
         help_text="Used when mode is Stats slab.",
     )
+    show_scroll_down = BooleanBlock(
+        required=False,
+        default=False,
+        help_text="Show an animated scroll-down arrow at the bottom centre of the hero.",
+    )
 
     class Meta:
         icon = "image"

@@ -25,4 +25,5 @@ export type InternalPageHeroData = {
   mode?: InternalPageHeroMode;
   buttons?: InternalPageHeroButton[];
   stats?: InternalPageHeroStat[];
+  show_scroll_down?: boolean;
 };
