@@ -320,7 +320,7 @@ export default function PropertiesPage({ ready = false }: { ready?: boolean }) {
       {propertyListing ? (
       <>
       {/* ── Filter Slab ───────────────────────────────────────────────── */}
-      <div className="ap-filter-slab">
+      <div className="ap-filter-slab" id="listings">
         <div className="ap-filter-slab__inner">
           {hasListings ? (
           <div
