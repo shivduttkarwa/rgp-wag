@@ -541,7 +541,7 @@ class FeaturedTestimonialsBlock(StructBlock):
     )
     heading = CharBlock(
         default="Real Client Feedback",
-        help_text="Main section heading",
+        help_text="Section heading. Use [gold]word[/gold] for gold accent colour.",
     )
     subtitle = TextBlock(
         required=False,
@@ -558,7 +558,10 @@ class TestimonialTextGridBlock(StructBlock):
     """Section heading for the text testimonials bento grid (VoiceMosaic)."""
 
     eyebrow = CharBlock(required=False, default="Client Feedback")
-    heading = CharBlock(default="Stories From Our Clients")
+    heading = CharBlock(
+        default="Stories From Our Clients",
+        help_text="Section heading. Use [gold]word[/gold] for gold accent colour.",
+    )
     subtitle = TextBlock(
         required=False,
         default="First-hand experiences from people who trusted the team with their property goals.",
