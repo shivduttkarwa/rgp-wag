@@ -17,6 +17,9 @@ front/.env.local
 front/.env.*.local
 front/.claude/settings.local.json
 
+# Reference folders
+rgp-v4/
+
 # wrangler files
 .wrangler
 .dev.vars*

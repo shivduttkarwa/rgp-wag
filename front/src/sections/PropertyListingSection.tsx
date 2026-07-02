@@ -73,30 +73,36 @@ const PropertyListingSection = ({
   const [mobileSwiperIndex, setMobileSwiperIndex] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
-    if (!cards?.length) return;
-    gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
-    ScrollTrigger.create({
-      trigger: gridRef.current,
-      start: "top 82%",
-      once: true,
-      onEnter: () => {
-        gsap.to(cards, {
-          clipPath: "inset(0 0 0% 0)",
-          duration: 1.1,
-          ease: "power3.inOut",
-          stagger: 0.15,
-          onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
-        });
-      },
-    });
-  }, []);
-
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
     [data?.cards],
   );
+
+  useEffect(() => {
+    if (!sourceProperties.length) return;
+    let raf: number;
+    let st: ReturnType<typeof ScrollTrigger.create> | null = null;
+    raf = requestAnimationFrame(() => {
+      const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
+      if (!cards?.length) return;
+      gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
+      st = ScrollTrigger.create({
+        trigger: gridRef.current,
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          gsap.to(cards, {
+            clipPath: "inset(0 0 0% 0)",
+            duration: 1.1,
+            ease: "power3.inOut",
+            stagger: 0.15,
+            onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
+          });
+        },
+      });
+    });
+    return () => { cancelAnimationFrame(raf); st?.kill(); };
+  }, [sourceProperties]);
 
   if (!data) return null;
 
@@ -187,9 +193,6 @@ const PropertyListingSection = ({
             <div
               ref={gridRef}
               className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}
-              data-gsap="clip-smooth-down"
-              data-gsap-stagger="0.12"
-              data-gsap-start="top 82%"
             >
               {displayed.slice(0, 3).map((property, index) => (
                 <div
