@@ -81,53 +81,32 @@ const PropertyListingSection = ({
 
   useEffect(() => {
     if (!sourceProperties.length) return;
-    let raf: number;
-    let st: ReturnType<typeof ScrollTrigger.create> | null = null;
-    raf = requestAnimationFrame(() => {
-      // Desktop: stagger each card individually
-      const cardNodes = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
-      const cards = cardNodes ? Array.from(cardNodes) : [];
-      if (cards.length) {
-        gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
-        st = ScrollTrigger.create({
-          trigger: gridRef.current,
-          start: "top 82%",
-          once: true,
-          onEnter: () => {
-            cards.forEach((card, i) => {
-              gsap.to(card, {
-                clipPath: "inset(0 0 0% 0)",
-                duration: 1.0,
-                ease: "power3.inOut",
-                delay: i * 0.35,
-                onComplete: i === cards.length - 1
-                  ? () => { gsap.set(cards, { clearProps: "clip-path" }); }
-                  : undefined,
-              });
-            });
-          },
-        });
-      }
-      // Mobile: animate the whole swiper wrapper as one unit
+    const raf = requestAnimationFrame(() => {
       const swiper = swiperWrapperRef.current;
-      if (swiper) {
-        gsap.set(swiper, { clipPath: "inset(0 0 100% 0)" });
-        ScrollTrigger.create({
-          trigger: swiper,
-          start: "top 82%",
-          once: true,
-          onEnter: () => {
-            gsap.to(swiper, {
+      if (!swiper) return;
+      const slides = Array.from(swiper.querySelectorAll<HTMLElement>(".swiper-slide"));
+      if (!slides.length) return;
+      gsap.set(slides, { clipPath: "inset(0 0 100% 0)" });
+      ScrollTrigger.create({
+        trigger: swiper,
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          slides.forEach((slide, i) => {
+            gsap.to(slide, {
               clipPath: "inset(0 0 0% 0)",
-              duration: 1.1,
+              duration: 1.0,
               ease: "power3.inOut",
-              onComplete: () => { gsap.set(swiper, { clearProps: "clip-path" }); },
+              delay: i * 0.15,
+              onComplete: i === slides.length - 1
+                ? () => { gsap.set(slides, { clearProps: "clip-path" }); }
+                : undefined,
             });
-          },
-        });
-      }
+          });
+        },
+      });
     });
-    return () => { cancelAnimationFrame(raf); st?.kill(); };
+    return () => { cancelAnimationFrame(raf); };
   }, [sourceProperties]);
 
   if (!data) return null;
@@ -219,6 +198,9 @@ const PropertyListingSection = ({
             <div
               ref={gridRef}
               className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}
+              data-gsap="clip-smooth-down"
+              data-gsap-stagger="0.12"
+              data-gsap-start="top 82%"
             >
               {displayed.slice(0, 3).map((property, index) => (
                 <div
