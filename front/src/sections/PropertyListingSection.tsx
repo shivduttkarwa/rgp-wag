@@ -95,9 +95,9 @@ const PropertyListingSection = ({
           onEnter: () => {
             gsap.to(cards, {
               clipPath: "inset(0 0 0% 0)",
-              duration: 1.1,
+              duration: 1.0,
               ease: "power3.inOut",
-              stagger: 0.15,
+              stagger: 0.3,
               onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
             });
           },
