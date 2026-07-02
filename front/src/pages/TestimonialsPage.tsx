@@ -75,7 +75,7 @@ const SectionHeading = ({
           <SectionBadge text={eyebrow} icon={Star} />
         ) : null}
         {heading ? (
-          <h2 className="t-section-heading__title" data-gsap="clip-smooth" data-gsap-start="top 85%">
+          <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
             {renderHeroAccentTokens(heading)}
           </h2>
         ) : null}
