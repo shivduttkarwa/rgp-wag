@@ -84,21 +84,26 @@ const PropertyListingSection = ({
     let raf: number;
     let st: ReturnType<typeof ScrollTrigger.create> | null = null;
     raf = requestAnimationFrame(() => {
-      // Desktop: stagger each card
-      const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
-      if (cards?.length) {
+      // Desktop: stagger each card individually
+      const cardNodes = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
+      const cards = cardNodes ? Array.from(cardNodes) : [];
+      if (cards.length) {
         gsap.set(cards, { clipPath: "inset(0 0 100% 0)" });
         st = ScrollTrigger.create({
           trigger: gridRef.current,
           start: "top 82%",
           once: true,
           onEnter: () => {
-            gsap.to(cards, {
-              clipPath: "inset(0 0 0% 0)",
-              duration: 1.0,
-              ease: "power3.inOut",
-              stagger: 0.3,
-              onComplete: () => { gsap.set(cards, { clearProps: "clip-path" }); },
+            cards.forEach((card, i) => {
+              gsap.to(card, {
+                clipPath: "inset(0 0 0% 0)",
+                duration: 1.0,
+                ease: "power3.inOut",
+                delay: i * 0.35,
+                onComplete: i === cards.length - 1
+                  ? () => { gsap.set(cards, { clearProps: "clip-path" }); }
+                  : undefined,
+              });
             });
           },
         });
