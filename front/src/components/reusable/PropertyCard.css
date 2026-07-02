@@ -25,7 +25,7 @@
 /* ── Image ──────────────────────────────────────────────────────────────── */
 .property-card .card-image-wrapper {
   position: relative;
-  height: 14rem;
+  height: 17rem;
   overflow: hidden;
   background: #dde4f6;
   transform: translateZ(0);
@@ -370,7 +370,7 @@
 /* ── Small screens ──────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .property-card .card-image-wrapper {
-    height: 11rem;
+    height: 16rem;
   }
 
   .property-card .card-body {
@@ -380,7 +380,7 @@
 
 @media (max-width: 480px) {
   .property-card .card-image-wrapper {
-    height: 10rem;
+    height: 15rem;
   }
 
   .property-card .card-stats {
