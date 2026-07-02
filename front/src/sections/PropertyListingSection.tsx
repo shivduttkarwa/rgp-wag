@@ -1,5 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 import { ArrowLeft, ArrowRight, Building2, CheckCircle, Key, Tag } from "lucide-react";
 import SectionBadge from "@/components/reusable/SectionBadge";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -68,6 +71,28 @@ const PropertyListingSection = ({
   const animating = useRef(false);
   const mobileSwiperRef = useRef<SwiperType | null>(null);
   const [mobileSwiperIndex, setMobileSwiperIndex] = useState(0);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const cards = gridRef.current?.querySelectorAll<HTMLElement>(".property-card-wrap");
+    if (!cards?.length) return;
+    gsap.set(cards, { x: "110%", opacity: 0 });
+    ScrollTrigger.create({
+      trigger: gridRef.current,
+      start: "top 80%",
+      once: true,
+      onEnter: () => {
+        gsap.to(cards, {
+          x: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.15,
+          onComplete: () => { gsap.set(cards, { clearProps: "x,opacity" }); },
+        });
+      },
+    });
+  }, []);
 
   const sourceProperties = useMemo(
     () => mapCards(data?.cards),
@@ -161,6 +186,7 @@ const PropertyListingSection = ({
 
             {/* Desktop grid — hidden on mobile via CSS */}
             <div
+              ref={gridRef}
               className={`property-grid${gridPhase ? ` ${gridPhase}` : ""}`}
               data-gsap="clip-smooth-down"
               data-gsap-stagger="0.12"
