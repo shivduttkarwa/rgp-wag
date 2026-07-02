@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./sections/Footer";
 import Preloader from "./components/Preloader";
+import FloatingActions from "./components/FloatingActions";
 import PageSkeleton from "./components/reusable/PageSkeleton";
 import ErrorBoundary from "./components/ErrorBoundary";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -70,6 +71,7 @@ function App() {
         </Suspense>
         </ErrorBoundary>
         <Footer ready={loaded} />
+        <FloatingActions />
       </div>
     </>
   );
