@@ -10,6 +10,7 @@ import CmsButton from "@/components/reusable/CmsButton";
 import type { ButtonBlockData } from "@/types/shared";
 import "./TestimonialPage.css";
 import { useTestimonialsPage } from "@/hooks/useTestimonialsPage";
+import { renderHeroAccentTokens } from "@/lib/heroTokens";
 import CmsEditBar from "@/components/reusable/CmsEditBar";
 import PageSkeleton from "@/components/reusable/PageSkeleton";
 import PageError from "@/components/reusable/PageError";
@@ -75,7 +76,7 @@ const SectionHeading = ({
         ) : null}
         {heading ? (
           <h2 className="t-section-heading__title" data-gsap="char-reveal" data-gsap-start="top 85%">
-            {heading}
+            {renderHeroAccentTokens(heading)}
           </h2>
         ) : null}
         {subtitle ? (
