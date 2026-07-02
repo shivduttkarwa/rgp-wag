@@ -183,9 +183,15 @@ const PropertyListingSection = ({
                 className="property-swiper"
                 modules={[Pagination]}
                 spaceBetween={16}
-                slidesPerView={1}
-                speed={400}
-                pagination={{ clickable: true }}
+                slidesPerView={1.15}
+                centeredSlides={false}
+                grabCursor={true}
+                speed={420}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                breakpoints={{
+                  480: { slidesPerView: 1.3, spaceBetween: 20 },
+                  640: { slidesPerView: 1.8, spaceBetween: 24 },
+                }}
                 onSwiper={(swiper) => { mobileSwiperRef.current = swiper; }}
                 onActiveIndexChange={(swiper) => setMobileSwiperIndex(swiper.activeIndex)}
               >
