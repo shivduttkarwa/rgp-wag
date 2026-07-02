@@ -143,6 +143,19 @@ a {
   gap: 0;
 }
 
+.rgp-hero__content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 55% at 50% 50%,
+    rgba(0, 3, 46, 0.52) 0%,
+    rgba(0, 3, 46, 0.0) 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* ─── TITLE ─── */
 .rgp-hero__title {
   display: flex;
