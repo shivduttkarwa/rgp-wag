@@ -26,3 +26,4 @@ rgp-v4/
 !.dev.vars.example
 .env*
 !.env.example
+!front/.env.production

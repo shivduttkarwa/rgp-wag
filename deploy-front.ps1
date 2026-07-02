@@ -21,7 +21,7 @@ function ssh_run($cmd) {
 # ── 1. Frontend build + upload ────────────────────────────────────────────────
 if (-not $SkipFrontend) {
     Write-Host ""
-    Write-Host "[ 1/2 ] Building frontend locally..." -ForegroundColor Cyan
+    Write-Host "[ 1/2 ] Building frontend locally (production)..." -ForegroundColor Cyan
     Push-Location $FRONT
     npm run build
     $buildExit = $LASTEXITCODE
