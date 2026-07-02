@@ -8,7 +8,7 @@
 param([switch]$SkipFrontend)
 
 $PEM   = "D:\Shiv\EC2\rgp-prod-ec2-key.pem"
-$EC2   = "ubuntu@54.252.235.169"
+$EC2   = "ubuntu@52.64.245.210"
 $PROJ  = "/home/ubuntu/rgp-wag"
 $FRONT = Join-Path $PSScriptRoot "front"
 
@@ -50,4 +50,4 @@ $backendCmd = "cd $PROJ && git pull && cd backend && .venv/bin/python manage.py 
 Invoke-Expression "ssh $SSH_OPTS $EC2 '$backendCmd'"
 
 Write-Host ""
-Write-Host "Deploy complete!  http://54.252.235.169/" -ForegroundColor Green
+Write-Host "Deploy complete!  http://52.64.245.210/" -ForegroundColor Green

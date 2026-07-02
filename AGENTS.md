@@ -4,7 +4,7 @@
 - **Backend:** Django 5.2 + Wagtail 7.0 (headless/API-only) — `backend/`
 - **Frontend:** React 19 + Vite + TypeScript — `front/`
 - **DB:** PostgreSQL — `postgres://rgp_user:rgp_pass_2024@localhost:5432/rgp_wag`
-- **Server:** AWS EC2 `54.252.235.169` (ap-southeast-2, t2.micro), user `ubuntu`
+- **Server:** AWS EC2 `52.64.245.210` (ap-southeast-2, t2.micro), user `ubuntu`
 - **Virtualenv:** `backend/.venv/`
 - **Serving model:** Nginx serves `front/dist` as the SPA root and proxies `/api/`, `/cms/`, and `/admin/` to Gunicorn
 
@@ -142,7 +142,7 @@ cd front && npm run dev           # http://localhost:5173
 SSH to EC2:
 
 ```bash
-ssh -i ~/.ssh/rgp-demo.pem ubuntu@54.252.235.169
+ssh -i ~/.ssh/rgp-demo.pem ubuntu@52.64.245.210
 ```
 
 ---
